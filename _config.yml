@@ -1,0 +1,18 @@
+title: Stock AI
+description: "Stock AI Game"
+owner_name: CSA-AI
+github_username: CSA-AI
+github_repo: "AI_Frontend_Mort"
+baseurl: ""
+future: true
+remote_theme: jekyll/minima
+minima:
+  social_links:
+plugins:
+- jekyll-remote-theme
+- jekyll-postcss
+header_pages:
+  # - navigation/blog.md
+  - navigation/search.html
+
+

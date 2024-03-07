@@ -1,0 +1,263 @@
+---
+layout: project
+---
+<style>
+  .alert {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      z-index: 999;
+  }
+
+  .alert.show {
+      opacity: 1;
+  }
+
+  .form {
+      display: none;
+  }
+
+  .form.active {
+      display: block;
+  }
+  .alert-success {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      z-index: 999;
+      background-color: #4CAF50;
+      color: white;
+  }
+
+  .alert-success.show {
+      opacity: 1;
+  }
+</style>
+
+<div role="alert" id="errorAlert" class="alert alert-warning hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+  <span id="errorMessage">Error Message Here</span>
+</div>
+
+<div role="alert" id="successAlert" class="alert alert-success hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+  <span id="successMessage">Success Message Here</span>
+</div>
+
+<div class="hero">
+  <div class="hero-content flex-col lg:flex-row-reverse">
+      <div class="hero-form card shrink-0 w-full max-w-sm shadow-2xl bg-base-100 active">
+        <div class="flex justify-center m-5">
+            <button class="btn mr-5" onclick="toggleForm('signin')">Sign In</button>
+            <button class="btn" onclick="toggleForm('signup')">Sign Up</button>
+        </div>
+      </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-content flex-col lg:flex-row-reverse">
+      <div class="hero-form form card shrink-0 w-full max-w-sm shadow-2xl bg-base-100 active" id="signinForm">
+          <form class="card-body">
+            <label>
+              <span class="text-3xl justify-center">Sign-In</span>
+            </label>
+              <div class="form-control">
+                  <label class="label">
+                      <span class="label-text">Email</span>
+                  </label>
+                  <input id="signinEmail" type="email" placeholder="email" class="input input-bordered" required />
+              </div>
+              <div class="form-control">
+                  <label class="label">
+                      <span class="label-text">Password</span>
+                  </label>
+                  <input id="signinPassword" type="password" placeholder="password" class="input input-bordered" required />
+              </div>
+          </form>
+          <div class="form-control">
+              <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="login()">Login</button>
+          </div>
+      </div>
+
+      <div class="hero-form form card shrink-0 w-full max-w-sm shadow-2xl bg-base-100" id="signupForm">
+          <form class="card-body">
+            <label>
+              <span class="text-3xl justify-center">Sign-Up</span>
+            </label>
+              <div class="form-control">
+                  <label class="label">
+                      <span class="label-text">Email</span>
+                  </label>
+                  <input id="signupEmail" type="email" placeholder="email" class="input input-bordered" required />
+              </div>
+              <div class="form-control">
+                  <label class="label">
+                      <span class="label-text">Password</span>
+                  </label>
+                  <input id="signupPassword" type="password" placeholder="password" class="input input-bordered" required />
+              </div>
+              <div class="form-control">
+                  <label class="label">
+                      <span class="label-text">Name</span>
+                  </label>
+                  <input id="signupName" type="text" placeholder="name" class="input input-bordered" required />
+              </div>
+              <div class="form-control">
+                  <label class="label">
+                      <span class="label-text">Date of Birth</span>
+                  </label>
+                  <input id="signupDob" type="text" placeholder="dob (mm-dd-yyyy)" class="input input-bordered" required />
+              </div>
+          </form>
+          <div class="form-control">
+              <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="signup()">Signup</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  function toggleForm(formType) {
+      const signinForm = document.getElementById("signinForm");
+      const signupForm = document.getElementById("signupForm");
+
+      if (formType === 'signin') {
+          signinForm.classList.add('active');
+          signupForm.classList.remove('active');
+      } else if (formType === 'signup') {
+          signinForm.classList.remove('active');
+          signupForm.classList.add('active');
+      }
+  }
+
+  const signup_url = 'http://localhost:8017/api/person/createPerson';
+  const login_url = 'http://localhost:8017/authenticate';
+
+  function showErrorMessage(message) {
+      const errorAlert = document.getElementById("errorAlert");
+      const errorMessage = document.getElementById("errorMessage");
+
+      errorMessage.innerText = message;
+      errorAlert.classList.remove("hidden");
+      errorAlert.classList.add("show");
+
+      setTimeout(() => {
+          hideErrorMessage();
+      }, 5000);
+  }
+
+  function hideErrorMessage() {
+      const errorAlert = document.getElementById("errorAlert");
+      errorAlert.classList.remove("show");
+      errorAlert.classList.add("hidden");
+  }
+
+  function showSuccessMessage(message) {
+      const successAlert = document.getElementById("successAlert");
+      const successMessage = document.getElementById("successMessage");
+
+      successMessage.innerText = message;
+      successAlert.classList.remove("hidden");
+      successAlert.classList.add("show");
+
+      setTimeout(() => {
+          hideSuccessMessage();
+      }, 5000);
+  }
+
+  function hideSuccessMessage() {
+      const successAlert = document.getElementById("successAlert");
+      successAlert.classList.remove("show");
+      successAlert.classList.add("hidden");
+  }
+
+  function login() {
+      hideErrorMessage();
+
+      var email = document.getElementById("signinEmail").value;
+      var password = document.getElementById("signinPassword").value;
+
+      const params = {
+          email: email,
+          password: password
+      };
+
+      fetch(login_url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(params),
+      })
+          .then(response => response.json())
+          .then(data => {
+              document.cookie = "token=" + data.token + "; path=/";
+              console.log(data)
+              if (data.status !== 401) {
+                  window.location.replace("{{ site.baseurl }}/pages/profile.html");
+              } else {
+                  console.log("bad email and password");
+                  showErrorMessage("Invalid email or password");
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              showErrorMessage("An error occurred. Please try again later.");
+          });
+  }
+
+  function signup() {
+      hideErrorMessage();
+
+      var email = document.getElementById("signupEmail").value;
+      var password = document.getElementById("signupPassword").value;
+      var name = document.getElementById("signupName").value;
+      var dob = document.getElementById("signupDob").value;
+      var emailInput = document.getElementById("signupEmail");
+      var passwordInput = document.getElementById("signupPassword");
+      var nameInput = document.getElementById("signupName");
+      var dobInput = document.getElementById("signupDob");
+
+      const params2 = {
+          name: name,
+          email: email,
+          password: password,
+          dob: dob
+      };
+
+      fetch(signup_url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(params2),
+      })
+          .then(response => response.json())
+          .then(data => {
+              console.log(data);
+              if (data.status !== 401) {
+                  console.log("Signup successful!");
+                  showSuccessMessage("Signup successful! " + email + " has been created.");
+
+                  emailInput.value = "";
+                  nameInput.value = "";
+                  passwordInput.value = "";
+                  dobInput.value = "";
+              } else {
+                  console.log("Signup failed");
+                  showErrorMessage("Signup failed. Please check your information and try again.");
+              }
+          })
+          .catch(error => {
+              console.error('error:', error);
+              showErrorMessage("An error occurred. Please try again later.");
+          });
+  }
+</script>

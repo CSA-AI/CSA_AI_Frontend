@@ -1,0 +1,392 @@
+---
+layout: project
+---
+<style>
+	.alert {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		opacity: 0;
+		transition: opacity 0.5s ease-in-out;
+		z-index: 999;
+	}
+  
+	.alert.show {
+		opacity: 1;
+	}
+  
+	.form.active {
+		display: block;
+	}
+	.alert-success {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		opacity: 0;
+		transition: opacity 0.5s ease-in-out;
+		z-index: 999;
+		background-color: #4CAF50;
+		color: white;
+	}
+  
+	.alert-success.show {
+		opacity: 1;
+	}
+  </style>
+
+<div role="alert" id="errorAlert" class="alert alert-warning hidden">
+	<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+	<span id="errorMessage">Error Message Here</span>
+</div>
+  
+<div role="alert" id="successAlert" class="alert alert-success hidden">
+	<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+	<span id="successMessage">Success Message Here</span>
+</div>
+
+<div class="hero min-h-screen flex flex-col justify-center items-center space-y-6n">
+	<div class="hero-content flex-col lg:flex-row-reverse">
+	  <div class="text-center ml-20 lg:text-left">
+		<div class="avatar" onclick="my_modal_1.showModal()">
+			<div class="w-24 rounded-full shadow-2xl">
+			  <img id="profilePic" src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" />
+			</div>
+		</div>
+		<dialog id="my_modal_1" class="modal">
+		<div class="modal-box">
+			<h3 class="font-bold text-lg">Upload Profile Image</h3>
+			<p class="py-4">Please upload a profile image:</p>
+			<input type="file" id="file-input" class="file-input w-full max-w-xs" accept=".jpg, .jpeg, .png"/>
+			<div id="errorMessage" class="hidden text-red-500">File size exceeds the limit. Maximum allowed size is 5MB.</div>
+			<div class="modal-action">
+			<form method="dialog">
+				<button class="btn btn-success" onclick="uploadFile()">Update</button>
+				<button class="btn">Cancel</button>
+			</form>
+			</div>
+		</div>
+		</dialog>
+		<h1 class="text-5xl font-bold">Welcome <span id="profileEmail"></span></h1>
+		<p class="py-6">Here you can enter the stocks you would like to track, the number of shares you would like to purchase, and predict that stocks price per share in the coming 2 months. During the 3rd trimester N@TM, you will be able to come back and check your success and progress, comparing it to AI predicted values.</p>
+	  </div>
+	  <div class="hero-form form card shrink-0 w-full max-w-sm shadow-2xl bg-base-100" id="signupForm">
+		<form class="card-body">
+			<h2 class="text-2xl mb-4">Stock Predictions</h2>
+			<div class="form-control">
+				<label class="label">
+					<span class="label-text">Ticker</span>
+				</label>
+				<input id="ticker" type="text" placeholder="ex. AAPL" class="input input-bordered" required />
+			</div>
+			<div class="form-control">
+				<label class="label">
+					<span class="label-text">Number of Shares</span>
+				</label>
+				<input id="shares" type="text" placeholder="ex. 0" class="input input-bordered" required />
+			</div>
+			<div class="form-control">
+				<label class="label">
+					<span class="label-text">Predicted Price Per Stock (In 2 Months)</span>
+				</label>
+				<input id="price" type="text" placeholder="ex. $0.00" class="input input-bordered" required />
+			</div>
+		</form>
+		<div class="form-control">
+		<button class="btn btn-primary ml-10 mr-10 mb-10" onclick="sendStats()">Save</button>
+		</div>
+	</div>
+</div>
+<div class="card w-1/2 bg-base-100 shadow-xl mt-20">
+	<div class="card-body">
+		<table class="table table-zebra">
+			<thead>
+			  <tr>
+				<th>Ticker</th>
+				<th>Shares</th>
+				<th>Predictions</th>
+			  </tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+<script>
+	var setURL = "http://localhost:8017/api/person/updateStocks"
+
+	const fileInput = document.getElementById('file-input');
+	const errorMessage = document.getElementById('errorMessage');
+
+	fileInput.addEventListener('change', function() {
+		const file = this.files[0];
+		const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+
+		if (file && file.size > maxSize) { // Check if file exists and size exceeds limit
+			// Show error message and clear the file input
+			errorMessage.classList.remove('hidden');
+			this.value = null; // Clear the file input
+		} else {
+			errorMessage.classList.add('hidden');
+			// Proceed with file upload
+		}
+	});
+
+	function showErrorMessage(message) {
+		const errorAlert = document.getElementById("errorAlert");
+		const errorMessage = document.getElementById("errorMessage");
+  
+		errorMessage.innerText = message;
+		errorAlert.classList.remove("hidden");
+		errorAlert.classList.add("show");
+  
+		setTimeout(() => {
+			hideErrorMessage();
+		}, 5000);
+	}
+  
+	function hideErrorMessage() {
+		const errorAlert = document.getElementById("errorAlert");
+		errorAlert.classList.remove("show");
+		errorAlert.classList.add("hidden");
+	}
+  
+	function showSuccessMessage(message) {
+		const successAlert = document.getElementById("successAlert");
+		const successMessage = document.getElementById("successMessage");
+  
+		successMessage.innerText = message;
+		successAlert.classList.remove("hidden");
+		successAlert.classList.add("show");
+  
+		setTimeout(() => {
+			hideSuccessMessage();
+		}, 5000);
+	}
+  
+	function hideSuccessMessage() {
+		const successAlert = document.getElementById("successAlert");
+		successAlert.classList.remove("show");
+		successAlert.classList.add("hidden");
+	}
+
+    const token = getCookie("token");
+    if (token) {
+        const decodedToken = parseJwt(token);
+    } else {
+        window.location.replace("{{ site.baseurl }}/index.html");
+    }
+
+    function signout() {
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+        window.location.replace("{{ site.baseurl }}/index.html");
+    }
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    function parseJwt(token) {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    }
+
+	function addDataToTable(){
+		const ticker = document.getElementById("ticker").value;
+		const shares = document.getElementById("shares").value;
+		const price = document.getElementById("price").value;
+		const tableBody = document.querySelector('.table-zebra tbody');
+
+		const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${ticker}</td>
+                    <td>${shares}</td>
+                    <td>${price}</td>
+                `;
+                tableBody.appendChild(row);
+	}
+
+	function getName() {
+		const token = getCookie("token");
+	
+		const decodedToken = parseJwt(token);
+		const userId = decodedToken.id;
+		const profileEmailSpan = document.getElementById("profileEmail");
+
+		fetch("http://localhost:8017/api/person/" + userId, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+		.then(response => response.json())
+		.then(data => {
+			if (data.status !== 401) {
+				const userName = data.name;
+        		profileEmailSpan.innerText = userName;
+			} else {
+				showErrorMessage("Data failed. Please check your information and try again.");
+			}
+		})
+		.catch(error => {
+			console.error('error:', error);
+			showErrorMessage("An error occurred. Please try again later.");
+		});
+	}
+
+	function sendStats() { 
+		hideErrorMessage();
+		addDataToTable();
+	
+		const ticker = document.getElementById("ticker").value;
+		const shares = document.getElementById("shares").value;
+		const price = document.getElementById("price").value;
+		const tickerInput = document.getElementById("ticker");
+		const sharesInput = document.getElementById("shares");
+		const priceInput = document.getElementById("price");
+	
+		const token = getCookie("token");
+	
+		const decodedToken = parseJwt(token);
+		const userId = decodedToken.id;
+	
+		const date = new Date();
+		const currentDate = date.toISOString().slice(0, 19).replace('T', ' ');
+	
+		const data = {
+			id: userId,
+			date: currentDate,
+			ticker: ticker,
+			shares: shares,
+			price: price
+		};
+	
+		fetch(setURL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data),
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
+			if (data.status !== 401) {
+				showSuccessMessage("Data successful! Your data has been created.");
+				tickerInput.value = "";
+				sharesInput.value = "";
+				priceInput.value = "";
+			} else {
+				showErrorMessage("Data failed. Please check your information and try again.");
+			}
+		})
+		.catch(error => {
+			console.error('error:', error);
+			showErrorMessage("An error occurred. Please try again later.");
+		});
+	}
+	
+	function getStats() {
+
+		const decodedToken = parseJwt(token);
+    	const userId = decodedToken.id;
+
+		const requestOptions = {
+			method: "GET",
+			redirect: "follow"
+		};
+
+		fetch("http://localhost:8017/api/person/stats/" + userId, requestOptions)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(statsData => {
+			console.log(statsData)
+            const tableBody = document.querySelector('.table-zebra tbody');
+
+            tableBody.innerHTML = '';
+
+            for (const [date, stats] of Object.entries(statsData)) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${stats.ticker}</td>
+                    <td>${stats.shares}</td>
+                    <td>${stats.price}</td>
+                `;
+                tableBody.appendChild(row);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching stats data:', error);
+        });
+	}
+
+	function uploadFile(){
+		const fileInput = document.getElementById('file-input');
+		const file = fileInput.files[0];
+
+		const decodedToken = parseJwt(token);
+		const userEmail = decodedToken.sub;
+		console.log(userEmail)
+
+		if (!file) {
+			console.error('No file selected');
+			return;
+		}
+
+		console.log('Selected file:', file);
+
+		const formdata = new FormData();
+		formdata.append("image", file);
+		formdata.append("username", userEmail);
+
+		const requestOptions = {
+		method: "POST",
+		body: formdata,
+		redirect: "follow"
+		};
+
+		fetch("http://localhost:8017/api/person/image/post", requestOptions)
+		.then((response) => response.text())
+		.then((result) => console.log(result))
+		.catch((error) => console.error(error));
+	}
+
+	function getProfilePicture() {
+		const decodedToken = parseJwt(token);
+		const userEmail = decodedToken.sub;
+	
+		const requestOptions = {
+			method: "GET",
+			redirect: "follow"
+		};
+	
+		fetch("http://localhost:8017/api/person/image/" + userEmail, requestOptions)
+			.then((response) => response.blob()) // Fetch image as Blob
+			.then((blob) => {
+				const url = URL.createObjectURL(blob); // Create URL for Blob
+				document.getElementById("profilePic").src = url; // Set the src attribute of the img element
+			})
+			.catch((error) => console.error(error));
+	}
+
+	document.addEventListener("DOMContentLoaded", function() {
+		getStats();
+		getName();
+		getProfilePicture();
+	});
+</script>
