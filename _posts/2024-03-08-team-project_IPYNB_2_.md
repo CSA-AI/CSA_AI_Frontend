@@ -16,8 +16,8 @@ comments: True
 | Ethan Z | [Link](https://dolphinalt.github.io/APCSA-Pages/posts/Individual-Review/) | 2.7 | 2.0 |
 | Emaad M | [Link](https://emaad-mir.github.io/emaad-github-pages1/c1.4/2024/03/08/Individual-Seed.html), [Link](https://github.com/Emaad-Mir/emaad-github-pages1/issues/14#issue-2174115806) | 3.0 | 1.9 |
 | Yuri | [Link](https://github.com/yuricoder07/apcsa-blog/issues/6) | 2.4 | 1.1 |
-| Adi N | [Link]() |
-| Anthony B | [Link]() |
-| James L | [Link]() |
-| Tay K | [Link]() |
+| Adi N | [Link](https://firestorm0986.github.io/CSA-blog-site//2024/03/08/individual-review-tri-three_IPYNB_2_.html) |
+| Anthony B | [Link](https://ant11234.github.io/BazhRepo/2024/03/07/IndividualProgress_IPYNB_2_.html) | 2.7 | 2.0 |
+| James L | [Link](https://jw95z.github.io/CSA/indivseed) |
+| Tay K | [Link](https://taykimmy.github.io/CSA-Repository/2024/03/08/Individual-Seed_IPYNB_2_.html) | 3.0 | 1.9 |
 | Krishiv | [Link]() |
