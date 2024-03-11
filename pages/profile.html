@@ -51,7 +51,7 @@ layout: project
       <div class="text-center ml-20 lg:text-left">
         <div class="avatar" onclick="my_modal_1.showModal()">
             <div id = "pic" class="w-24 rounded-full shadow-2xl" >
-              <img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/>
+              <!-- <img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/> -->
             </div>
         </div>
         <dialog id="my_modal_1" class="modal">
@@ -116,8 +116,11 @@ layout: project
 
 
 <script>
-    const decodedToken = parseJwt(token);
+	
+	const token1 = getCookie("token");
+    const decodedToken = parseJwt(token1);
     const userEmail = decodedToken.sub;
+	document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
     function handleImageError() {
         imgElement = document.getElementById('profilePic');
 
@@ -290,6 +293,25 @@ layout: project
         .then(response => response.json())
         .then(data => {
             console.log(data);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if (data.status !== 401) {
                 showSuccessMessage("Data successful! Your data has been created.");
                 tickerInput.value = "";
@@ -317,7 +339,7 @@ layout: project
 
         fetch("http://localhost:8017/api/person/stats/" + userId, requestOptions)
         .then(response => {
-            if (!response.ok) {
+            if (!response.ok) { 
                 throw new Error('Network response was not ok');
             }
             return response.json();
@@ -371,7 +393,15 @@ layout: project
         fetch("http://localhost:8017/api/person/image/post", requestOptions)
         .then((response) => response.text())
         .then((result) => console.log(result))
+		.then((blob) => {
+			document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
+		}
+		
+		)
         .catch((error) => console.error(error));
+		
+
+		
     }
 
     // function getProfilePicture() {
@@ -395,6 +425,6 @@ layout: project
     document.addEventListener("DOMContentLoaded", function() {
         getStats();
         getName();
-        getProfilePicture();
+        // getProfilePicture();
     });
 </script>
