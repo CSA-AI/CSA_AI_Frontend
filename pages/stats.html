@@ -30,6 +30,9 @@ layout: project
 </div>
 
 <script>
+
+    // Monthly stock data from the alpha vantage API in RapidAPI
+
     const rapidApiKey = 'a96f7bb54emshee5a698b2344228p12bd6cjsnbb7e0177bdb6';
     const rapidApiHost = 'alpha-vantage.p.rapidapi.com';
 
@@ -56,6 +59,8 @@ layout: project
                 times.push(time);
                 closes.push(data['Monthly Time Series'][time]['4. close']);
             }
+            
+            //  Stocks Information:
 
             const latestTime = times[0];
             const latestData = data['Monthly Time Series'][latestTime];
@@ -74,6 +79,8 @@ layout: project
                 </ul>
             `;
 
+            // Graphing using APEXCharting
+            
             const lastRefreshed = new Date().toLocaleString();
             document.getElementById("lastRefreshed").innerHTML = `Last Refreshed: ${lastRefreshed}`;
 
