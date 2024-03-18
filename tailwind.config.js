@@ -8,9 +8,13 @@ module.exports = {
     './*.html',
   ],
   theme: {
-    extend: {},
-  },
-  variants: {},
+    extend: {
+      height: {
+         '365': '365px',
+        }
+      },
+    },
+    variants: {},
   plugins: [
     require('@tailwindcss/typography'),
     require("daisyui"),
