@@ -32,6 +32,8 @@ layout: project
    
 </div>
 
+<!-- The card on the left -->
+
 <div class="grid grid-cols-2 gap-4">
     <div class="card shadow-xl">
         <div class="card-body">
@@ -44,6 +46,8 @@ layout: project
         </div>
     </div>
 
+    <!-- The card on the right -->
+
     <div class="card shadow-xl flex justify-center items-center">
         <div class="card-body text-lg">
             <div id="stockInfo"></div>
@@ -52,6 +56,9 @@ layout: project
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- APIs and Websocket for the graph and stock information -->
+
 <script>
 
     // WebSocket URL
@@ -77,7 +84,7 @@ layout: project
     function updateStockData(symbol, price, volume) {
         // Update stock price above graph
         document.getElementById("stockPrice").innerHTML = `
-            <h2>Last Price: <span id="priceValue" class="text-3xl font-bold">${price}</span></h2>
+            <h2><b>Last Price: </b> <span id="priceValue" class="text-3xl font-bold">${price}</span></h2>
         `;
 
         // Update stock volume below graph
@@ -120,7 +127,7 @@ layout: project
             // Display stock info
             const changeColor = data.d > 0 ? 'green' : 'red';
             document.getElementById("stockInfo").innerHTML = `
-                <h2><b>Stock Information</b></h2>
+                <h2><b>Stock Information:</b></h2>
                 <ul>
                     <li><b>Symbol:</b> ${symbol}</li>
                     <li><b>Last Price:</b> ${data.c}</li>
@@ -243,4 +250,30 @@ layout: project
         chart.render();
     }
 </script>
+
+<!-- carousel slider with live updating data -->
+
+<div class="carousel rounded-box">
+    <div class="carousel-item">
+        <div id="CarouselMETA"></div>
+    </div> 
+    <div class="carousel-item">
+        <div id="CarouselMSFT"></div>
+    </div> 
+    <div class="carousel-item">
+        <div id="CarouselNVDA"></div>
+    </div> 
+    <div class="carousel-item">
+        <div id="CarouselGOOGL"></div>
+    </div> 
+    <div class="carousel-item">
+        <div id="CarouselAMZN"></div>
+    </div> 
+    <div class="carousel-item">
+        <div id="CarouselAVGO"></div>
+    </div> 
+    <div class="carousel-item">
+        <div id="CarouselMU"></div>
+    </div>
+  </div>
 
