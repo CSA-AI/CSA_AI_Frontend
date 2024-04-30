@@ -32,8 +32,6 @@ layout: project
    
 </div>
 
-<!-- The card on the left -->
-
 <div class="grid grid-cols-2 gap-4">
     <div class="card shadow-xl">
         <div class="card-body">
@@ -46,8 +44,6 @@ layout: project
         </div>
     </div>
 
-    <!-- The card on the right -->
-
     <div class="card shadow-xl flex justify-center items-center">
         <div class="card-body text-lg">
             <div id="stockInfo"></div>
@@ -56,9 +52,6 @@ layout: project
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-<!-- APIs and Websocket for the graph and stock information -->
-
 <script>
 
     // WebSocket URL
@@ -84,7 +77,7 @@ layout: project
     function updateStockData(symbol, price, volume) {
         // Update stock price above graph
         document.getElementById("stockPrice").innerHTML = `
-            <h2><b>Last Price: </b> <span id="priceValue" class="text-3xl font-bold">${price}</span></h2>
+            <h2>Last Price: <span id="priceValue" class="text-3xl font-bold">${price}</span></h2>
         `;
 
         // Update stock volume below graph
@@ -127,11 +120,11 @@ layout: project
             // Display stock info
             const changeColor = data.d > 0 ? 'green' : 'red';
             document.getElementById("stockInfo").innerHTML = `
-                <h2><b>Stock Information:</b></h2>
+                <h2><b>Stock Information</b></h2>
                 <ul>
                     <li><b>Symbol:</b> ${symbol}</li>
                     <li><b>Last Price:</b> ${data.c}</li>
-                    <li style="color: ${changeColor};"><b>Change:</b> ${data.d} (${data.dp}%)</li>
+                    <li style="color: ${changeColor};"><b>Change (Today):</b> ${data.d} (${data.dp}%)</li>
                     <li><b>High:</b> ${data.h}</li>
                     <li><b>Low:</b> ${data.l}</li>
                     <li><b>Open:</b> ${data.o}</li>
@@ -252,69 +245,43 @@ layout: project
         var chart = new ApexCharts(document.querySelector("#stockChart"), chartOptions);
         chart.render();
     }
-// Function to fetch additional stock information
-async function getAdditionalStockInfo() {
-    const symbol = document.getElementById("symbol").value;
 
-    try {
-        // Fetch additional stock information using the Finnhub API
-        const additionalInfo = await getAdditionalStockInformation(symbol);
-        
-        // Display the additional stock information
-        document.getElementById("stockInfo").innerHTML += `
-            <h2><b>Additional Information</b></h2>
-            <ul>
-                ${additionalInfo.map(info => `
-                    <li><b>Description:</b> ${info.description}</li>
-                    <li><b>Display Symbol:</b> ${info.displaySymbol}</li>
-                    <li><b>Type:</b> ${info.type}</li>
-                    <br>
-                `).join('')}
-            </ul>
-        `;
-    } catch (error) {
-        console.error(error);
+    // Function to fetch additional stock information
+    async function getAdditionalStockInfo() {
+        const symbol = document.getElementById("symbol").value;
+
+        try {
+            // Fetch additional stock information using the Finnhub API
+            const additionalInfo = await getAdditionalStockInformation(symbol);
+            
+            // Display the additional stock information
+            document.getElementById("stockInfo").innerHTML += `
+                <h2><b>Additional Information</b></h2>
+                <ul>
+                    ${additionalInfo.map(info => `
+                        <li><b>Description:</b> ${info.description}</li>
+                        <li><b>Display Symbol:</b> ${info.displaySymbol}</li>
+                        <li><b>Type:</b> ${info.type}</li>
+                        <br>
+                    `).join('')}
+                </ul>
+            `;
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
 
-// Function to fetch additional stock information from the Finnhub API
-function getAdditionalStockInformation(symbol) {
-    return new Promise((resolve, reject) => {
-        finnhubClient.symbolSearch(symbol, (error, data, response) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(data.result);
-            }
+    // Function to fetch additional stock information from the Finnhub API
+    function getAdditionalStockInformation(symbol) {
+        return new Promise((resolve, reject) => {
+            finnhubClient.symbolSearch(symbol, (error, data, response) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(data.result);
+                }
+            });
         });
-    });
-}
+    }
 
 </script>
-
-<!-- carousel slider with live updating data -->
-
-<div class="carousel rounded-box">
-    <div class="carousel-item">
-        <div id="CarouselMETA"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselMSFT"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselNVDA"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselGOOGL"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselAMZN"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselAVGO"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselMU"></div>
-    </div>
-  </div>
-
