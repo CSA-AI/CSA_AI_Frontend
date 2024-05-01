@@ -29,7 +29,7 @@ layout: project
         redirect: 'follow'
       };
       
-    fetch("https://csa-ai.stu.nighthawkcodingsociety.com/api/lstm" + ticker, requestOptions)
+    fetch("https://csa-ai.stu.nighthawkcodingsociety.com/api/lstm/" + ticker, requestOptions)
         .then(response => response.text())
         .then(data => {
             var img = document.createElement('img');
