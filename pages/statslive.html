@@ -125,6 +125,9 @@ layout: project
             const data = response.data;
 
             // Display stock info
+
+            // feature in testing:                 <button onclick="getAdditionalStockInfo()" class="btn">Get Additional Information</button>
+
             const changeColor = data.d > 0 ? 'green' : 'red';
             document.getElementById("stockInfo").innerHTML = `
                 <h2><b>Stock Information:</b></h2>
@@ -139,7 +142,6 @@ layout: project
                 </ul>
                 <p><br> 
                 </p>
-                <button onclick="getAdditionalStockInfo()" class="btn">Get Additional Information</button>
             `;
         } catch (error) {
             console.error(error);
@@ -294,7 +296,7 @@ function getAdditionalStockInformation(symbol) {
 
 <!-- carousel slider with live updating data -->
 
-<div class="carousel rounded-box">
+<!-- <div class="carousel rounded-box">
     <div class="carousel-item">
         <div id="CarouselMETA"></div>
     </div> 
@@ -317,4 +319,4 @@ function getAdditionalStockInformation(symbol) {
         <div id="CarouselMU"></div>
     </div>
   </div>
-
+ -->

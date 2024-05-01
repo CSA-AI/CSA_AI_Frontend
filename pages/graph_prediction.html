@@ -77,7 +77,7 @@ layout: project
       alphaCloses.reverse();
 
       // Fetch LSTM prediction data
-      const lstmResponse = await fetch(`http://localhost:8017/api/lstm/${symbol}`);
+      const lstmResponse = await fetch(`https://csa-ai.stu.nighthawkcodingsociety.com/api/lstm/${symbol}`);
       const lstmData = await lstmResponse.json();
 
       let lstmTimes = [];
