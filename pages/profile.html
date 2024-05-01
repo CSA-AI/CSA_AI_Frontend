@@ -120,14 +120,14 @@ layout: project
 	const token1 = getCookie("token");
     const decodedToken = parseJwt(token1);
     const userEmail = decodedToken.sub;
-	document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
+	document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://csa-ai.stu.nighthawkcodingsociety.com/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
     function handleImageError() {
         imgElement = document.getElementById('profilePic');
 
         imgElement.style.display = 'none'; 
         document.getElementById('pic').innerHTML = `<img id="profilePic" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPjKATmnhrK5tAwwubWT4StUWrCzms3kOx0eYfXtHqLg&s">`; // Display an error message
     }
-    var setURL = "http://localhost:8017/api/person/updateStocks"
+    var setURL = "http://csa-ai.stu.nighthawkcodingsociety.com/api/person/updateStocks"
 
     const fileInput = document.getElementById('file-input');
     const errorMessage = document.getElementById('errorMessage');
@@ -235,7 +235,7 @@ layout: project
         const userId = decodedToken.id;
         const profileEmailSpan = document.getElementById("profileEmail");
 
-        fetch("http://localhost:8017/api/person/" + userId, {
+        fetch("http://csa-ai.stu.nighthawkcodingsociety.com/api/person/" + userId, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -337,7 +337,7 @@ layout: project
             redirect: "follow"
         };
 
-        fetch("http://localhost:8017/api/person/stats/" + userId, requestOptions)
+        fetch("http://csa-ai.stu.nighthawkcodingsociety.com/api/person/stats/" + userId, requestOptions)
         .then(response => {
             if (!response.ok) { 
                 throw new Error('Network response was not ok');
@@ -390,11 +390,11 @@ layout: project
         redirect: "follow"
         };
 
-        fetch("http://localhost:8017/api/person/image/post", requestOptions)
+        fetch("http://csa-ai.stu.nighthawkcodingsociety.com/api/person/image/post", requestOptions)
         .then((response) => response.text())
         .then((result) => console.log(result))
 		.then((blob) => {
-			document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
+			document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://csa-ai.stu.nighthawkcodingsociety.com/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
 		}
 		
 		)
