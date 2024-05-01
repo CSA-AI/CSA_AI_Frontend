@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Keys Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .btn {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #004494;
+        }
+        .table-header {
+            background-color: #f3f4f6; /* Light gray background */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <div class="hero bg-blue-500 text-white p-5 text-center">
+        <h1 class="text-3xl">Stock Dashboard</h1>
+        <p>Explore stock data dynamically.</p>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-5">
+        <div class="overflow-hidden shadow-md bg-white rounded-lg">
+            <table id="stockTable" class="w-full text-sm text-left">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th class="table-header"><button class="btn" onclick="loadData('ticker')">Ticker</button></th>
+                        <th class="table-header"><button class="btn" onclick="loadData('growth')">Growth %</button></th>
+                        <th class="table-header"><button class="btn" onclick="loadData('open')">Open</button></th>
+                        <th class="table-header"><button class="btn" onclick="loadData('high')">High</button></th>
+                        <th class="table-header"><button class="btn" onclick="loadData('low')">Low</button></th>
+                        <th class="table-header"><button class="btn" onclick="loadData('volume')">Volume</button></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be added here based on server response -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function loadData(key) {
+            const tbody = document.getElementById('stockTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = ''; // Clear current rows
+
+            fetch(`http://localhost:8017/api/stockObject/${key}`)
+            .then(response => {
+                if (!response.ok) throw new Error(`Failed to fetch data: ${response.statusText}`);
+                return response.json();
+            })
+            .then(data => {
+                data.forEach(stock => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = stock.ticker;
+                    row.insertCell(1).textContent = stock.predictionsPercentGrowth.toFixed(2) + '%';
+                    row.insertCell(2).textContent = stock.open.toFixed(2);
+                    row.insertCell(3).textContent = stock.high.toFixed(2);
+                    row.insertCell(4).textContent = stock.low.toFixed(2);
+                    row.insertCell(5).textContent = stock.volume.toLocaleString();
+                });
+            })
+            .catch(error => {
+                console.error('Failed to fetch data:', error);
+                tbody.innerHTML = '<tr><td colspan="6">Error loading data. Please try again later.</td></tr>';
+            });
+        }
+    </script>
+</body>
+</html>
