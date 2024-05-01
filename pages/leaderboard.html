@@ -146,15 +146,7 @@ layout: project
 					</tr>
 				</thead>
 				<tbody id="items">
-					<!-- <tr>
-						<td>1</td>
-						<td>AAPL</td>
-						<td>Edinburgh</td>
-						<td>61</td>
-						<td>2011/04/25</td>
-						<td>$320,800</td>
-                        <td>adas123</td>
-					</tr> -->
+					<tr></tr>
 
 					
 				
@@ -195,27 +187,30 @@ layout: project
             // Replace the URL with the actual URL
             //http://localhost:8085/api/skatepark/
             //https://y2kcoders.stu.nighthawkcodingsociety.com/api/skatepark/
-        const apiUrl = 'https://csa-ai.stu.nighthawkcodingsociety.com/api/stockObject/ticker';
+        const apiUrl = 'http://localhost:8017/api/stockObject/ticker';
 
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
-                    data.forEach(skatepark => {
+                    data.forEach(stocks => {
                         // Create a new div card for each skatepark
                         // Creating individual skatepark cards, which encapsulate the information for each skatepark.
                         // const car = document.createElement("div");
                         // car.className = "car";
                         // car.dataset.skateparkName = skatepark.skateparkName; // Add data attribute
-						a =  skatepark.predictionsPercentGrowth.toFixed(2);
+						a =  stocks.predictionsPercentGrowth.toFixed(2);
+						open = stocks.open.toFixed(2);
+						high = stocks.high.toFixed(2);
+						low = stocks.low.toFixed(2);
                         containers.innerHTML += `
 								<tr>
 									<td>1</td>
-									<td>${skatepark.ticker}</td>
-									<td>$800.00</td>
+									<td>${stocks.ticker}</td>
+									<td>${stocks.volume}</td>
 									<td>${a}</td>
-									<td>${skatepark.open}</td>
-									<td>${skatepark.high}</td>
-									<td>${skatepark.low}</td>
+									<td>${open}</td>
+									<td>${high}</td>
+									<td>${low}</td>
 								</tr>
                             
                         `;
