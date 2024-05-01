@@ -32,8 +32,6 @@ layout: project
    
 </div>
 
-<!-- The card on the left -->
-
 <div class="grid grid-cols-2 gap-4">
     <div class="card shadow-xl">
         <div class="card-body">
@@ -46,8 +44,6 @@ layout: project
         </div>
     </div>
 
-    <!-- The card on the right -->
-
     <div class="card shadow-xl flex justify-center items-center">
         <div class="card-body text-lg">
             <div id="stockInfo"></div>
@@ -56,9 +52,6 @@ layout: project
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-<!-- APIs and Websocket for the graph and stock information -->
-
 <script>
 
     // WebSocket URL
@@ -84,7 +77,7 @@ layout: project
     function updateStockData(symbol, price, volume) {
         // Update stock price above graph
         document.getElementById("stockPrice").innerHTML = `
-            <h2><b>Last Price: </b> <span id="priceValue" class="text-3xl font-bold">${price}</span></h2>
+            <h2>Last Price: <span id="priceValue" class="text-3xl font-bold">${price}</span></h2>
         `;
 
         // Update stock volume below graph
@@ -127,7 +120,7 @@ layout: project
             // Display stock info
             const changeColor = data.d > 0 ? 'green' : 'red';
             document.getElementById("stockInfo").innerHTML = `
-                <h2><b>Stock Information:</b></h2>
+                <h2><b>Stock Information</b></h2>
                 <ul>
                     <li><b>Symbol:</b> ${symbol}</li>
                     <li><b>Last Price:</b> ${data.c}</li>
@@ -154,9 +147,9 @@ layout: project
 
     // Function to fetch monthly stock data from Alpha Vantage API and render chart
     async function fetchMonthlyStockData(symbol) {
-        const rapidApiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
+        const rapidApiKey = 'a96f7bb54emshee5a698b2344228p12bd6cjsnbb7e0177bdb6';
         const rapidApiHost = 'alpha-vantage.p.rapidapi.com';
-        const url = `https://${rapidApiHost}/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${symbol}&datatype=json&output_size=compact`;
+        const url = `https://${rapidApiHost}/query?function=TIME_SERIES_MONTHLY&symbol=${symbol}&datatype=json&output_size=compact`;
 
         const requestOptions = {
             method: 'GET',
@@ -171,9 +164,9 @@ layout: project
             const data = await response.json();
 
             // Process stock data for chart
-            let seriesData = Object.keys(data['Monthly Adjusted Time Series']).map(key => ({
+            let seriesData = Object.keys(data['Monthly Time Series']).map(key => ({
                 x: new Date(key),
-                y: parseFloat(data['Monthly Adjusted Time Series'][key]['5. adjusted close'])
+                y: parseFloat(data['Monthly Time Series'][key]['4. close'])
             }));
 
             // Render chart using ApexCharts
@@ -252,69 +245,43 @@ layout: project
         var chart = new ApexCharts(document.querySelector("#stockChart"), chartOptions);
         chart.render();
     }
-// Function to fetch additional stock information
-async function getAdditionalStockInfo() {
-    const symbol = document.getElementById("symbol").value;
 
-    try {
-        // Fetch additional stock information using the Finnhub API
-        const additionalInfo = await getAdditionalStockInformation(symbol);
-        
-        // Display the additional stock information
-        document.getElementById("stockInfo").innerHTML += `
-            <h2><b>Additional Information</b></h2>
-            <ul>
-                ${additionalInfo.map(info => `
-                    <li><b>Description:</b> ${info.description}</li>
-                    <li><b>Display Symbol:</b> ${info.displaySymbol}</li>
-                    <li><b>Type:</b> ${info.type}</li>
-                    <br>
-                `).join('')}
-            </ul>
-        `;
-    } catch (error) {
-        console.error(error);
+    // Function to fetch additional stock information
+    async function getAdditionalStockInfo() {
+        const symbol = document.getElementById("symbol").value;
+
+        try {
+            // Fetch additional stock information using the Finnhub API
+            const additionalInfo = await getAdditionalStockInformation(symbol);
+            
+            // Display the additional stock information
+            document.getElementById("stockInfo").innerHTML += `
+                <h2><b>Additional Information</b></h2>
+                <ul>
+                    ${additionalInfo.map(info => `
+                        <li><b>Description:</b> ${info.description}</li>
+                        <li><b>Display Symbol:</b> ${info.displaySymbol}</li>
+                        <li><b>Type:</b> ${info.type}</li>
+                        <br>
+                    `).join('')}
+                </ul>
+            `;
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
 
-// Function to fetch additional stock information from the Finnhub API
-function getAdditionalStockInformation(symbol) {
-    return new Promise((resolve, reject) => {
-        finnhubClient.symbolSearch(symbol, (error, data, response) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(data.result);
-            }
+    // Function to fetch additional stock information from the Finnhub API
+    function getAdditionalStockInformation(symbol) {
+        return new Promise((resolve, reject) => {
+            finnhubClient.symbolSearch(symbol, (error, data, response) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(data.result);
+                }
+            });
         });
-    });
-}
+    }
 
 </script>
-
-<!-- carousel slider with live updating data -->
-
-<div class="carousel rounded-box">
-    <div class="carousel-item">
-        <div id="CarouselMETA"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselMSFT"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselNVDA"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselGOOGL"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselAMZN"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselAVGO"></div>
-    </div> 
-    <div class="carousel-item">
-        <div id="CarouselMU"></div>
-    </div>
-  </div>
-
