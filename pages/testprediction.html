@@ -38,27 +38,22 @@ layout: project
 </div>
 
 <script>
-  let apexChart = null; // Declare apexChart variable outside the function
-  const rapidApiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
-  const rapidApiHost = 'alpha-vantage.p.rapidapi.com';
-
   async function getStockData() {
-    try {
-      // Clear existing chart if it exists
-      if (apexChart !== null) {
-        apexChart.destroy();
+    const rapidApiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
+    const rapidApiHost = 'alpha-vantage.p.rapidapi.com';
+
+    const symbol = document.getElementById("ticker").value;
+    const url = `https://${rapidApiHost}/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${symbol}&datatype=json&output_size=compact`;
+
+    const options = {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': rapidApiKey,
+        'X-RapidAPI-Host': rapidApiHost
       }
+    };
 
-      const symbol = document.getElementById("ticker").value;
-      const url = `https://${rapidApiHost}/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${symbol}&datatype=json&output_size=compact`;
-      const options = {
-        method: 'GET',
-        headers: {
-          'X-RapidAPI-Key': rapidApiKey,
-          'X-RapidAPI-Host': rapidApiHost
-        }
-      };
-
+    try {
       // Fetch Alpha Vantage data
       const response = await fetch(url, options);
       const alphaData = await response.json();
@@ -68,7 +63,7 @@ layout: project
 
       // The API response structure for monthly data is different so adjusting it
       for (let time in alphaData['Monthly Adjusted Time Series']) {
-        alphaTimes.push(new Date(time).getTime());
+        alphaTimes.push(new Date(time).getTime()); 
         alphaCloses.push(parseFloat(alphaData['Monthly Adjusted Time Series'][time]['5. adjusted close']));
       }
 
@@ -80,18 +75,18 @@ layout: project
       const lstmResponse = await fetch(`http://localhost:8017/api/lstm/${symbol}`);
       const lstmData = await lstmResponse.json();
 
-      let lstmTimes = [];
-      let lstmCloses = [];
+      let lstmTimes = []; 
+      let lstmCloses = []; 
 
       // Extract predicted values from LSTM data
       lstmData.forEach(entry => {
-        const [index, dateString, prediction] = entry.split(',');
-        const date = new Date(dateString); // Convert date string to JavaScript Date object
-        lstmTimes.push(date.getTime());
-        lstmCloses.push(parseFloat(prediction)); // Use predicted value
+          const [index, dateString, prediction] = entry.split(',');
+          const date = new Date(dateString); // Convert date string to JavaScript Date object
+          lstmTimes.push(date.getTime()); 
+          lstmCloses.push(parseFloat(prediction)); // Use predicted value
       });
 
-      // ApexCharts options
+      // ApexCharts
       var apexOptions = {
         series: [{
           name: 'Alpha Vantage',
@@ -114,7 +109,7 @@ layout: project
           curve: 'smooth'
         },
         markers: {
-          size: 4
+          size: 4 
         },
         xaxis: {
           type: 'datetime',
@@ -124,17 +119,15 @@ layout: project
           x: {
             format: 'dd/MM/yy HH:mm'
           },
-          formatter: function (value, { seriesIndex, dataPointIndex, w }) {
-            if (seriesIndex === 0) {
-              return `Alpha Vantage: $${w.globals.series[0][dataPointIndex].toFixed(2)}`;
-            } else {
-              return `LSTM Prediction: $${w.globals.series[1][dataPointIndex].toFixed(2)}`;
-            }
+          custom: function({ series, seriesIndex, dataPointIndex, w }) {
+            const alphaClose = w.globals.series[0][dataPointIndex];
+            const lstmClose = w.globals.series[1][dataPointIndex];
+            return `<div>Alpha Vantage: $${alphaClose.toFixed(2)}</div><div>LSTM Prediction: $${lstmClose.toFixed(2)}</div>`;
           }
         },
       };
 
-      apexChart = new ApexCharts(document.querySelector("#chart"), apexOptions);
+      var apexChart = new ApexCharts(document.querySelector("#chart"), apexOptions);
       apexChart.render();
 
     } catch (error) {
@@ -142,3 +135,4 @@ layout: project
     }
   }
 </script>
+

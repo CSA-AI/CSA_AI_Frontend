@@ -154,9 +154,9 @@ layout: project
 
     // Function to fetch monthly stock data from Alpha Vantage API and render chart
     async function fetchMonthlyStockData(symbol) {
-        const rapidApiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
+        const rapidApiKey = 'a96f7bb54emshee5a698b2344228p12bd6cjsnbb7e0177bdb6';
         const rapidApiHost = 'alpha-vantage.p.rapidapi.com';
-        const url = `https://${rapidApiHost}/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${symbol}&datatype=json&output_size=compact`;
+        const url = `https://${rapidApiHost}/query?function=TIME_SERIES_MONTHLY&symbol=${symbol}&datatype=json&output_size=compact`;
 
         const requestOptions = {
             method: 'GET',
@@ -171,9 +171,9 @@ layout: project
             const data = await response.json();
 
             // Process stock data for chart
-            let seriesData = Object.keys(data['Monthly Adjusted Time Series']).map(key => ({
+            let seriesData = Object.keys(data['Monthly Time Series']).map(key => ({
                 x: new Date(key),
-                y: parseFloat(data['Monthly Adjusted Time Series'][key]['5. adjusted close'])
+                y: parseFloat(data['Monthly Time Series'][key]['4. close'])
             }));
 
             // Render chart using ApexCharts
