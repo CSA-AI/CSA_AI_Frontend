@@ -67,7 +67,7 @@ public class Perceptron {
     }
 
     public static void main(String[] args) {
-        double[][] X_train = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+        double[][] X_train = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
         int[] y_train = {0, 0, 0, 1};
 
         Perceptron perceptron = new Perceptron(2, 0.1);
@@ -75,7 +75,7 @@ public class Perceptron {
 
         // Test the trained perceptron
         System.out.println("Testing predictions:");
-        double[][] X_test = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+        double[][] X_test = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
         for (double[] inputs : X_test) {
             int prediction = perceptron.predict(inputs);
             System.out.println("Inputs: " + Arrays.toString(inputs) + " Predicted: " + prediction);
