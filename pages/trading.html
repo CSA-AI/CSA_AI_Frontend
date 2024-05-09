@@ -1,0 +1,165 @@
+---
+layout: project
+---
+<style>
+    .top-100 {top: 100%}
+    .bottom-100 {bottom: 100%}
+    .max-h-select {
+        max-height: 300px;
+    }
+</style>
+<div class="flex flex-col items-center">
+    <div class="w-full md:w-1/2 flex flex-col items-center h-64">
+        <div class="w-full px-4">
+            <div class="flex flex-col items-center relative">
+                <div class="w-full">
+                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
+                        <div class="flex flex-auto flex-wrap"></div>
+                        <input placeholder="Look up Symbol/Company name" list = "stocks" class="p-1 px-2 appearance-none outline-none w-full text-gray-800">
+                    </div>
+                </div>
+                    <div class="absolute shadow bg-white top-100 z-40 w-full lef-0 rounded max-h-select overflow-y-auto svelte-5uyqqj">
+                    <div class="flex flex-col w-full">
+                        <div class="cursor-pointer w-full border-gray-100 rounded-t border-b hover:bg-teal-100">
+                            <div class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-teal-100">
+                                <div class="w-6 flex flex-col items-center">
+                                    <div class="flex relative w-5 h-5 bg-orange-500 justify-center items-center m-1 mr-2 w-4 h-4 mt-1 rounded-full "><img class="rounded-full" alt="A" src="https://s3-symbol-logo.tradingview.com/apple--big.svg"> </div>
+                                </div>
+                                <div class="w-full items-center flex">
+                                    <div class="mx-2 -mt-1  ">AAPL
+                                        <div class="text-xs truncate w-full normal-case font-normal -mt-1 text-gray-500">APPLE INC</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cursor-pointer w-full border-gray-100 border-b hover:bg-teal-100">
+                            <option class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-teal-100">
+                                <div class="w-6 flex flex-col items-center">
+                                    <div class="flex relative w-5 h-5 bg-orange-500 justify-center items-center m-1 mr-2 w-4 h-4 mt-1 rounded-full "><img class="rounded-full" alt="A" src="https://s3-symbol-logo.tradingview.com/alphabet--big.svg"> </div>
+                                </div>
+                                <div class="w-full items-center flex">
+                                    <div class="mx-2 -mt-1  ">GOOGL
+                                        <div class="text-xs truncate w-full normal-case font-normal -mt-1 text-gray-500">ALPHABET INC (GOOGLE) CLASS A</div>
+                                    </div>
+                                </div>
+                            </option>
+                        </div>
+                       
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+	// see how to use at the end of the script
+	const domParser = new DOMParser();
+	const dataList = {
+        el:document.querySelector('.data-list'),
+        listEl:document.querySelector('.option-list'),
+        arrow:document.querySelector(".searchable-list>svg"),
+        currentValue:null,
+        listOpened :false,
+        optionTemplate:
+        `
+        <li
+			class='data-option select-none break-words inline-block text-sm text-gray-500 bg-gray-100 odd:bg-gray-200 hover:bg-gray-300 hover:text-gray-700 transition-all duration-200 font-bold p-3 cursor-pointer max-w-full '>
+				[[REPLACEMENT]]
+        </li>
+        `,
+        optionElements:[],
+        options:[], 
+        find(str){
+            for(let i = 0;i<dataList.options.length;i++){
+                const option = dataList.options[i];
+                if(!option.toLowerCase().includes(str.toLowerCase())){
+                    dataList.optionElements[i].classList.remove('block');
+                    dataList.optionElements[i].classList.add('hidden');
+                }else{
+                    dataList.optionElements[i].classList.remove('hidden');
+                    dataList.optionElements[i].classList.add('block');
+                }
+            }
+        },  
+        remove(value){
+            const foundIndex = dataList.options.findIndex(v=>v===value);
+            if(foundIndex!==-1){
+                dataList.listEl.removeChild(dataList.optionElements[foundIndex])
+                dataList.optionElements.splice(foundIndex,1);
+                dataList.options.splice(value,1);
+            }
+        },
+        append(value){    
+            if(!value || typeof value === 'object' || typeof value === 'symbol' || typeof value ==='function') return;
+            value = value.toString().trim();
+            if(value.length === 0) return; 
+            if(dataList.options.includes(value)) return;
+
+            const html = dataList.optionTemplate.replace('[[REPLACEMENT]]',value);
+            const targetEle = domParser.parseFromString(html, "text/html").querySelector('li');
+            targetEle.innerHTML = targetEle.innerHTML.trim();
+            dataList.listEl.appendChild(targetEle);
+            dataList.optionElements.push(targetEle);  
+            dataList.options.push(value);
+
+            if(!dataList.currentValue) dataList.setValue(value);
+  
+            targetEle.onmousedown = (e)=>{
+                dataList.optionElements.forEach((el,index)=>{
+                    if(e.target===el){
+                        dataList.setValue(dataList.options[index]);
+                        dataList.hideList();
+                        return;
+                    }
+                })
+            }
+        },  
+        setValue(value){
+            dataList.el.value = value;
+            dataList.currentValue = value;
+        },
+        showList(){
+            dataList.listOpened = true;
+            dataList.listEl.classList.add('opacity-100');
+            dataList.listEl.classList.add('scale-100');
+            dataList.arrow.classList.add("rotate-0");
+        },
+        hideList(){
+            dataList.listOpened = false;
+            dataList.listEl.classList.remove('opacity-100');
+            dataList.listEl.classList.remove('scale-100');
+            dataList.arrow.classList.remove("rotate-0");
+        },
+        init(){ 
+            dataList.arrow.onclick = ()=>{
+                dataList.listOpened ? dataList.hideList(): dataList.showList();
+            } 
+            dataList.el.oninput = (e)=>{
+                dataList.find(e.target.value);
+            }
+            dataList.el.onclick = (el)=>{
+                dataList.showList();
+                for(let el of dataList.optionElements){
+                    el.classList.remove('hidden');
+                }
+            }
+            dataList.el.onblur = (e)=>{
+                dataList.hideList();
+                dataList.setValue(dataList.currentValue);
+            }
+        }
+    }
+    
+    // how to use
+    dataList.init(); 
+    // add items
+    const data = ["Apple","Apple","Pear","Avocado","Pineapple","Banana","Peach","Oraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaange"," ","",null,undefined,[],{},{a:1}];
+    data.forEach(v=>(dataList.append(v))); 
+
+    // remove item
+    // dataList.remove("Peach");
+
+    // get selected value
+    // dataList.currentvalue;
+</script>
