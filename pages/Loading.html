@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <style>
+        .change-image {
+            width: 400px; /* Set the width and height of the image element */
+            height: 600px;
+            background-size: 400px 600px;
+            background-image: url('https://github.com/CSA-AI/CSA_AI_Frontend/assets/111465147/54702dab-5692-4888-84e4-c204d6c8ddc7');
+            animation-name: after;
+            animation-duration: 2s;
+            animation-iteration-count: infinite; 
+        }
+
+        @keyframes after {
+            0% { 
+                background-image: url('https://github.com/CSA-AI/CSA_AI_Frontend/assets/111465147/54702dab-5692-4888-84e4-c204d6c8ddc7');
+            }
+            16.67% { 
+                background-image: url('https://github.com/CSA-AI/CSA_AI_Frontend/assets/111465147/96dd1dcb-f6cb-4b2d-b4a7-b02a10c3b666');
+            }
+            33.33% { 
+                background-image: url('https://github.com/CSA-AI/CSA_AI_Frontend/assets/111465147/f45071d2-f9df-42b4-a549-1ed892a29be7');
+            }
+            50% { 
+                background-image: url('https://github.com/CSA-AI/CSA_AI_Frontend/assets/111465147/582d6922-c1a8-4209-ae28-accadbe0f3ab');
+            }
+            66.67% { 
+                background-image: url('https://github.com/CSA-AI/CSA_AI_Frontend/assets/111465147/99c47b92-060c-4569-a857-65a73e2c7342');
+            }
+            83.33% {
+                background-image: url('https://github.com/CSA-AI/CSA_AI_Frontend/assets/111465147/223ff89b-428f-4c18-8afd-d9c5de007909');
+            }
+            100% {
+                background-image: url('https://github.com/CSA-AI/CSA_AI_Frontend/assets/111465147/54702dab-5692-4888-84e4-c204d6c8ddc7');
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="change-image"></div>
+</body>
+</html>
