@@ -125,9 +125,6 @@ layout: project
             const data = response.data;
 
             // Display stock info
-
-            // feature in testing:                 <button onclick="getAdditionalStockInfo()" class="btn">Get Additional Information</button>
-
             const changeColor = data.d > 0 ? 'green' : 'red';
             document.getElementById("stockInfo").innerHTML = `
                 <h2><b>Stock Information:</b></h2>
@@ -143,22 +140,19 @@ layout: project
                 <p><br> 
                 </p>
             `;
+
+            // Fetch monthly stock data from Alpha Vantage API and render chart
+            await fetchMonthlyStockData(symbol);
         } catch (error) {
             console.error(error);
         }
-
-        // Subscribe to symbol for real-time updates
-        subscribe(symbol);
-
-        // Fetch monthly stock data from Alpha Vantage API and render chart
-        fetchMonthlyStockData(symbol);
     }
 
     // Function to fetch monthly stock data from Alpha Vantage API and render chart
     async function fetchMonthlyStockData(symbol) {
         const rapidApiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
         const rapidApiHost = 'alpha-vantage.p.rapidapi.com';
-        const url = `https://${rapidApiHost}/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${symbol}&datatype=json&output_size=compact`;
+        const url = `https://${rapidApiHost}/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&datatype=json&output_size=full`;
 
         const requestOptions = {
             method: 'GET',
@@ -169,13 +163,13 @@ layout: project
         };
 
         try {
-            const response = await fetch(url, requestOptions);
-            const data = await response.json();
+            const response = await axios.get(url, requestOptions);
+            const data = response.data;
 
             // Process stock data for chart
-            let seriesData = Object.keys(data['Monthly Adjusted Time Series']).map(key => ({
+            let seriesData = Object.keys(data['Time Series (Daily)']).map(key => ({
                 x: new Date(key),
-                y: parseFloat(data['Monthly Adjusted Time Series'][key]['5. adjusted close'])
+                y: parseFloat(data['Time Series (Daily)'][key]['5. adjusted close'])
             }));
 
             // Render chart using ApexCharts
@@ -189,7 +183,7 @@ layout: project
     function renderStockChart(seriesData) {
         var chartOptions = {
             series: [{
-                name: 'Monthly Closed Stock Market Data',
+                name: 'Time Series (Daily)',
                 data: seriesData
             }],
             chart: {
@@ -254,43 +248,6 @@ layout: project
         var chart = new ApexCharts(document.querySelector("#stockChart"), chartOptions);
         chart.render();
     }
-// Function to fetch additional stock information
-async function getAdditionalStockInfo() {
-    const symbol = document.getElementById("symbol").value;
-
-    try {
-        // Fetch additional stock information using the Finnhub API
-        const additionalInfo = await getAdditionalStockInformation(symbol);
-        
-        // Display the additional stock information
-        document.getElementById("stockInfo").innerHTML += `
-            <h2><b>Additional Information</b></h2>
-            <ul>
-                ${additionalInfo.map(info => `
-                    <li><b>Description:</b> ${info.description}</li>
-                    <li><b>Display Symbol:</b> ${info.displaySymbol}</li>
-                    <li><b>Type:</b> ${info.type}</li>
-                    <br>
-                `).join('')}
-            </ul>
-        `;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-// Function to fetch additional stock information from the Finnhub API
-function getAdditionalStockInformation(symbol) {
-    return new Promise((resolve, reject) => {
-        finnhubClient.symbolSearch(symbol, (error, data, response) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(data.result);
-            }
-        });
-    });
-}
 
 </script>
 
