@@ -7,7 +7,7 @@ layout: project
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Sorts</title>
+    <title>Stock Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .btn {
@@ -29,8 +29,7 @@ layout: project
 </head>
 <body class="bg-gray-100 text-gray-800">
     <div class="hero bg-blue-500 text-white p-5 text-center">
-        <h1 class="text-3xl">Stock Dashboard</h1>
-        <p>Explore stock data dynamically.</p>
+        <h1 id="pageTitle" class="text-3xl">Stock Dashboard</h1>
     </div>
 
     <div class="max-w-6xl mx-auto px-4 py-5">
@@ -54,11 +53,24 @@ layout: project
     </div>
 
     <script>
+        const originalTitle = document.getElementById('pageTitle').textContent; // Store the original title
+
         function loadData(key) {
             const tbody = document.getElementById('stockTable').getElementsByTagName('tbody')[0];
             tbody.innerHTML = ''; // Clear current rows
 
-            fetch(`https://csa-ai.stu.nighthawkcodingsociety.com/api/stockObject/${key}`)
+            // Change the page title based on the button clicked
+            const keyToTitle = {
+                ticker: "Ticker",
+                growth: "Growth %",
+                open: "Open",
+                high: "High",
+                low: "Low",
+                volume: "Volume"
+            };
+            document.getElementById('pageTitle').textContent = keyToTitle[key];
+
+            fetch(`http://localhost:8017/api/stockObject/${key}`)
             .then(response => {
                 if (!response.ok) throw new Error(`Failed to fetch data: ${response.statusText}`);
                 return response.json();
@@ -79,6 +91,11 @@ layout: project
                 tbody.innerHTML = '<tr><td colspan="6">Error loading data. Please try again later.</td></tr>';
             });
         }
+
+        // Reset title on page reload
+        window.addEventListener('load', () => {
+            document.getElementById('pageTitle').textContent = originalTitle;
+        });
     </script>
 </body>
 </html>
