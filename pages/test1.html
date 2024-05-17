@@ -11,7 +11,7 @@ layout: project
 </style>
 <div class="max-w-4xl mx-auto bg-gray-100 p-8 rounded-lg shadow-lg">
     <div class="flex flex-col ">
-        <div class="w-full flex flex-col items-center">
+        <div class="w-full md:w-1/2  flex flex-col items-center">
             <div class="w-full px-4">
                 <div class="flex flex-col items-center relative">
                     <div class="w-full">
@@ -63,6 +63,7 @@ layout: project
     </div>
     <div class="flex ">
         <button
+        id="myBtn"
           type="button"
           class="inline-block rounded bg-primary my-6 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-100 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
           style="width: 150px;">
@@ -77,12 +78,48 @@ layout: project
       </div>
       
 </div>
+<div id="myModal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50">
 
+    <!-- Modal content -->
+    <div class="bg-white rounded-lg overflow-hidden shadow-lg p-6 w-4/5 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5">
+      <span class="close text-gray-500 hover:text-black float-right text-2xl font-bold cursor-pointer">&times;</span>
+      <p>Some text in the Modal..</p>
+    </div>
+  
+  </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
+     var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function() {
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
     const domParser = new DOMParser();
     const dataList = {
         el: document.querySelector('.data-list'),
@@ -205,8 +242,7 @@ layout: project
             
         }
     }
-    
-
+   
     dataList.init(); 
  
     const data = [["AAPL", "Apple Inc", "https://s3-symbol-logo.tradingview.com/apple--big.svg"], ["AMZN", "Amazon.com Inc", "https://s3-symbol-logo.tradingview.com/amazon--big.svg"],
