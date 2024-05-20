@@ -1,6 +1,7 @@
 ---
-layout: project
+layout: profile
 ---
+
 <style>
     .top-100 {top: 100%}
     .bottom-100 {bottom: 100%}
@@ -8,112 +9,200 @@ layout: project
         max-height: 300px;
     }
 </style>
-<div class="flex flex-col items-center">
-    <div class="w-full md:w-1/2 flex flex-col items-center h-64">
-        <div class="w-full px-4">
-            <div class="flex flex-col items-center relative">
-                <div class="w-full">
-                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                        <div class="flex flex-auto flex-wrap"></div>
-                        <input placeholder="Look up Symbol/Company name" list = "stocks" class="p-1 px-2 appearance-none outline-none w-full text-gray-800">
+<div class="max-w-4xl mx-auto bg-gray-100 p-8 rounded-lg shadow-lg">
+    <div class="flex flex-col ">
+        <div class="w-full md:w-1/2  flex flex-col items-center">
+            <div class="w-full px-4">
+                <div class="flex flex-col items-center relative">
+                    <div class="w-full">
+                        <div class="searchable-list my-2 p-1 bg-white flex border border-gray-200 rounded">
+                            <div class="flex flex-auto flex-wrap"></div>
+                            <input placeholder="Look up Symbol/Company name" id="symbol" class="data-list p-1 px-2 appearance-none outline-none w-full text-gray-800">
+                            <svg onclick="getStockData()" class="outline-none cursor-pointer mt-4 transition-all duration-200 h-full w-5  right-2 top-[50%] -translate-y-[50%]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"></path></svg>
+                        </div>
+                        <ul class='w-full bg-white absolute option-list overflow-y-scroll max-h-64 min-h-[0px] flex flex-col top-12 left-0  scale-0 opacity-0 transition-all duration-200 origin-top-left'></ul>
                     </div>
                 </div>
-                    <div class="absolute shadow bg-white top-100 z-40 w-full lef-0 rounded max-h-select overflow-y-auto svelte-5uyqqj">
-                    <div class="flex flex-col w-full">
-                        <div class="cursor-pointer w-full border-gray-100 rounded-t border-b hover:bg-teal-100">
+            </div>
+        </div>
+    </div>
+    <div class="w-full flex flex-row">
+        <div class="flex flex-col">
+            <div id="stockPrice"></div>
+            <div class="font-bold" id="stockVolume"></div>
+            <div id="lastRefreshed"></div>
+            <div class="card-body text-lg">
+                <div class="text-2xl mx-2" id="stockInfo"></div>
+            </div>
+        </div>
+        <div class="w-[600px]" id="stockChart"></div> <!-- Adjust the width here -->
+    </div>
+    <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+        </svg>
+        <span class="sr-only">Info</span>
+        <div>
+          <span class="font-medium">Danger alert!</span> Missing items
+        </div>
+      </div>
+      <div class="w-full flex flex-row">
+        <form class="w-full max-w-sm">
+            <label for="actions" class="block mb-2 text-sm font-medium text-gray-900">Action</label>
+            <select id="actions" class="bg-white shadow-lg border border-gray-700 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                <option selected class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Buy</option>
+                <option class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Sell</option>
+            </select>
+        </form>
+        <div class="w-full max-w-sm ml-8"> <!-- Added margin-left for spacing -->
+            <div>
+                <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">Quantity</label>
+                <input type="text" id="first_name" class="bg-gray-50 border border-gray-700 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="0" required />
+            </div>
+        </div>
+    </div>
+    <div class="flex ">
+        <button
+        id="myBtn"
+          type="button"
+          class="inline-block rounded bg-primary my-6 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-100 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
+          style="width: 150px;">
+          Preview Order
+        </button>
+        <button
+          type="button"
+          class="inline-block rounded border-2 border-info my-6 mx-10 px-6 pb-[6px] pt-2 text-xs font-medium uppercase leading-normal text-info transition duration-150 ease-in-out hover:border-info-600 hover:bg-info-50/50 hover:text-info-600 focus:border-info-600 focus:bg-info-50/50 focus:text-info-600 focus:outline-none focus:ring-0 active:border-info-700 active:text-info-700 motion-reduce:transition-none dark:hover:bg-cyan-100"
+          style="width: 150px;">
+          Clear
+        </button>
+      </div>
+      
+</div>
+<div id="myModal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50">
+
+    <!-- Modal content -->
+    <div class="bg-white rounded-lg overflow-hidden shadow-lg p-6 w-4/5 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5">
+      <span class="close text-gray-500 hover:text-black float-right text-2xl font-bold cursor-pointer">&times;</span>
+      <p>Some text in the Modal..</p>
+    </div>
+  
+  </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+     var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function() {
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+    const domParser = new DOMParser();
+    const dataList = {
+        el: document.querySelector('.data-list'),
+        listEl: document.querySelector('.option-list'),
+        arrow: document.querySelector(".searchable-list>svg"),
+        currentValue: null,
+        listOpened: false,
+        optionTemplate:
+        `
+        <li class = "data-option select-none break-words">
+            <div class="bg-white cursor-pointer w-full border-gray-100 rounded-t border-b hover:bg-teal-100">
                             <div class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-teal-100">
                                 <div class="w-6 flex flex-col items-center">
-                                    <div class="flex relative w-5 h-5 bg-orange-500 justify-center items-center m-1 mr-2 w-4 h-4 mt-1 rounded-full "><img class="rounded-full" alt="A" src="https://s3-symbol-logo.tradingview.com/apple--big.svg"> </div>
+                                    <div class="flex relative w-5 bg-orange-500 justify-center items-center m-1 mr-2 w-4 mt-1 rounded-full "><img class="rounded-full" alt="A" src= [[REPLACEMENT1]]> </div>
                                 </div>
                                 <div class="w-full items-center flex">
-                                    <div class="mx-2 -mt-1  ">AAPL
-                                        <div class="text-xs truncate w-full normal-case font-normal -mt-1 text-gray-500">APPLE INC</div>
+                                    <div class="mx-2 -mt-1  "> [[REPLACEMENT]]
+                                        <div class="text-xs truncate w-full normal-case font-normal -mt-1 text-gray-500"> [[REPLACEMENT2]] </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="cursor-pointer w-full border-gray-100 border-b hover:bg-teal-100">
-                            <option class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-teal-100">
-                                <div class="w-6 flex flex-col items-center">
-                                    <div class="flex relative w-5 h-5 bg-orange-500 justify-center items-center m-1 mr-2 w-4 h-4 mt-1 rounded-full "><img class="rounded-full" alt="A" src="https://s3-symbol-logo.tradingview.com/alphabet--big.svg"> </div>
-                                </div>
-                                <div class="w-full items-center flex">
-                                    <div class="mx-2 -mt-1  ">GOOGL
-                                        <div class="text-xs truncate w-full normal-case font-normal -mt-1 text-gray-500">ALPHABET INC (GOOGLE) CLASS A</div>
-                                    </div>
-                                </div>
-                            </option>
-                        </div>
-                       
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-	// see how to use at the end of the script
-	const domParser = new DOMParser();
-	const dataList = {
-        el:document.querySelector('.data-list'),
-        listEl:document.querySelector('.option-list'),
-        arrow:document.querySelector(".searchable-list>svg"),
-        currentValue:null,
-        listOpened :false,
-        optionTemplate:
-        `
-        <li
-			class='data-option select-none break-words inline-block text-sm text-gray-500 bg-gray-100 odd:bg-gray-200 hover:bg-gray-300 hover:text-gray-700 transition-all duration-200 font-bold p-3 cursor-pointer max-w-full '>
-				[[REPLACEMENT]]
         </li>
         `,
-        optionElements:[],
-        options:[], 
+        optionElements: [],
+        options: [], 
+        otherOptions: [],
         find(str){
-            for(let i = 0;i<dataList.options.length;i++){
-                const option = dataList.options[i];
-                if(!option.toLowerCase().includes(str.toLowerCase())){
-                    dataList.optionElements[i].classList.remove('block');
-                    dataList.optionElements[i].classList.add('hidden');
-                }else{
-                    dataList.optionElements[i].classList.remove('hidden');
-                    dataList.optionElements[i].classList.add('block');
-                }
+            console.log(dataList.options);
+            if (str.length == 0) {
+                dataList.listOpened = false;
+                dataList.listEl.classList.remove('opacity-100');
+                dataList.listEl.classList.remove('scale-100');
+                return;
             }
+            for(let i = 0; i < dataList.options.length; i++) {
+    const option = dataList.options[i];
+    const otherOption = dataList.otherOptions[i];
+    const matchesOption = option.toLowerCase().includes(str.toLowerCase());
+    const matchesOtherOption = otherOption.toLowerCase().includes(str.toLowerCase());
+
+    if(matchesOption || matchesOtherOption) {
+        dataList.optionElements[i].classList.remove('hidden');
+        dataList.optionElements[i].classList.add('block');
+    } else {
+        dataList.optionElements[i].classList.remove('block');
+        dataList.optionElements[i].classList.add('hidden');
+    }
+}
         },  
         remove(value){
-            const foundIndex = dataList.options.findIndex(v=>v===value);
-            if(foundIndex!==-1){
+            const foundIndex = dataList.options.findIndex(v => v === value);
+            if(foundIndex !== -1){
                 dataList.listEl.removeChild(dataList.optionElements[foundIndex])
-                dataList.optionElements.splice(foundIndex,1);
-                dataList.options.splice(value,1);
+                dataList.optionElements.splice(foundIndex, 1);
+                dataList.options.splice(value, 1);
             }
         },
-        append(value){    
-            if(!value || typeof value === 'object' || typeof value === 'symbol' || typeof value ==='function') return;
+        append(value, value1, value2){    
+            if(!value || typeof value === 'object' || typeof value === 'symbol' || typeof value === 'function') return;
             value = value.toString().trim();
             if(value.length === 0) return; 
             if(dataList.options.includes(value)) return;
 
-            const html = dataList.optionTemplate.replace('[[REPLACEMENT]]',value);
+            const html1 = dataList.optionTemplate.replace('[[REPLACEMENT]]', value);
+            const html2 = html1.replace('[[REPLACEMENT2]]', value1);
+            const html =  html2.replace('[[REPLACEMENT1]]', value2);
             const targetEle = domParser.parseFromString(html, "text/html").querySelector('li');
             targetEle.innerHTML = targetEle.innerHTML.trim();
             dataList.listEl.appendChild(targetEle);
             dataList.optionElements.push(targetEle);  
             dataList.options.push(value);
-
-            if(!dataList.currentValue) dataList.setValue(value);
-  
-            targetEle.onmousedown = (e)=>{
-                dataList.optionElements.forEach((el,index)=>{
-                    if(e.target===el){
-                        dataList.setValue(dataList.options[index]);
-                        dataList.hideList();
-                        return;
-                    }
-                })
-            }
+            dataList.otherOptions.push(value1);
+            // if(!dataList.currentValue) dataList.setValue(value);
+            
+            targetEle.onmousedown = (e) => {
+                const clickedOptionIndex = dataList.optionElements.indexOf(e.currentTarget);
+                if (clickedOptionIndex !== -1) {
+                    const clickedOptionValue = dataList.options[clickedOptionIndex];
+                    dataList.setValue(clickedOptionValue);
+                    dataList.hideList();
+                }
+            };
         },  
         setValue(value){
             dataList.el.value = value;
@@ -123,23 +212,25 @@ layout: project
             dataList.listOpened = true;
             dataList.listEl.classList.add('opacity-100');
             dataList.listEl.classList.add('scale-100');
-            dataList.arrow.classList.add("rotate-0");
+
         },
         hideList(){
             dataList.listOpened = false;
             dataList.listEl.classList.remove('opacity-100');
             dataList.listEl.classList.remove('scale-100');
-            dataList.arrow.classList.remove("rotate-0");
         },
         init(){ 
-            dataList.arrow.onclick = ()=>{
-                dataList.listOpened ? dataList.hideList(): dataList.showList();
-            } 
-            dataList.el.oninput = (e)=>{
-                dataList.find(e.target.value);
-            }
-            dataList.el.onclick = (el)=>{
+           
+            dataList.el.oninput = (e) => {
+                if (dataList.el.value == null) {
+                    dataList.hideList();
+                } else {
                 dataList.showList();
+                dataList.find(dataList.el.value);
+                }
+            }
+            dataList.el.onclick = (el) => {
+                // dataList.showList();
                 for(let el of dataList.optionElements){
                     el.classList.remove('hidden');
                 }
@@ -148,18 +239,253 @@ layout: project
                 dataList.hideList();
                 dataList.setValue(dataList.currentValue);
             }
+            
         }
     }
-    
-    // how to use
+   
     dataList.init(); 
-    // add items
-    const data = ["Apple","Apple","Pear","Avocado","Pineapple","Banana","Peach","Oraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaange"," ","",null,undefined,[],{},{a:1}];
-    data.forEach(v=>(dataList.append(v))); 
+ 
+    const data = [["AAPL", "Apple Inc", "https://s3-symbol-logo.tradingview.com/apple--big.svg"], ["AMZN", "Amazon.com Inc", "https://s3-symbol-logo.tradingview.com/amazon--big.svg"],
+    ["COST", "Costco Wholesale Corp", "https://s3-symbol-logo.tradingview.com/costco-wholesale--big.svg"], ["GOOGL", "Alphabet Inc (Google) - Class A" , "https://s3-symbol-logo.tradingview.com/alphabet--big.svg"], 
+["LMT" , "Lockheed Martin Corp", "https://s3-symbol-logo.tradingview.com/lockheed-martin--big.svg"], ["META", "Meta Platforms Inc - Ordinary Shares - Class A", "https://s3-symbol-logo.tradingview.com/meta-platforms--big.svg"],
+["MSFT", "Microsoft Corporation" , "https://s3-symbol-logo.tradingview.com/microsoft--big.svg"], ["NOC", "Northrop Grumman Corp.", "https://s3-symbol-logo.tradingview.com/northrop-grumman--big.svg"], 
+["NVDA", "NVIDIA Corp", "https://s3-symbol-logo.tradingview.com/nvidia--big.svg"], ["T", "AT&T, Inc.", "https://s3-symbol-logo.tradingview.com/at-and-t--big.svg"],
+["TSLA", "Tesla Inc", "https://s3-symbol-logo.tradingview.com/tesla--big.svg"], ["UNH", "Unitedhealth Group Inc", "https://s3-symbol-logo.tradingview.com/unitedhealth--big.svg"],
+["WMT", "Walmart Inc", "https://s3-symbol-logo.tradingview.com/walmart--big.svg"]];
+    data.forEach(v => (
 
-    // remove item
-    // dataList.remove("Peach");
+        dataList.append(v[0], v[1], v[2])
+    
+    )); 
+    const socket = new WebSocket('wss://ws.finnhub.io?token=cogebo9r01qtg2rmbf9gcogebo9r01qtg2rmbfa0');
 
-    // get selected value
+    let prevPrice = null;
+
+    // Connection opened -> Subscribe
+    socket.addEventListener('open', function (event) {
+        console.log('WebSocket connection opened');
+    });
+
+    // Listen for messages
+    socket.addEventListener('message', function (event) {
+        const data = JSON.parse(event.data);
+        if (data.data) {
+            const { s: symbol, p: price, v: volume } = data.data[0]; // Extract symbol, price, and volume
+            updateStockData(symbol, price, volume);
+        }
+    });
+
+    // Function to update stock data based on WebSocket message
+    function updateStockData(symbol, price, volume) {
+        // Update stock price above graph
+        document.getElementById("stockPrice").innerHTML = `
+            <h2><b>Last Price: </b> <span id="priceValue" class="text-3xl font-bold">${price}</span></h2>
+        `;
+
+        // Update stock volume below graph
+        document.getElementById("stockVolume").innerHTML = `
+            <h2>Volume: <span class="font-bold">${volume}</span></h2>
+        `;
+
+        // Compare with previous price and update color
+        const priceValue = document.getElementById("priceValue");
+        if (prevPrice !== null && price !== prevPrice) {
+            priceValue.style.color = price > prevPrice ? 'green' : 'red';
+        }
+
+        // Update previous price
+        prevPrice = price;
+    }
+
+    // Function to subscribe to a symbol
+    function subscribe(symbol) {
+        socket.send(JSON.stringify({'type': 'subscribe', 'symbol': symbol}));
+    }
+
+    // Function to unsubscribe from a symbol
+    function unsubscribe(symbol) {
+        socket.send(JSON.stringify({'type': 'unsubscribe', 'symbol': symbol}));
+    }
+  
+    async function getStockData() {
+        const symbol = document.getElementById("symbol").value;
+
+        // Fetch real-time quote data from Finnhub API
+        const apiKey = 'cogebo9r01qtg2rmbf9gcogebo9r01qtg2rmbfa0';
+        const apiUrl = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
+
+        try {
+            const response = await axios.get(apiUrl);
+            const data = response.data;
+
+            // Display stock info
+
+            // feature in testing:                 <button onclick="getAdditionalStockInfo()" class="btn">Get Additional Information</button>
+
+            const changeColor = data.d > 0 ? 'green' : 'red';
+            document.getElementById("stockInfo").innerHTML = `
+                <h2><b>Stock Information:</b></h2>
+                <ul>
+                    <li><b>Symbol:</b> ${symbol}</li>
+                    <li><b>Last Price:</b> ${data.c}</li>
+                    <li style="color: ${changeColor};"><b>Change (Today):</b> ${data.d} (${data.dp}%)</li>
+                    <li><b>High:</b> ${data.h}</li>
+                    <li><b>Low:</b> ${data.l}</li>
+                    <li><b>Open:</b> ${data.o}</li>
+                    <li><b>Previous Close:</b> ${data.pc}</li>
+                </ul>
+                <p><br> 
+                </p>
+            `;
+        } catch (error) {
+            console.error(error);
+        }
+
+        // Subscribe to symbol for real-time updates
+        subscribe(symbol);
+
+        // Fetch monthly stock data from Alpha Vantage API and render chart
+        fetchMonthlyStockData(symbol);
+    }
+
+    // Function to fetch monthly stock data from Alpha Vantage API and render chart
+    async function fetchMonthlyStockData(symbol) {
+        const rapidApiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
+        const rapidApiHost = 'alpha-vantage.p.rapidapi.com';
+        const url = `https://${rapidApiHost}/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${symbol}&datatype=json&output_size=compact`;
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Key': rapidApiKey,
+                'X-RapidAPI-Host': rapidApiHost
+            }
+        };
+
+        try {
+            const response = await fetch(url, requestOptions);
+            const data = await response.json();
+
+            // Process stock data for chart
+            let seriesData = Object.keys(data['Monthly Adjusted Time Series']).map(key => ({
+                x: new Date(key),
+                y: parseFloat(data['Monthly Adjusted Time Series'][key]['5. adjusted close'])
+            }));
+
+            // Render chart using ApexCharts
+            renderStockChart(seriesData);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // Function to render stock chart using ApexCharts
+    function renderStockChart(seriesData) {
+        var chartOptions = {
+            series: [{
+                name: 'Monthly Closed Stock Market Data',
+                data: seriesData
+            }],
+            chart: {
+                type: 'area',
+                stacked: false,
+                height: 350,
+                zoom: {
+                    type: 'x',
+                    enabled: true,
+                    autoScaleYaxis: true
+                },
+                toolbar: {
+                    autoSelected: 'zoom'
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            markers: {
+                size: 0,
+            },
+            title: {
+                text: 'Stock Closed Price',
+                align: 'left'
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    inverseColors: false,
+                    opacityFrom: 0.5,
+                    opacityTo: 0,
+                    stops: [0, 90, 100]
+                },
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (val) {
+                        return (val).toFixed(2);
+                    },
+                },
+                title: {
+                    text: 'Price'
+                },
+            },
+            xaxis: {
+                type: 'datetime',
+            },
+            tooltip: {
+                shared: false,
+                x: {
+                    format: 'dd MMM yyyy'
+                },
+                y: {
+                    formatter: function (val) {
+                        return (val).toFixed(2);
+                    }
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#stockChart"), chartOptions);
+        chart.render();
+    }
+// Function to fetch additional stock information
+async function getAdditionalStockInfo() {
+    const symbol = document.getElementById("symbol").value;
+
+    try {
+        // Fetch additional stock information using the Finnhub API
+        const additionalInfo = await getAdditionalStockInformation(symbol);
+        
+        // Display the additional stock information
+        document.getElementById("stockInfo").innerHTML += `
+            <h2><b>Additional Information</b></h2>
+            <ul>
+                ${additionalInfo.map(info => `
+                    <li><b>Description:</b> ${info.description}</li>
+                    <li><b>Display Symbol:</b> ${info.displaySymbol}</li>
+                    <li><b>Type:</b> ${info.type}</li>
+                    <br>
+                `).join('')}
+            </ul>
+        `;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Function to fetch additional stock information from the Finnhub API
+function getAdditionalStockInformation(symbol) {
+    return new Promise((resolve, reject) => {
+        finnhubClient.symbolSearch(symbol, (error, data, response) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(data.result);
+            }
+        });
+    });
+}
+
+
     // dataList.currentvalue;
 </script>
