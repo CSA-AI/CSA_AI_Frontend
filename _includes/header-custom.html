@@ -1,4 +1,35 @@
-<div class="navbar bg-base-100">
+<nav class="navbar bg-base-300">
+<!-- Menu for desktop -->
+  <div class="w-full hidden md:grid grid-cols-5 gap-2">
+      <!-- Left menu -->
+      <ul class="col-span-2 menu md:menu-horizontal justify-end hidden">
+          <li><a>About</a></li>
+          <li><a>Team</a></li>
+          <li><a>News</a></li>
+      </ul>
+
+      <!-- Centered logo -->
+      <div class="flex justify-center">
+          <a class="btn btn-ghost text-lg">
+              <img alt="Logo" src="{{ site.baseurl }}/assets/images/image2.jpg" class="w-4">
+              Stock AI
+          </a>
+      </div>
+      <!-- Logo -->
+      
+
+      <!-- Right menu -->
+      <ul class="col-span-2 menu md:menu-horizontal justify-start gap-4 hidden">
+          <li><a>Community</a></li>
+          <a class="btn btn-primary btn-sm">
+              <i class="fa-brands fa-space-awesome"></i>
+              Access
+          </a>
+      </ul>
+  </div>
+</nav>
+
+<!-- <div class="navbar bg-base-100 sticky top-0">
     <a href="{{ site.baseurl }}/" class="flex items-center ml-5">
       <img src="{{ site.baseurl }}/assets/images/image2.jpg" class="h-16" alt="Flowbite Logo" />
     </a>
@@ -15,7 +46,7 @@
       <a class="btn btn-ghost" id="signoutBtn" onclick="signout()">SIGNOUT</a>
       <a href="{{ site.baseurl }}/pages/signin.html" id="signinBtn" class="btn btn-ghost">SIGN IN</a>
     </div>
-</div>
+</div> -->
 <script>
   function signout() {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
