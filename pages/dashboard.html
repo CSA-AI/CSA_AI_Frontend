@@ -1,109 +1,214 @@
 ---
 layout: loggedin
 ---
+<!-- add dynamic data -->
+<style>
+    .bg-green-100 {
+        background-color: #d1fae5;
+    }
 
+    .bg-red-100 {
+        background-color: #fee2e2;
+    }
 
-<div class="">
-    <div class="shadow-2xl bg-base-100 max-w-4xl mx-auto mb-60">
-      <div class="bg-white rounded-3xl p-8 mb-5">
-        <h1 class="text-3xl font-bold mb-10">Trading game</h1>
-        <div class="flex items-center justify-between">
-          <div class="flex items-stretch">
-            <div class="text-gray-400 text-xs">Administer<br>connected</div>
-            <div class="h-100 border-l mx-4"></div>
-            <div class="flex flex-nowrap -space-x-3">
-              <div class="h-9 w-9">
-                <a href = "https://www.linkedin.com/in/david-vasilev-415519264"><img class="object-cover w-full h-full rounded-full"  src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
-              </div>
-              <div class="h-9 w-9">
-                <a href = "https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img class="object-cover w-full h-full rounded-full"  src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center gap-x-2">
-            <button type="button" class="inline-flex items-center justify-center h-9 px-3 rounded-xl border hover:border-gray-400 text-gray-800 hover:text-gray-900 transition">
-              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-chat-fill" viewBox="0 0 16 16">
-                <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"/>
-              </svg>
-            </button>
-            <button type="button" class="inline-flex items-center justify-center h-9 px-5 rounded-xl bg-gray-900 text-gray-300 hover:text-white text-sm font-semibold transition">
-              Leave Game
-            </button>
-          </div>
-        </div>
+    .bg-blue-100 {
+        background-color: #dbeafe;
+    }
 
-        <hr class="my-10">
+    .positive {
+        color: rgb(21, 168, 21);
+    }
 
-        <div class="grid grid-cols-2 gap-x-20">
-          <div>
-            <h2 class="text-2xl font-bold mb-4">Stats</h2>
+    .negative {
+        color: red;
+    }
 
-            <div class="grid grid-cols-2 gap-4">
-              <div class="col-span-2">
-                <div class="p-4 bg-green-100 rounded-xl">
-                  <div class="font-bold text-xl text-gray-800 leading-none">Game Code</div>
-                  <div class="mt-5">
-                    <button type="button" class="inline-flex items-center justify-center py-2 px-3 rounded-xl bg-white text-gray-800 hover:text-green-500 text-sm font-semibold transition">
-                      Join Game
+    .box {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+</style>
+<div class="max-w-6xl mx-auto">
+    <div class="box shadow-2xl bg-base-100 max-w-4xl mx-auto mb-60 rounded-xl">
+        <div class="bg-white rounded-xl p-8 mb-5">
+            <h1 id="game-title" class="text-3xl font-bold mb-10">Trading game</h1>
+            <div class="flex items-center justify-between">
+
+                <div class="flex items-stretch">
+                    <div class="text-gray-400 text-xs">Game<br>Admins</div>
+                    <div class="h-100 border-l mx-4"></div>
+                    <div class="flex flex-nowrap -space-x-3">
+                        <div class="h-9 w-9">
+                            <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
+                                    class="object-cover w-full h-full rounded-full"
+                                    src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
+                        </div>
+                        <div class="h-9 w-9">
+                            <a href="https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img
+                                    class="object-cover w-full h-full rounded-full"
+                                    src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-x-2">
+                    <div class="relative">
+                        <button id="dropdownButton" data-dropdown-toggle="dropdown" class="btn btn-info btn-m">
+                            Games
+                            <svg class="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7">
+                                </path>
+                            </svg>
+                        </button>
+                        <!-- Dropdown menu -->
+                        <div id="dropdown"
+                            class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-20 hidden">
+                            <a href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
+                                1</a>
+                            <a href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
+                                2</a>
+                            <a href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
+                                3</a>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-error btn-m">
+                        Leave Game
                     </button>
-                  </div>
                 </div>
-              </div>
-              <div class="col-span-2 p-4 bg-yellow-100 rounded-xl text-gray-800">
-                <div class="font-bold text-2xl leading-none">Your account</div>
-                <div class="mt-2 text-4xl font-bold text-gray-900 dark:text-white">$100,000.00</div>
-              </div>
-              <!-- <div class="p-4 bg-yellow-100 rounded-xl text-gray-800">
-                <div class="font-bold text-2xl leading-none">5,5</div>
-                <div class="mt-2">Tracked hours</div>
-              </div> -->
-              <div class="col-span-2">
-                <div class="p-4 bg-purple-100 rounded-xl text-gray-800">
-                  <div class="font-bold text-xl leading-none">Your daily plan</div>
-                  <div class="mt-2">5 of 8 completed</div>
-                </div>
-              </div>
             </div>
-          </div>
-          <div>
-            <h2 class="text-2xl font-bold mb-4">Your Stock today</h2>
 
-            <div class="space-y-4">
-              <div class="p-4 bg-white border rounded-xl text-gray-800 space-y-2">
-                <div class="flex justify-between">
-                  <div class="text-gray-400 text-xs">Number 10</div>
-                  <div class="text-gray-400 text-xs">4h</div>
-                </div>
-                <a href="javascript:void(0)" class="font-bold hover:text-yellow-800 hover:underline">Walmart</a>
-                <div class="text-sm text-gray-600">
-                  <p class="text-red-600"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="text-gray-800 inline align-middle mr-1" viewBox="0 0 16 16">
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
-                  </svg>1.14%</p>
-                </div>
-              </div>
-              <div class="p-4 bg-white border rounded-xl text-gray-800 space-y-2">
-                <div class="flex justify-between">
-                  <div class="text-gray-400 text-xs">Grace Aroma</div>
-                  <div class="text-gray-400 text-xs">7d</div>
-                </div>
-                <a href="javascript:void(0)" class="font-bold hover:text-yellow-800 hover:underline">New campaign review</a>
-                <div class="text-sm text-gray-600">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="text-gray-800 inline align-middle mr-1" viewBox="0 0 16 16">
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
-                  </svg>New feedback
-                </div>
-              </div>
-              <div class="p-4 bg-white border rounded-xl text-gray-800 space-y-2">
-                <div class="flex justify-between">
-                  <div class="text-gray-400 text-xs">Petz App</div>
-                  <div class="text-gray-400 text-xs">2h</div>
-                </div>
-                <a href="javascript:void(0)" class="font-bold hover:text-yellow-800 hover:underline">Cross-platform and browser QA</a>
-              </div>
+            <hr class="my-10">
 
+            <div class="grid grid-cols-2 gap-x-20">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">Stats</h2>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 p-4 bg-gray-200 rounded-xl text-gray-800">
+                            <div class="font-bold text-2xl leading-none">Account Value</div>
+                            <div class="mt-2 text-4xl font-bold text-gray-900">$100,000.00</div>
+                        </div>
+                        <div class="col-span-2 grid grid-cols-2 gap-4">
+                            <div id="daily-change" class="p-4 rounded-xl">
+                                <div class="font-bold text-xl text-gray-800 leading-none">Daily Change</div>
+                                <div class="mt-2 text-4xl font-bold text-gray-900">
+                                    <span class="amount">$50,000</span>
+                                </div>
+                            </div>
+                            <div id="total-change" class="p-4 rounded-xl">
+                                <div class="font-bold text-xl text-gray-800 leading-none">Total Change</div>
+                                <div class="mt-2 text-4xl font-bold text-gray-900">
+                                    <span class="amount">$10,000</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="p-4 bg-gray-200 rounded-xl">
+                                <div class="font-bold text-xl text-gray-800 leading-none">Buying Power</div>
+                                <div class="mt-2 text-4xl font-bold text-gray-900">$30,000</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">Your Stocks</h2>
+
+                    <div class="space-y-4">
+                        <div class="overflow-x-auto">
+                            <table class="table">
+                                <!-- head -->
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Daily Change</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- row 1 -->
+                                    <tr>
+                                        <td>Stock A</td>
+                                        <td>$100.00</td>
+                                        <td><span class="change positive">+$5.00 (5%)</span></td>
+                                    </tr>
+                                    <!-- row 2 -->
+                                    <tr>
+                                        <td>Stock B</td>
+                                        <td>$50.00</td>
+                                        <td><span class="change negative">-$2.50 (-5%)</span></td>
+                                    </tr>
+                                    <!-- row 3 -->
+                                    <tr>
+                                        <td>Stock C</td>
+                                        <td>$75.00</td>
+                                        <td><span class="change positive">+$7.50 (10%)</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
+
+</div>
+
+
+
+<script>
+    function updateChangeElement(elementId, amount, percentage) {
+        const element = document.getElementById(elementId);
+        const changeAmount = parseFloat(amount);
+
+        if (changeAmount > 0) {
+            element.classList.add('bg-green-100');
+            element.classList.remove('bg-red-100', 'bg-blue-100');
+        } else if (changeAmount < 0) {
+            element.classList.add('bg-red-100');
+            element.classList.remove('bg-green-100', 'bg-blue-100');
+        } else {
+            element.classList.add('bg-blue-100');
+            element.classList.remove('bg-green-100', 'bg-red-100');
+        }
+
+        const formattedAmount = changeAmount < 0 ? `-$${Math.abs(changeAmount).toLocaleString()}` : `$${changeAmount.toLocaleString()}`;
+        const valueElement = element.querySelector('.amount');
+        valueElement.innerHTML = `${formattedAmount}<div class="text-sm text-gray-600 mt-1">${percentage}%</div>`;
+    }
+
+    // Example usage
+    // updateChangeElement('daily-change', 50000, '+50');
+    updateChangeElement('total-change', 10000, '+10');
+    // For negative values, you can use:
+    updateChangeElement('daily-change', -5000, '-5');
+    // updateChangeElement('total-change', -2000, '-2');
+
+    function selectGame(event, gameName) {
+        event.preventDefault();
+        document.getElementById('game-title').innerText = gameName;
+        document.getElementById('dropdown').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('dropdownButton').addEventListener('click', function (event) {
+            event.stopPropagation();
+            var dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function () {
+            var dropdown = document.getElementById('dropdown');
+            dropdown.classList.add('hidden');
+        });
+
+        document.getElementById('dropdown').addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+    });
+</script>
