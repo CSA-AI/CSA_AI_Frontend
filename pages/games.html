@@ -11,7 +11,17 @@ layout: loggedin
 
 <div class="box shadow-2xl bg-base-100 mx-auto mb-60 rounded-xl">
     <div class="bg-white rounded-xl p-8 mb-5">
-        <h1 id="game-title" class="text-3xl font-bold mb-10">Games</h1>
+        <div class="flex items-center justify-between">
+            <h1 id="game-title" class="text-3xl font-bold mb-10">Games</h1>
+            <div class="flex items-center gap-x-2">
+                <div class="relative">
+                    <button id="dropdownButton" data-dropdown-toggle="dropdown" class="btn btn-info btn-m">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Class
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="grid grid-cols-3 gap-6 mx-auto">
             <!-- Card 1 -->
             <div class="card w-96 shadow-lg bg-white">

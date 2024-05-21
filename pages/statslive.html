@@ -26,34 +26,36 @@ layout: loggedin
     #stockVolume {
         font-weight: bold;
     }
+    .box {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
 </style>
 
-<div class="hero 50vh">
-   
-</div>
-
 <!-- The card on the left -->
-
-<div class="grid grid-cols-2 gap-4">
-    <div class="card shadow-xl">
-        <div class="card-body">
-            <input id="symbol" type="text" placeholder="ex. AAPL" class="input input-bordered w-full max-w-xs mb-4" />
-            <button onclick="getStockData()" class="btn">Get Monthly Data</button>
-            <div id="stockPrice"></div>
-            <div id="stockChart"></div>
-            <div id="stockVolume"></div>
-            <div id="lastRefreshed"></div>
+<div class="box">
+    <div class="grid grid-cols-2 gap-4">
+        <div class="card shadow-xl">
+            <div class="card-body">
+                <input id="symbol" type="text" placeholder="ex. AAPL" class="input input-bordered w-full max-w-xs mb-4" />
+                <button onclick="getStockData()" class="btn">Get Monthly Data</button>
+                <div id="stockPrice"></div>
+                <div id="stockChart"></div>
+                <div id="stockVolume"></div>
+                <div id="lastRefreshed"></div>
+            </div>
         </div>
-    </div>
-
-    <!-- The card on the right -->
-
-    <div class="card shadow-xl flex justify-center items-center">
-        <div class="card-body text-lg">
-            <div id="stockInfo"></div>
+    
+        <!-- The card on the right -->
+    
+        <div class="card shadow-xl flex justify-center items-center">
+            <div class="card-body text-lg">
+                <div id="stockInfo"></div>
+            </div>
         </div>
     </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
