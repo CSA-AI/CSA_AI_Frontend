@@ -5,11 +5,12 @@ layout: loggedin
 <style>
     .top-100 {top: 100%}
     .bottom-100 {bottom: 100%}
-    .max-h-select {
+    /* .max-h-select {
         max-height: 300px;
-    }
+    } */
 </style>
-<div class="max-w-4xl mx-auto bg-gray-100 p-8 rounded-lg shadow-lg">
+
+<div class="max-w-4xl mx-auto bg-gray-100 p-8 rounded-lg shadow-lg w-5/6">
     <div class="flex flex-col ">
         <div class="w-full md:w-1/2  flex flex-col items-center">
             <div class="w-full px-4">
@@ -83,7 +84,48 @@ layout: loggedin
     <!-- Modal content -->
     <div class="bg-white rounded-lg overflow-hidden shadow-lg p-6 w-4/5 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5">
       <span class="close text-gray-500 hover:text-black float-right text-2xl font-bold cursor-pointer">&times;</span>
-      <p>Some text in the Modal..</p>
+      <p class="text-3xl">Preview order</p>
+        <div class="flex flex-column justify-center text-center mt-4 py-8">
+           <div class="mr-12">
+            <p class="text-subtitle-1 mb-0">Stock: Buy at Market</p>
+            <p class="text-2xl font-black text-gray-900">AAPL</p>
+           </div>
+           <div>
+            <p class="text-subtitle-1 mb-0">Quantity</p>
+            <p class="text-2xl font-black text-gray-900">10</p>
+        </div>
+        </div>
+        
+
+        <table class="w-full text-xl text-left rtl:text-right text-gray-500">
+            
+            <tbody>
+            <tr class="border-b-2 border-gray-500"></tr>
+              <tr class="bg-white border-b-2 border-gray-500">
+                <td>Estimated Price</td>
+                <td>$192.35</td>
+              </tr>
+              <tr class="bg-white border-b-2 border-gray-500">
+                <td>Quantity</td>
+                <td>10</td>
+              </tr>
+              <tr class="bg-white border-b-2 border-gray-500">
+                <td>Estimated Total</td>
+                <td>$1,923.50</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="py-6 flex flex-column"> 
+            <button type="button" class="justify-center w-5/12 text-white bg-blue-700 mr-5 hover:bg-blue-800 focus:outline-none font-medium text-sm py-2.5 text-center inline-flex items-center">
+                Submit Order
+                <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </button>
+            <div class="w-2/12"></div>
+            <button type="button" class="justify-center w-5/12 text-blue-700 hover:bg-gray-100 border border-blue-700  font-medium text-sm  py-2.5 text-center ">Clear Order</button>
+          </div>
+        
     </div>
   
   </div>
@@ -308,8 +350,11 @@ window.onclick = function(event) {
     }
   
     async function getStockData() {
+        
         const symbol = document.getElementById("symbol").value;
-
+        if (symbol== "") {
+            return;
+        } 
         // Fetch real-time quote data from Finnhub API
         const apiKey = 'cogebo9r01qtg2rmbf9gcogebo9r01qtg2rmbfa0';
         const apiUrl = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
