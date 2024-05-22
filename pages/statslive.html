@@ -8,7 +8,7 @@ layout: loggedin
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Dashboard</title>
-    <!-- ApexCharting -->
+    <!-- ApexCharts and Axios -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
@@ -53,6 +53,10 @@ layout: loggedin
             </div>
         </div>
     </div>
+
+    <!-- News and Carousel sections -->
+    <div id="stockNews" class="mt-4"></div>
+    <div id="Carousel" class="grid grid-cols-2 gap-4 mt-4"></div>
 
     <script>
         // WebSocket URL
@@ -149,8 +153,14 @@ layout: loggedin
 
         // Function to fetch stock news from Finnhub API
         async function fetchStockNews(symbol) {
+            const currentDate = new Date();
+            const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+            const yesterdayDate = new Date(currentDate);
+            yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+            const formattedYesterdayDate = yesterdayDate.toISOString().split('T')[0];
+
             const apiKey = 'cogebo9r01qtg2rmbf9gcogebo9r01qtg2rmbfa0';
-            const apiUrl = `https://finnhub.io/api/v1/news?category=company&symbol=${symbol}&token=${apiKey}`;
+            const apiUrl = `https://finnhub.io/api/v1/news?category=company&symbol=${symbol}&token=${apiKey}&from=${formattedYesterdayDate}&to=${formattedCurrentDate}`;
 
             try {
                 const response = await axios.get(apiUrl);
@@ -257,7 +267,7 @@ layout: loggedin
                         }
                     }
                 }
-            };1
+            };
 
             var chart = new ApexCharts(document.querySelector("#stockChart"), chartOptions);
             chart.render();
@@ -277,7 +287,7 @@ layout: loggedin
 
                     const changeColor = data.d > 0 ? 'green' : 'red';
                     const companyHtml = `
-                        <div class="p-4">
+                        <div class="p-4" id="Carousel${companySymbol}">
                             <h2><b>${companySymbol}</h2>
                             <ul>
                                 <li><b>Last Price:</b> ${data.c}</li>
@@ -286,7 +296,7 @@ layout: loggedin
                         </div>
                     `;
 
-                    document.getElementById(`Carousel${companySymbol}`).innerHTML = companyHtml;
+                    document.getElementById("Carousel").insertAdjacentHTML('beforeend', companyHtml);
                 } catch (error) {
                     console.error(error);
                 }
@@ -294,7 +304,4 @@ layout: loggedin
         }
     </script>
 </body>
-<div id="stockNews"></div>
-
-<div id="Carousel"></div>
 </html>
