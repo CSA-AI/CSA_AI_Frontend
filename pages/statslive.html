@@ -138,7 +138,7 @@ layout: loggedin
                 await fetchStockNews(symbol);
 
                 // Fetch monthly stock data and render chart
-                await fetchMonthlyStockData(symbol);
+                await fetchDailyStockData(symbol);
 
                 // Fetch similar companies and update carousel
                 await fetchSimilarCompanies(symbol);
@@ -171,7 +171,7 @@ layout: loggedin
         // Function to fetch monthly stock data from Alpha Vantage API and render chart
         async function fetchDailyStockData(symbol) {
             const apiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
-            const apiUrl = `https://alpha-vantage.p.rapidapi.com/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&datatype=json&outputsize=compact&apikey=${apiKey}`;
+            const apiUrl = `https://alpha-vantage.p.rapidapi.com/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&datatype=json&outputsize=full&apikey=${apiKey}`;
 
             try {
                 const response = await axios.get(apiUrl, {
