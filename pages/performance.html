@@ -103,7 +103,16 @@ table.dataTable, table.dataTable th, table.dataTable td {
         });
         a._hungarianMap = d
     }
-    
+    function O(a, b, c) {
+        a._hungarianMap || G(a);
+        var d;
+        k.each(b, function(e, f) {
+            d = a._hungarianMap[e];
+            d === q || !c && b[d] !== q || ("o" === d.charAt(0) ? (b[d] || (b[d] = {}),
+            k.extend(!0, b[d], b[e]),
+            O(a[d], b[d], c)) : b[d] = b[e])
+        })
+    }
     function ma(a) {
         var b = u.defaults.oLanguage
           , c = b.sDecimal;
