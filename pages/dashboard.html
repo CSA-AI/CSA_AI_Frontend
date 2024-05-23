@@ -129,25 +129,8 @@ layout: loggedin
                                             <th>Daily Change</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <!-- row 1 -->
-                                        <tr>
-                                            <td>Stock A</td>
-                                            <td>$100.00</td>
-                                            <td><span class="change positive">+$5.00 (5%)</span></td>
-                                        </tr>
-                                        <!-- row 2 -->
-                                        <tr>
-                                            <td>Stock B</td>
-                                            <td>$50.00</td>
-                                            <td><span class="change negative">-$2.50 (-5%)</span></td>
-                                        </tr>
-                                        <!-- row 3 -->
-                                        <tr>
-                                            <td>Stock C</td>
-                                            <td>$75.00</td>
-                                            <td><span class="change positive">+$7.50 (10%)</span></td>
-                                        </tr>
+                                    <tbody id="table-body">
+
                                     </tbody>
                                 </table>
                             </div>
@@ -199,6 +182,8 @@ layout: loggedin
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        fetchStockTrades();
+
         document.getElementById('dropdownButton').addEventListener('click', function (event) {
             event.stopPropagation();
             var dropdown = document.getElementById('dropdown');
@@ -214,4 +199,58 @@ layout: loggedin
             event.stopPropagation();
         });
     });
+
+    function fetchStockTrades() {
+
+        const token = getCookie("token");
+        const decodedToken = parseJwt(token);
+        const email = decodedToken.sub;
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+
+        fetch("http://localhost:8017/api/stock/tickers/" + email, requestOptions)
+            .then((response) => response.json())
+            .then((data) => {
+                populateTable(data);
+            })
+            .catch((error) => console.error(error));
+    }
+
+    function populateTable(data) {
+        const tableBody = document.getElementById('table-body');
+
+        tableBody.innerHTML = '';
+
+        data.forEach(trade => {
+
+            console.log(trade);
+            const socket = new WebSocket('wss://ws.finnhub.io?token=cogebo9r01qtg2rmbf9gcogebo9r01qtg2rmbfa0');
+
+            socket.addEventListener('open', function (event) {
+                socket.send(JSON.stringify({'type':'subscribe', 'symbol': trade }))
+            });
+
+            socket.addEventListener('message', function (event) {
+                console.log('Message from server ', event.data);
+            });
+
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <tr>
+                    <td>${trade}</td>
+                    <td>${event.data.p}</td>
+                </tr>
+            `;
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Unsubscribe
+    var unsubscribe = function(symbol) {
+        socket.send(JSON.stringify({'type':'unsubscribe','symbol': symbol}))
+    }
 </script>
