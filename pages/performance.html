@@ -82,114 +82,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
             // Add any customization options here
         });
     });
-    var $jscomp = $jscomp || {};
-$jscomp.scope = {};
-$jscomp.findInternal = function(k, y, z) {
-    k instanceof String && (k = String(k));
-    for (var q = k.length, G = 0; G < q; G++) {
-        var O = k[G];
-        if (y.call(z, O, G, k))
-            return {
-                i: G,
-                v: O
-            }
-    }
-    return {
-        i: -1,
-        v: void 0
-    }
-}
-;
-$jscomp.ASSUME_ES5 = !1;
-$jscomp.ASSUME_NO_NATIVE_MAP = !1;
-$jscomp.ASSUME_NO_NATIVE_SET = !1;
-$jscomp.SIMPLE_FROUND_POLYFILL = !1;
-$jscomp.ISOLATE_POLYFILLS = !1;
-$jscomp.defineProperty = $jscomp.ASSUME_ES5 || "function" == typeof Object.defineProperties ? Object.defineProperty : function(k, y, z) {
-    if (k == Array.prototype || k == Object.prototype)
-        return k;
-    k[y] = z.value;
-    return k
-}
-;
-$jscomp.getGlobal = function(k) {
-    k = ["object" == typeof globalThis && globalThis, k, "object" == typeof window && window, "object" == typeof self && self, "object" == typeof global && global];
-    for (var y = 0; y < k.length; ++y) {
-        var z = k[y];
-        if (z && z.Math == Math)
-            return z
-    }
-    throw Error("Cannot find global object");
-}
-;
-$jscomp.global = $jscomp.getGlobal(this);
-$jscomp.IS_SYMBOL_NATIVE = "function" === typeof Symbol && "symbol" === typeof Symbol("x");
-$jscomp.TRUST_ES6_POLYFILLS = !$jscomp.ISOLATE_POLYFILLS || $jscomp.IS_SYMBOL_NATIVE;
-$jscomp.polyfills = {};
-$jscomp.propertyToPolyfillSymbol = {};
-$jscomp.POLYFILL_PREFIX = "$jscp$";
-var $jscomp$lookupPolyfilledValue = function(k, y) {
-    var z = $jscomp.propertyToPolyfillSymbol[y];
-    if (null == z)
-        return k[y];
-    z = k[z];
-    return void 0 !== z ? z : k[y]
-};
-$jscomp.polyfill = function(k, y, z, q) {
-    y && ($jscomp.ISOLATE_POLYFILLS ? $jscomp.polyfillIsolated(k, y, z, q) : $jscomp.polyfillUnisolated(k, y, z, q))
-}
-;
-$jscomp.polyfillUnisolated = function(k, y, z, q) {
-    z = $jscomp.global;
-    k = k.split(".");
-    for (q = 0; q < k.length - 1; q++) {
-        var G = k[q];
-        if (!(G in z))
-            return;
-        z = z[G]
-    }
-    k = k[k.length - 1];
-    q = z[k];
-    y = y(q);
-    y != q && null != y && $jscomp.defineProperty(z, k, {
-        configurable: !0,
-        writable: !0,
-        value: y
-    })
-}
-;
-$jscomp.polyfillIsolated = function(k, y, z, q) {
-    var G = k.split(".");
-    k = 1 === G.length;
-    q = G[0];
-    q = !k && q in $jscomp.polyfills ? $jscomp.polyfills : $jscomp.global;
-    for (var O = 0; O < G.length - 1; O++) {
-        var ma = G[O];
-        if (!(ma in q))
-            return;
-        q = q[ma]
-    }
-    G = G[G.length - 1];
-    z = $jscomp.IS_SYMBOL_NATIVE && "es6" === z ? q[G] : null;
-    y = y(z);
-    null != y && (k ? $jscomp.defineProperty($jscomp.polyfills, G, {
-        configurable: !0,
-        writable: !0,
-        value: y
-    }) : y !== z && ($jscomp.propertyToPolyfillSymbol[G] = $jscomp.IS_SYMBOL_NATIVE ? $jscomp.global.Symbol(G) : $jscomp.POLYFILL_PREFIX + G,
-    G = $jscomp.propertyToPolyfillSymbol[G],
-    $jscomp.defineProperty(q, G, {
-        configurable: !0,
-        writable: !0,
-        value: y
-    })))
-}
-;
-$jscomp.polyfill("Array.prototype.find", function(k) {
-    return k ? k : function(y, z) {
-        return $jscomp.findInternal(this, y, z).v
-    }
-}, "es6", "es3");
+    
 (function(k) {
     "function" === typeof define && define.amd ? define(["jquery"], function(y) {
         return k(y, window, document)
@@ -210,16 +103,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
         });
         a._hungarianMap = d
     }
-    function O(a, b, c) {
-        a._hungarianMap || G(a);
-        var d;
-        k.each(b, function(e, f) {
-            d = a._hungarianMap[e];
-            d === q || !c && b[d] !== q || ("o" === d.charAt(0) ? (b[d] || (b[d] = {}),
-            k.extend(!0, b[d], b[e]),
-            O(a[d], b[d], c)) : b[d] = b[e])
-        })
-    }
+    
     function ma(a) {
         var b = u.defaults.oLanguage
           , c = b.sDecimal;
@@ -242,7 +126,6 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
         R(a, "paging", "bPaginate");
         R(a, "pagingType", "sPaginationType");
         R(a, "pageLength", "iDisplayLength");
-        R(a, "searching", "bFilter");
         "boolean" === typeof a.sScrollX && (a.sScrollX = a.sScrollX ? "100%" : "");
         "boolean" === typeof a.scrollX && (a.scrollX = a.scrollX ? "100%" : "");
         if (a = a.aoSearchCols)
@@ -870,15 +753,12 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
             e.append(k(c));
             H(a, "aoDrawCallback", "draw", [a]);
             a.bSorted = !1;
-            a.bFiltered = !1;
             a.bDrawing = !1
         }
     }
     function ja(a, b) {
-        var c = a.oFeatures
-          , d = c.bFilter;
+        var c = a.oFeatures;
         c.bSort && Hb(a);
-        d ? ya(a, a.oPreviousSearch) : a.aiDisplay = a.aiDisplayMaster.slice();
         !0 !== b && (a._iDisplayStart = 0);
         a._drawHold = b;
         fa(a);
@@ -917,16 +797,8 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
                 e = k(l)
             } else if (">" == h)
                 e = e.parent();
-            else if ("l" == h && d.bPaginate && d.bLengthChange)
-                g = Jb(a);
-            else if ("f" == h && d.bFilter)
-                g = Kb(a);
-            else if ("r" == h && d.bProcessing)
-                g = Lb(a);
             else if ("t" == h)
                 g = Mb(a);
-            else if ("i" == h && d.bInfo)
-                g = Nb(a);
             else if ("p" == h && d.bPaginate)
                 g = Ob(a);
             else if (0 !== u.ext.feature.length)
@@ -1096,12 +968,12 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
                 }
             });
             m("mDataProp_" + l, n);
-            d.bFilter && (m("sSearch_" + l, v.sSearch),
+            (m("sSearch_" + l, v.sSearch),
             m("bRegex_" + l, v.bRegex),
             m("bSearchable_" + l, t.bSearchable));
             d.bSort && m("bSortable_" + l, t.bSortable)
         }
-        d.bFilter && (m("sSearch", e.sSearch),
+        (m("sSearch", e.sSearch),
         m("bRegex", e.bRegex));
         d.bSort && (k.each(h, function(x, r) {
             p.order.push({
@@ -1205,7 +1077,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
             Tb(a)
         } else
             f(b);
-        a.bFiltered = !0;
+       
         H(a, null, "search", [a])
     }
     function Tb(a) {
@@ -1470,7 +1342,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
         }).html(a.oLanguage.sProcessing).insertBefore(a.nTable)[0]
     }
     function U(a, b) {
-        a.oFeatures.bProcessing && k(a.aanFeatures.r).css("display", b ? "block" : "none");
+        k(a.aanFeatures.r).css("display", b ? "block" : "none");
         H(a, null, "processing", [a, b])
     }
     function Mb(a) {
@@ -1637,7 +1509,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
             t[0].style[e] = d ? b + "px" : "0px");
             r.children("colgroup").insertBefore(r.children("thead"));
             m.trigger("scroll");
-            !a.bSorted && !a.bFiltered || a._drawHold || (h.scrollTop = 0)
+            !a.bSorted || a._drawHold || (h.scrollTop = 0)
         }
     }
     function ba(a, b, c) {
@@ -1865,7 +1737,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
     function eb(a, b, c, d) {
         var e = a.aoColumns[c];
         pb(b, {}, function(f) {
-            !1 !== e.bSortable && (a.oFeatures.bProcessing ? (U(a, !0),
+            !1 !== e.bSortable && (a.oFeatures? (U(a, !0),
             setTimeout(function() {
                 ob(a, c, f.shiftKey, d);
                 "ssp" !== P(a) && U(a, !1)
@@ -2250,7 +2122,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
                 ma(g.oLanguage);
                 g.aLengthMenu && !g.iDisplayLength && (g.iDisplayLength = Array.isArray(g.aLengthMenu[0]) ? g.aLengthMenu[0][0] : g.aLengthMenu[0]);
                 g = qb(k.extend(!0, {}, m), g);
-                V(r.oFeatures, g, "bPaginate bLengthChange bFilter bSort bSortMulti bInfo bProcessing bAutoWidth bSortClasses bServerSide bDeferRender".split(" "));
+                V(r.oFeatures, g, "bPaginate bSort bSortMulti bAutoWidth bSortClasses bServerSide bDeferRender".split(" "));
                 V(r, g, ["asStripeClasses", "ajax", "fnServerData", "fnFormatNumber", "sServerMethod", "aaSorting", "aaSortingFixed", "aLengthMenu", "sPaginationType", "sAjaxSource", "sAjaxDataProp", "iStateDuration", "sDom", "bSortCellsTop", "iTabIndex", "fnStateLoadCallback", "fnStateSaveCallback", "renderer", "searchDelay", "rowId", ["iCookieDuration", "iStateDuration"], ["oSearch", "oPreviousSearch"], ["aoSearchCols", "aoPreSearchCols"], ["iDisplayLength", "_iDisplayLength"]]);
                 V(r.oScroll, g, [["sScrollX", "sX"], ["sScrollXInner", "sXInner"], ["sScrollY", "sY"], ["bScrollCollapse", "bCollapse"]]);
                 V(r.oLanguage, g, "fnInfoCallback");
@@ -3490,7 +3362,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
     w("search()", function(a, b, c, d) {
         var e = this.context;
         return a === q ? 0 !== e.length ? e[0].oPreviousSearch.sSearch : q : this.iterator("table", function(f) {
-            f.oFeatures.bFilter && ya(f, k.extend({}, f.oPreviousSearch, {
+            ya(f, k.extend({}, f.oPreviousSearch, {
                 sSearch: a + "",
                 bRegex: null === b ? !1 : b,
                 bSmart: null === c ? !0 : c,
@@ -3503,7 +3375,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
             var g = e.aoPreSearchCols;
             if (a === q)
                 return g[f].sSearch;
-            e.oFeatures.bFilter && (k.extend(g[f], {
+            (k.extend(g[f], {
                 sSearch: a + "",
                 bRegex: null === b ? !1 : b,
                 bSmart: null === c ? !0 : c,
@@ -3717,11 +3589,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
         bAutoWidth: !0,
         bDeferRender: !1,
         bDestroy: !1,
-        bFilter: !0,
-        bInfo: !0,
-        bLengthChange: !0,
-        bPaginate: !0,
-        bProcessing: !1,
+       
         bRetrieve: !1,
         bScrollCollapse: !1,
         bServerSide: !1,
@@ -3827,18 +3695,9 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
     G(u.defaults.column);
     u.models.oSettings = {
         oFeatures: {
-            bAutoWidth: null,
-            bDeferRender: null,
-            bFilter: null,
-            bInfo: null,
-            bLengthChange: null,
             bPaginate: null,
-            bProcessing: null,
             bServerSide: null,
-            bSort: null,
-            bSortMulti: null,
-            bSortClasses: null,
-            bStateSave: null
+            
         },
         oScroll: {
             bCollapse: null,
@@ -3917,14 +3776,10 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
         _iRecordsTotal: 0,
         _iRecordsDisplay: 0,
         oClasses: {},
-        bFiltered: !1,
         bSorted: !1,
         bSortCellsTop: null,
         oInit: null,
         aoDestroyCallback: [],
-        fnRecordsTotal: function() {
-            return "ssp" == P(this) ? 1 * this._iRecordsTotal : this.aiDisplayMaster.length
-        },
         fnRecordsDisplay: function() {
             return "ssp" == P(this) ? 1 * this._iRecordsDisplay : this.aiDisplay.length
         },
@@ -3980,17 +3835,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
         oJUIClasses: {},
         sVersion: u.version
     };
-    k.extend(L, {
-        afnFiltering: L.search,
-        aTypes: L.type.detect,
-        ofnSearch: L.type.search,
-        oSort: L.type.order,
-        afnSortData: L.order,
-        aoFeatures: L.feature,
-        oApi: L.internal,
-        oStdClasses: L.classes,
-        oPagination: L.pager
-    });
+    
     k.extend(u.ext.classes, {
         sTable: "dataTable",
         sNoFooter: "no-footer",
@@ -4001,7 +3846,6 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
         sStripeEven: "even",
         sRowEmpty: "dataTables_empty",
         sWrapper: "dataTables_wrapper",
-        sFilter: "dataTables_filter",
         sInfo: "dataTables_info",
         sPaging: "dataTables_paginate paging_",
         sLength: "dataTables_length",
@@ -4013,25 +3857,13 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
         sSortableDesc: "sorting_asc_disabled",
         sSortableNone: "sorting_disabled",
         sSortColumn: "sorting_",
-        sFilterInput: "",
-        sLengthSelect: "",
         sScrollWrapper: "dataTables_scroll",
         sScrollHead: "dataTables_scrollHead",
         sScrollHeadInner: "dataTables_scrollHeadInner",
         sScrollBody: "dataTables_scrollBody",
         sScrollFoot: "dataTables_scrollFoot",
         sScrollFootInner: "dataTables_scrollFootInner",
-        sHeaderTH: "",
-        sFooterTH: "",
-        sSortJUIAsc: "",
-        sSortJUIDesc: "",
-        sSortJUI: "",
-        sSortJUIAscAllowed: "",
-        sSortJUIDescAllowed: "",
-        sSortJUIWrapper: "",
-        sSortIcon: "",
-        sJUIHeader: "",
-        sJUIFooter: ""
+        
     });
     var ec = u.ext.pager;
     k.extend(ec, {
@@ -4126,40 +3958,8 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
             }
         }
     });
-    k.extend(u.ext.type.detect, [function(a, b) {
-        b = b.oLanguage.sDecimal;
-        return tb(a, b) ? "num" + b : null
-    }
-    , function(a, b) {
-        if (a && !(a instanceof Date) && !tc.test(a))
-            return null;
-        b = Date.parse(a);
-        return null !== b && !isNaN(b) || Z(a) ? "date" : null
-    }
-    , function(a, b) {
-        b = b.oLanguage.sDecimal;
-        return tb(a, b, !0) ? "num-fmt" + b : null
-    }
-    , function(a, b) {
-        b = b.oLanguage.sDecimal;
-        return jc(a, b) ? "html-num" + b : null
-    }
-    , function(a, b) {
-        b = b.oLanguage.sDecimal;
-        return jc(a, b, !0) ? "html-num-fmt" + b : null
-    }
-    , function(a, b) {
-        return Z(a) || "string" === typeof a && -1 !== a.indexOf("<") ? "html" : null
-    }
-    ]);
-    k.extend(u.ext.type.search, {
-        html: function(a) {
-            return Z(a) ? a : "string" === typeof a ? a.replace(gc, " ").replace(Ua, "") : ""
-        },
-        string: function(a) {
-            return Z(a) ? a : "string" === typeof a ? a.replace(gc, " ") : a
-        }
-    });
+    
+    
     var Ta = function(a, b, c, d) {
         if (0 !== a && (!a || "-" === a))
             return -Infinity;
@@ -4168,24 +3968,7 @@ $jscomp.polyfill("Array.prototype.find", function(k) {
         d && (a = a.replace(d, "")));
         return 1 * a
     };
-    k.extend(L.type.order, {
-        "date-pre": function(a) {
-            a = Date.parse(a);
-            return isNaN(a) ? -Infinity : a
-        },
-        "html-pre": function(a) {
-            return Z(a) ? "" : a.replace ? a.replace(/<.*?>/g, "").toLowerCase() : a + ""
-        },
-        "string-pre": function(a) {
-            return Z(a) ? "" : "string" === typeof a ? a.toLowerCase() : a.toString ? a.toString() : ""
-        },
-        "string-asc": function(a, b) {
-            return a < b ? -1 : a > b ? 1 : 0
-        },
-        "string-desc": function(a, b) {
-            return a < b ? 1 : a > b ? -1 : 0
-        }
-    });
+    
     Wa("");
     k.extend(!0, u.ext.renderer, {
         header: {
