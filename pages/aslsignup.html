@@ -1,0 +1,276 @@
+---
+layout: project
+---
+<style>
+    .hero {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 700px;
+        width: 600px;
+        border: 4px solid #9b9b9b;
+        border-radius: 15px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .camera-container {
+        width: 100%;
+        max-width: 600px;
+        position: relative;
+    }
+
+    .camera {
+        width: 100%;
+        height: auto;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .camera video {
+        width: 100%;
+        height: 100%; 
+    }
+
+    .btn-container {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .alert {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        z-index: 999;
+    }
+  
+    .alert.show {
+        opacity: 1;
+    }
+  
+    .form {
+        display: none;
+    }
+  
+    .form.active {
+        display: block;
+    }
+    .alert-success {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        z-index: 999;
+        background-color: #4CAF50;
+        color: white;
+    }
+  
+    .alert-success.show {
+        opacity: 1;
+    }
+
+    .timer {
+        font-size: 24px;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .recording-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .recording-text {
+        color: white;
+        font-size: 24px;
+    }
+</style>
+
+<div role="alert" id="errorAlert" class="alert alert-warning hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+  <span id="errorMessage">Error Message Here</span>
+</div>
+
+<div role="alert" id="successAlert" class="alert alert-success hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+  <span id="successMessage">Success Message Here</span>
+</div>
+
+<div class="hero">
+    <div class="camera-container">
+        <div class="camera" id="camera"></div>
+        <div class="btn-container">
+            <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="signUp()">Sign Up</button>
+            <button class="btn btn-secondary ml-10 mr-10 mb-10" onclick="startRecording()">Record</button>
+        </div>
+        <div class="timer" id="timer"></div>
+    </div>
+</div>
+<div class="recording-overlay" id="recordingOverlay">
+    <div class="recording-text">Recording...</div>
+</div>
+
+<script>
+    function showSuccessMessage(message) {
+        const successAlert = document.getElementById("successAlert");
+        const successMessage = document.getElementById("successMessage");
+  
+        successMessage.innerText = message;
+        successAlert.classList.remove("hidden");
+        successAlert.classList.add("show");
+  
+        setTimeout(() => {
+            hideSuccessMessage();
+        }, 5000);
+    }
+
+    function hideSuccessMessage() {
+        const successAlert = document.getElementById("successAlert");
+        successAlert.classList.remove("show");
+        successAlert.classList.add("hidden");
+    }
+
+    function showErrorMessage(message) {
+        const errorAlert = document.getElementById("errorAlert");
+        const errorMessage = document.getElementById("errorMessage");
+  
+        errorMessage.innerText = message;
+        errorAlert.classList.remove("hidden");
+        errorAlert.classList.add("show");
+  
+        setTimeout(() => {
+            hideSuccessMessage();
+        }, 5000);
+    }
+
+    function hideErrorMessage() {
+        const errorAlert = document.getElementById("errorAlert");
+        errorAlert.classList.remove("show");
+        errorAlert.classList.add("hidden");
+    }
+
+    function initializeWebcam() {
+        const video = document.createElement('video');
+        video.style.width = '100%';
+        video.style.height = 'auto';
+        const constraints = { video: true };
+        navigator.mediaDevices.getUserMedia(constraints)
+          .then((stream) => {
+            video.srcObject = stream;
+            video.onloadedmetadata = () => {
+              video.play();
+              document.querySelector('.camera').innerHTML = '';
+              document.querySelector('.camera').appendChild(video);
+
+              mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+              mediaRecorder.ondataavailable = handleDataAvailable;
+              mediaRecorder.onstop = saveRecording;
+            };
+          })
+          .catch((err) => {
+            console.error('Error initializing webcam:', err);
+          });
+    }
+
+    function handleDataAvailable(event) {
+        if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+        }
+    }
+    
+    function startRecording() {
+        if (!mediaRecorder) {
+            console.error('MediaRecorder is not initialized.');
+            return;
+        }
+
+        recordedChunks = [];
+        mediaRecorder.start();
+        console.log('Recording started, mediaRecorder state:', mediaRecorder.state);
+
+        let seconds = 10;
+        timerInterval = setInterval(() => {
+            document.getElementById('timer').innerText = seconds;
+            seconds--;
+
+            if (seconds < 0) {
+                clearInterval(timerInterval);
+                document.getElementById('timer').innerText = '';
+                hideRecordingOverlay();
+                mediaRecorder.stop();
+                console.log('Recording stopped, mediaRecorder state:', mediaRecorder.state);
+            }
+        }, 1000);
+
+        showRecordingOverlay();
+    }
+
+    function saveRecording() {
+        const combinedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+        console.log('Combined Blob size:', combinedBlob.size);
+
+        const formData = new FormData();
+        const name = localStorage.getItem('signupName') || "User";  // Default to "User" to avoid null issues
+        const videoName = name.replace(/ /g, '') + "SignLogin.mp4"; // Remove spaces if any
+        formData.append('video', combinedBlob, videoName);
+
+        console.log('FormData:', formData); // Check the formData content
+
+        fetch('http://localhost:8017/api/videos/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success:', data);
+            showSuccessMessage('Video uploaded successfully!');
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+    
+    
+    function showRecordingOverlay() {
+        document.getElementById('recordingOverlay').style.display = 'flex';
+    }
+
+    function hideRecordingOverlay() {
+        document.getElementById('recordingOverlay').style.display = 'none';
+    }
+
+    function handleDataAvailable(event) {
+        if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+            console.log('Data chunk added:', event.data);
+        }
+    }
+
+
+    function signUp() {
+        console.log("Signup successful!");
+        showSuccessMessage("Signup successful! ");
+        window.location.replace("{{ site.baseurl }}/pages/signin.html");
+    }
+
+    window.addEventListener('load', initializeWebcam);
+</script>
