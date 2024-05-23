@@ -30,15 +30,82 @@ layout: loggedin
         #stockVolume {
             font-weight: bold;
         }
+
+        #stockNews {
+            margin-top: 20px;
+        }
+
+        #stockNews h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        #stockNews ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #stockNews li {
+            margin-bottom: 10px;
+        }
+
+        #stockNews a {
+            text-decoration: none;
+            color: #1a0dab;
+        }
+
+        #stockNews a:hover {
+            text-decoration: underline;
+        }
+
+        #stockChart {
+            margin-top: 20px;
+        }
+
+        #companyBar {
+            display: flex;
+            overflow-x: auto;
+            background-color: #f1f1f1;
+            padding: 10px;
+            white-space: nowrap;
+        }
+
+        .company-item {
+            flex: 0 0 auto;
+            margin-right: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .company-item h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .company-item ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .company-item li {
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
+    <!-- Company bar at the top -->
+    <div id="companyBar"></div>
+
     <!-- The card on the left -->
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-4 mt-4">
         <div class="card shadow-xl">
             <div class="card-body">
                 <input id="symbol" type="text" placeholder="ex. AAPL" class="input input-bordered w-full max-w-xs mb-4" />
-                <button onclick="getStockData()" class="btn">Get Monthly Data</button>
+                <button onclick="getStockData()" class="btn">Get Stock Data</button>
                 <div id="stockPrice"></div>
                 <div id="stockChart"></div>
                 <div id="stockVolume"></div>
@@ -56,7 +123,6 @@ layout: loggedin
 
     <!-- News and Carousel sections -->
     <div id="stockNews" class="mt-4"></div>
-    <div id="Carousel" class="grid grid-cols-2 gap-4 mt-4"></div>
 
     <script>
         // WebSocket URL
@@ -110,7 +176,7 @@ layout: loggedin
             socket.send(JSON.stringify({ 'type': 'unsubscribe', 'symbol': symbol }));
         }
 
-        // Function to get monthly stock data
+        // Function to get stock data
         async function getStockData() {
             const symbol = document.getElementById("symbol").value;
 
@@ -141,10 +207,10 @@ layout: loggedin
                 // Fetch stock news
                 await fetchStockNews(symbol);
 
-                // Fetch monthly stock data and render chart
+                // Fetch daily stock data and render chart
                 await fetchDailyStockData(symbol);
 
-                // Fetch similar companies and update carousel
+                // Fetch similar companies and update company bar
                 await fetchSimilarCompanies(symbol);
             } catch (error) {
                 console.error(error);
@@ -153,22 +219,16 @@ layout: loggedin
 
         // Function to fetch stock news from Finnhub API
         async function fetchStockNews(symbol) {
-            const currentDate = new Date();
-            const formattedCurrentDate = currentDate.toISOString().split('T')[0];
-            const yesterdayDate = new Date(currentDate);
-            yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-            const formattedYesterdayDate = yesterdayDate.toISOString().split('T')[0];
-
             const apiKey = 'cogebo9r01qtg2rmbf9gcogebo9r01qtg2rmbfa0';
-            const apiUrl = `https://finnhub.io/api/v1/news?category=company&symbol=${symbol}&token=${apiKey}&from=${formattedYesterdayDate}&to=${formattedCurrentDate}`;
+            const apiUrl = `https://finnhub.io/api/v1/company-news?symbol=${symbol}&from=${formattedTwoDaysAgo()}&to=${formattedCurrentDate()}`;
 
             try {
                 const response = await axios.get(apiUrl);
                 const news = response.data;
 
-                let newsHtml = '<h2><b>Today\'s News:</b></h2><ul>';
+                let newsHtml = '<h2><b>Recent News:</b></h2><ul>';
                 news.forEach(article => {
-                    newsHtml += `<li><a href="${article.url}" target="_blank">${article.headline}</a></li>`;
+                    newsHtml += `<li><a href="${article.url}" target="_blank">${article.headline}</a> <small>(${new Date(article.datetime * 1000).toLocaleDateString()})</small></li>`;
                 });
                 newsHtml += '</ul>';
 
@@ -178,7 +238,19 @@ layout: loggedin
             }
         }
 
-        // Function to fetch monthly stock data from Alpha Vantage API and render chart
+        // Helper functions to get formatted dates
+        function formattedCurrentDate() {
+            const currentDate = new Date();
+            return currentDate.toISOString().split('T')[0];
+        }
+
+        function formattedTwoDaysAgo() {
+            const twoDaysAgo = new Date();
+            twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+            return twoDaysAgo.toISOString().split('T')[0];
+        }
+
+        // Function to fetch daily stock data from Alpha Vantage API and render chart
         async function fetchDailyStockData(symbol) {
             const apiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
             const apiUrl = `https://alpha-vantage.p.rapidapi.com/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&datatype=json&outputsize=full&apikey=${apiKey}`;
@@ -213,7 +285,7 @@ layout: loggedin
                 chart: {
                     type: 'area',
                     stacked: false,
-                    height: 350,
+                    height: 400, // Increase the height to avoid "smooshing"
                     zoom: {
                         type: 'x',
                         enabled: true,
@@ -273,9 +345,9 @@ layout: loggedin
             chart.render();
         }
 
-        // Function to fetch similar companies and update carousel
-        async function fetchSimilarCompanies(symbol) {
-            const similarCompanies = ['META', 'MSFT', 'NVDA', 'GOOGL', 'AMZN', 'AVGO', 'MU']; // Replace with logic to fetch similar companies
+        // Function to fetch similar companies and update company bar
+        async function fetchSimilarCompanies() {
+            const similarCompanies = ['META', 'NVDA', 'GOOGL', 'AMZN', 'AVGO', 'MU']; // Replace with logic to fetch similar companies
 
             for (const companySymbol of similarCompanies) {
                 const apiKey = 'cogebo9r01qtg2rmbf9gcogebo9r01qtg2rmbfa0';
@@ -287,8 +359,8 @@ layout: loggedin
 
                     const changeColor = data.d > 0 ? 'green' : 'red';
                     const companyHtml = `
-                        <div class="p-4" id="Carousel${companySymbol}">
-                            <h2><b>${companySymbol}</h2>
+                        <div class="company-item" id="company-${companySymbol}">
+                            <h2><b>${companySymbol}</b></h2>
                             <ul>
                                 <li><b>Last Price:</b> ${data.c}</li>
                                 <li style="color: ${changeColor};"><b>Change (Today):</b> ${data.d} (${data.dp}%)</li>
@@ -296,12 +368,17 @@ layout: loggedin
                         </div>
                     `;
 
-                    document.getElementById("Carousel").insertAdjacentHTML('beforeend', companyHtml);
+                    document.getElementById("companyBar").insertAdjacentHTML('beforeend', companyHtml);
                 } catch (error) {
                     console.error(error);
                 }
             }
         }
+
+        // Initial fetch for similar companies on page load
+        window.onload = () => {
+            fetchSimilarCompanies();
+        };
     </script>
 </body>
 </html>
