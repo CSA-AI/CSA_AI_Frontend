@@ -89,35 +89,64 @@ layout: project
 <div class="hero">
     <div class="camera-container">
         <div class="camera" id="camera"></div>
-        <div class="btn-container">
-            <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="login()">Log In</button>
-        </div>
     </div>
 </div>
 
 <script>
-    function initializeWebcam() {
-        const video = document.createElement('video');
-        video.style.width = '100%';
-        video.style.height = 'auto';
-        const constraints = { video: true };
-        navigator.mediaDevices.getUserMedia(constraints)
-          .then((stream) => {
-            video.srcObject = stream;
-            video.onloadedmetadata = () => {
-              video.play();
-              document.querySelector('.camera').innerHTML = '';
-              document.querySelector('.camera').appendChild(video);
-            };
+    const video = document.createElement('video');
+    const canvas = document.createElement('canvas');
+    const constraints = {
+      video: true
+    };
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then((stream) => {
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          video.play();
+        };
+        document.querySelector('.camera').appendChild(video);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    function captureAndSendImage() {
+        // draw the current frame from the video onto the canvas
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        // get base64 representation of the image data
+        const imageData = canvas.toDataURL('image/png').replace(/^data:image\/\w+;base64,/, '');
+        fetch('http://localhost:8017/image', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image: imageData }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+        })
+        .catch(error => {
+            console.error('error:', error);
+        });
+        fetch('http://localhost:8017/predictions')
+          .then(response => response.json())
+          .then(data => {
+            const recentPrediction = data[data.length - 1];
+            const email = localStorage.getItem('email') || "User"; 
+            console.log(email);
+
+            // Compare the user's name with the most recent prediction data
+            if (recentPrediction && recentPrediction.predictionData === email) {
+                // Redirect the user to the profile page
+                window.location.replace("{{ site.baseurl }}/pages/profile.html");
+            }
           })
-          .catch((err) => {
-            console.error('Error initializing webcam:', err);
+          .catch(error => {
+            console.error('Error fetching predictions:', error);
           });
-      }
-
-    window.addEventListener('load', initializeWebcam);
-
-    function login() {
-        window.location.replace("{{ site.baseurl }}/pages/profile.html");
     }
+
+    setInterval(captureAndSendImage, 2000);
 </script>

@@ -188,6 +188,8 @@ layout: project
           email: email,
           password: password
       };
+      var formattedEmail = email.replace(/\s+/g, '');
+      localStorage.setItem('email', formattedEmail);
 
       fetch(login_url, {
           method: 'POST',
@@ -231,6 +233,8 @@ layout: project
           password: password,
           dob: dob
       };
+      var formattedName = name.replace(/\s+/g, '');
+      localStorage.setItem('signupName', formattedName);
 
       fetch(signup_url, {
           method: 'POST',
