@@ -28,136 +28,139 @@ layout: loggedin
         margin-bottom: auto;
     }
 </style>
-<div class="max-w-6xl mx-auto">
-    <div class="box shadow-2xl bg-base-100 max-w-4xl mx-auto mb-60 rounded-xl">
-        <div class="bg-white rounded-xl p-8 mb-5">
-            <h1 id="game-title" class="text-3xl font-bold mb-10">Trading game</h1>
-            <div class="flex items-center justify-between">
+<div class="flex justify-center items-center h-full">
+    <div class="max-w-6xl mx-auto">
+        <div class="box shadow-2xl bg-base-100 max-w-4xl mx-auto mb-60 rounded-xl">
+            <div class="bg-white rounded-xl p-8 mb-5">
+                <h1 id="game-title" class="text-3xl font-bold mb-10">Trading game</h1>
+                <div class="flex items-center justify-between">
 
-                <div class="flex items-stretch">
-                    <div class="text-gray-400 text-xs">Game<br>Admins</div>
-                    <div class="h-100 border-l mx-4"></div>
-                    <div class="flex flex-nowrap -space-x-3">
-                        <div class="h-9 w-9">
-                            <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
-                                    class="object-cover w-full h-full rounded-full"
-                                    src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
-                        </div>
-                        <div class="h-9 w-9">
-                            <a href="https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img
-                                    class="object-cover w-full h-full rounded-full"
-                                    src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
+                    <div class="flex items-stretch">
+                        <div class="text-gray-400 text-xs">Game<br>Admins</div>
+                        <div class="h-100 border-l mx-4"></div>
+                        <div class="flex flex-nowrap -space-x-3">
+                            <div class="h-9 w-9">
+                                <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
+                                        class="object-cover w-full h-full rounded-full"
+                                        src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
+                            </div>
+                            <div class="h-9 w-9">
+                                <a href="https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img
+                                        class="object-cover w-full h-full rounded-full"
+                                        src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="flex items-center gap-x-2">
-                    <div class="relative">
-                        <button id="dropdownButton" data-dropdown-toggle="dropdown" class="btn btn-info btn-m">
-                            Games
-                            <svg class="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7">
-                                </path>
-                            </svg>
+                    <div class="flex items-center gap-x-2">
+                        <div class="relative">
+                            <button id="dropdownButton" data-dropdown-toggle="dropdown" class="btn btn-info btn-m">
+                                Games
+                                <svg class="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7">
+                                    </path>
+                                </svg>
+                            </button>
+                            <!-- Dropdown menu -->
+                            <div id="dropdown"
+                                class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-20 hidden">
+                                <a href="#"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
+                                    1</a>
+                                <a href="#"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
+                                    2</a>
+                                <a href="#"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
+                                    3</a>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-error btn-m">
+                            Leave Game
                         </button>
-                        <!-- Dropdown menu -->
-                        <div id="dropdown"
-                            class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-20 hidden">
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
-                                1</a>
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
-                                2</a>
-                            <a href="#"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
-                                3</a>
-                        </div>
                     </div>
-                    <button type="button" class="btn btn-error btn-m">
-                        Leave Game
-                    </button>
                 </div>
-            </div>
 
-            <hr class="my-10">
+                <hr class="my-10">
 
-            <div class="grid grid-cols-2 gap-x-20">
-                <div>
-                    <h2 class="text-2xl font-bold mb-4">Stats</h2>
+                <div class="grid grid-cols-2 gap-x-20">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">Stats</h2>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-2 p-4 bg-gray-200 rounded-xl text-gray-800">
-                            <div class="font-bold text-2xl leading-none">Account Value</div>
-                            <div class="mt-2 text-4xl font-bold text-gray-900">$100,000.00</div>
-                        </div>
-                        <div class="col-span-2 grid grid-cols-2 gap-4">
-                            <div id="daily-change" class="p-4 rounded-xl">
-                                <div class="font-bold text-xl text-gray-800 leading-none">Daily Change</div>
-                                <div class="mt-2 text-4xl font-bold text-gray-900">
-                                    <span class="amount">$50,000</span>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="col-span-2 p-4 bg-gray-200 rounded-xl text-gray-800">
+                                <div class="font-bold text-2xl leading-none">Account Value</div>
+                                <div class="mt-2 text-4xl font-bold text-gray-900">$100,000.00</div>
+                            </div>
+                            <div class="col-span-2 grid grid-cols-2 gap-4">
+                                <div id="daily-change" class="p-4 rounded-xl">
+                                    <div class="font-bold text-xl text-gray-800 leading-none">Daily Change</div>
+                                    <div class="mt-2 text-4xl font-bold text-gray-900">
+                                        <span class="amount">$50,000</span>
+                                    </div>
+                                </div>
+                                <div id="total-change" class="p-4 rounded-xl">
+                                    <div class="font-bold text-xl text-gray-800 leading-none">Total Change</div>
+                                    <div class="mt-2 text-4xl font-bold text-gray-900">
+                                        <span class="amount">$10,000</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div id="total-change" class="p-4 rounded-xl">
-                                <div class="font-bold text-xl text-gray-800 leading-none">Total Change</div>
-                                <div class="mt-2 text-4xl font-bold text-gray-900">
-                                    <span class="amount">$10,000</span>
+                            <div class="col-span-2">
+                                <div class="p-4 bg-gray-200 rounded-xl">
+                                    <div class="font-bold text-xl text-gray-800 leading-none">Buying Power</div>
+                                    <div class="mt-2 text-4xl font-bold text-gray-900">$30,000</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-span-2">
-                            <div class="p-4 bg-gray-200 rounded-xl">
-                                <div class="font-bold text-xl text-gray-800 leading-none">Buying Power</div>
-                                <div class="mt-2 text-4xl font-bold text-gray-900">$30,000</div>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold mb-4">Your Stocks</h2>
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">Your Stocks</h2>
 
-                    <div class="space-y-4">
-                        <div class="overflow-x-auto">
-                            <table class="table">
-                                <!-- head -->
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Price</th>
-                                        <th>Daily Change</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- row 1 -->
-                                    <tr>
-                                        <td>Stock A</td>
-                                        <td>$100.00</td>
-                                        <td><span class="change positive">+$5.00 (5%)</span></td>
-                                    </tr>
-                                    <!-- row 2 -->
-                                    <tr>
-                                        <td>Stock B</td>
-                                        <td>$50.00</td>
-                                        <td><span class="change negative">-$2.50 (-5%)</span></td>
-                                    </tr>
-                                    <!-- row 3 -->
-                                    <tr>
-                                        <td>Stock C</td>
-                                        <td>$75.00</td>
-                                        <td><span class="change positive">+$7.50 (10%)</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="space-y-4">
+                            <div class="overflow-x-auto">
+                                <table class="table">
+                                    <!-- head -->
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Price</th>
+                                            <th>Daily Change</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- row 1 -->
+                                        <tr>
+                                            <td>Stock A</td>
+                                            <td>$100.00</td>
+                                            <td><span class="change positive">+$5.00 (5%)</span></td>
+                                        </tr>
+                                        <!-- row 2 -->
+                                        <tr>
+                                            <td>Stock B</td>
+                                            <td>$50.00</td>
+                                            <td><span class="change negative">-$2.50 (-5%)</span></td>
+                                        </tr>
+                                        <!-- row 3 -->
+                                        <tr>
+                                            <td>Stock C</td>
+                                            <td>$75.00</td>
+                                            <td><span class="change positive">+$7.50 (10%)</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+    </div>
 </div>
+
 
 
 
