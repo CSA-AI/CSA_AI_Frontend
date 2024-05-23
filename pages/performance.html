@@ -379,14 +379,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
             row: b,
             col: c
         });
-        if (l === q)
-            return a.iDrawError != e && null === h && (ca(a, 0, "Requested unknown parameter " + ("function" == typeof f.mData ? "{function}" : "'" + f.mData + "'") + " for row " + b + ", column " + c, 4),
-            a.iDrawError = e),
-            h;
-        if ((l === g || null === l) && null !== h && d !== q)
-            l = h;
-        else if ("function" === typeof l)
-            return l.call(g);
+        
         return null === l && "display" == d ? "" : l
     }
     function Eb(a, b, c, d) {
