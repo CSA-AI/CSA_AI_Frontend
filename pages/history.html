@@ -142,9 +142,9 @@ layout: loggedin
         };
 
         fetch("http://localhost:8017/api/stock/trades/" + email, requestOptions)
-            .then((response) => response.json()) // Assuming the response is JSON
+            .then((response) => response.json())
             .then((data) => {
-                populateTable(data); // Call the function to populate the table with fetched data
+                populateTable(data);
             })
             .catch((error) => console.error(error));
     }
@@ -152,22 +152,18 @@ layout: loggedin
     function populateTable(data) {
         const tableBody = document.getElementById('table-body');
 
-        // Clear existing rows
         tableBody.innerHTML = '';
 
-        // Loop through each trade in the fetched data and create table rows
         data.forEach(trade => {
             const row = document.createElement('tr');
             row.classList.add('bg-white', 'border-b', 'hover:bg-gray-50');
 
-            // Format the date
-            const dateString = trade.time.split('T')[0]; // Get the date part only
+            const dateString = trade.time.split('T')[0];
             const [year, month, day] = dateString.split('-');
             const formattedDate = `${month}/${day}/${year}`;
 
             const totalPrice = '$' + trade.totalCost.toFixed(2);
 
-            // Calculate styled percent if percentChange is defined, otherwise use '-'
             let styledPercent;
             if (trade.percentChange !== null) {
                 const roundedPercent = trade.percentChange.toFixed(2);
@@ -179,7 +175,6 @@ layout: loggedin
                 styledPercent = '-';
             }
 
-            // Add table cells for each column
             row.innerHTML = `
                 <tr class="bg-white border-b hover:bg-gray-50">
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${trade.name}</td>
@@ -192,7 +187,7 @@ layout: loggedin
                 </tr>
             `;
 
-            tableBody.appendChild(row); // Append the row to the table body
+            tableBody.appendChild(row);
         });
     }
 
