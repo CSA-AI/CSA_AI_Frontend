@@ -94,8 +94,8 @@
                     </div>
                 </div>
             </dialog>
-            <h2 class="font-bold text-lg">User name</h2>
-            <span class="text-sm text-accent">username@email.com</span>
+            <h2 class="font-bold text-xl"><span id="profileName">UserName</span></h2>
+            <span class="text-lg text-info"><span id="profileEmail">username@email.com</span></span>
             <div class="flex flex-col border-y px-2 w-full overflow-y-auto">
                 <ul class="menu menu-lg w-full">
                     <li>
@@ -137,7 +137,7 @@
             </div>
             <div class="flex justify-center items-center p-2 w-full">
                 <a class="btn btn-error btn-sm mr-3" title="Logout">
-                    <span class="font-bold">Logout</span>
+                    <span class="font-bold" onclick="signout()">Logout</span>
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
             </div>
@@ -150,12 +150,198 @@
     </div>
 
     <script>
-        document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://csa-ai.stu.nighthawkcodingsociety.com/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
+        const token1 = getCookie("token");
+        const decodedToken = parseJwt(token1);
+        const userEmail = decodedToken.sub;
+        document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
         function handleImageError() {
             imgElement = document.getElementById('profilePic');
-
-            imgElement.style.display = 'none';
+    
+            imgElement.style.display = 'none'; 
             document.getElementById('pic').innerHTML = `<img id="profilePic" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPjKATmnhrK5tAwwubWT4StUWrCzms3kOx0eYfXtHqLg&s">`; // Display an error message
+        }
+        var setURL = "http://localhost:8017/api/person/updateStocks"
+    
+        const fileInput = document.getElementById('file-input');
+        const errorMessage = document.getElementById('errorMessage');
+    
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    
+            if (file && file.size > maxSize) { // Check if file exists and size exceeds limit
+                // Show error message and clear the file input
+                errorMessage.classList.remove('hidden');
+                this.value = null; // Clear the file input
+            } else {
+                errorMessage.classList.add('hidden');
+                // Proceed with file upload
+            }
+        });
+    
+        function showErrorMessage(message) {
+            const errorAlert = document.getElementById("errorAlert");
+            const errorMessage = document.getElementById("errorMessage");
+      
+            errorMessage.innerText = message;
+            errorAlert.classList.remove("hidden");
+            errorAlert.classList.add("show");
+      
+            setTimeout(() => {
+                hideErrorMessage();
+            }, 5000);
+        }
+      
+        function hideErrorMessage() {
+            const errorAlert = document.getElementById("errorAlert");
+            errorAlert.classList.remove("show");
+            errorAlert.classList.add("hidden");
+        }
+      
+        function showSuccessMessage(message) {
+            const successAlert = document.getElementById("successAlert");
+            const successMessage = document.getElementById("successMessage");
+      
+            successMessage.innerText = message;
+            successAlert.classList.remove("hidden");
+            successAlert.classList.add("show");
+      
+            setTimeout(() => {
+                hideSuccessMessage();
+            }, 5000);
+        }
+      
+        function hideSuccessMessage() {
+            const successAlert = document.getElementById("successAlert");
+            successAlert.classList.remove("show");
+            successAlert.classList.add("hidden");
+        }
+    
+        const token = getCookie("token");
+        if (token) {
+            const decodedToken = parseJwt(token);
+        } else {
+            window.location.replace("{{ site.baseurl }}/index.html");
+        }
+    
+        function signout() {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    
+            window.location.replace("{{ site.baseurl }}/index.html");
+        }
+    
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+    
+        function parseJwt(token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+    
+            return JSON.parse(jsonPayload);
+        }
+    
+        function getName() {
+            const token = getCookie("token");
+        
+            const decodedToken = parseJwt(token);
+            const userId = decodedToken.id;
+            const profileNameSpan = document.getElementById("profileName");
+            const profileEmailSpan = document.getElementById("profileEmail");
+    
+            fetch("http://localhost:8017/api/person/" + userId, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status !== 401) {
+                    const userName = data.name;
+                    const email = data.email;
+                    profileNameSpan.innerText = userName;
+                    profileEmailSpan.innerText = email;
+                } else {
+                    showErrorMessage("Data failed. Please check your information and try again.");
+                }
+            })
+            .catch(error => {
+                console.error('error:', error);
+                showErrorMessage("An error occurred. Please try again later.");
+            });
+        }
+    
+        function uploadFile(){
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+    
+            const decodedToken = parseJwt(token);
+            const userEmail = decodedToken.sub;
+            console.log(userEmail)
+    
+            if (!file) {
+                console.error('No file selected');
+                return;
+            }
+    
+            console.log('Selected file:', file);
+    
+            const formdata = new FormData();
+            formdata.append("image", file);
+            formdata.append("username", userEmail);
+    
+            const requestOptions = {
+            method: "POST",
+            body: formdata,
+            redirect: "follow"
+            };
+    
+            fetch("http://localhost:8017/api/person/image/post", requestOptions)
+            .then((response) => response.text())
+            .then((result) => console.log(result))
+            .then((blob) => {
+                document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
+            }
+            
+            )
+            .catch((error) => console.error(error));
+            
+    
+            
+        }
+    
+        function getProfilePicture() {
+         const decodedToken = parseJwt(token);
+         const userEmail = decodedToken.sub;
+    
+         const requestOptions = {
+             method: "GET",
+             redirect: "follow"
+         };
+    
+         fetch("http://localhost:8017/api/person/image/" + userEmail, requestOptions)
+             .then((response) => response.blob()) // Fetch image as Blob
+             .then((blob) => {
+                 const url = URL.createObjectURL(blob); // Create URL for Blob
+                 document.getElementById("profilePic").src = url; // Set the src attribute of the img element
+             })
+             .catch((error) => console.error(error));
+        }
+    
+        document.addEventListener("DOMContentLoaded", function() {
+            getName();
+            getProfilePicture();
+        });
+
+        function signout() {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.replace("{{ site.baseurl }}/index.html");
         }
     </script>
 </body>
