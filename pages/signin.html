@@ -1,5 +1,5 @@
 ---
-layout: project
+layout: main
 ---
 <style>
   .alert {
@@ -82,7 +82,7 @@ layout: project
               </div>
           </form>
           <div class="form-control">
-              <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="login()">Login</button>
+              <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="login()">Verify</button>
           </div>
       </div>
 
@@ -117,7 +117,7 @@ layout: project
               </div>
           </form>
           <div class="form-control">
-              <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="signup()">Signup</button>
+              <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="signup()">Next Step</button>
           </div>
       </div>
   </div>
@@ -188,6 +188,8 @@ layout: project
           email: email,
           password: password
       };
+      var formattedEmail = email.replace(/\s+/g, '');
+      localStorage.setItem('email', formattedEmail);
 
       fetch(login_url, {
           method: 'POST',
@@ -201,7 +203,7 @@ layout: project
               document.cookie = "token=" + data.token + "; path=/";
               console.log(data)
               if (data.status !== 401) {
-                  window.location.replace("{{ site.baseurl }}/pages/profile.html");
+                  window.location.replace("{{ site.baseurl }}/pages/aslsignin.html");
               } else {
                   console.log("bad email and password");
                   showErrorMessage("Invalid email or password");
@@ -231,6 +233,8 @@ layout: project
           password: password,
           dob: dob
       };
+      var formattedName = name.replace(/\s+/g, '');
+      localStorage.setItem('signupName', formattedName);
 
       fetch(signup_url, {
           method: 'POST',
@@ -243,8 +247,8 @@ layout: project
           .then(data => {
               console.log(data);
               if (data.status !== 401) {
-                  console.log("Signup successful!");
-                  showSuccessMessage("Signup successful! " + email + " has been created.");
+                  window.location.replace("{{ site.baseurl }}/pages/aslsignup.html");
+
 
                   emailInput.value = "";
                   nameInput.value = "";

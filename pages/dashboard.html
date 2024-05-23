@@ -1,0 +1,330 @@
+---
+layout: loggedin
+---
+<!-- add dynamic data -->
+<style>
+    .bg-green-100 {
+        background-color: #d1fae5;
+    }
+
+    .bg-red-100 {
+        background-color: #fee2e2;
+    }
+
+    .bg-blue-100 {
+        background-color: #dbeafe;
+    }
+
+    .positive {
+        color: rgb(21, 168, 21);
+    }
+
+    .negative {
+        color: red;
+    }
+
+    .box {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+</style>
+<div class="flex justify-center items-center h-full">
+    <div class="max-w-6xl mx-auto">
+        <div class="box shadow-2xl bg-base-100 max-w-4xl mx-auto mb-60 rounded-xl">
+            <div class="bg-white rounded-xl p-8 mb-5">
+                <h1 id="game-title" class="text-3xl font-bold mb-10">Trading game</h1>
+                <div class="flex items-center justify-between">
+
+                    <div class="flex items-stretch">
+                        <div class="text-gray-400 text-xs">Game<br>Admins</div>
+                        <div class="h-100 border-l mx-4"></div>
+                        <div class="flex flex-nowrap -space-x-3">
+                            <!-- <div class="h-9 w-9">
+                                <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
+                                        class="object-cover w-full h-full rounded-full"
+                                        src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
+                            </div> -->
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-x-2">
+                        <div class="relative">
+                            <button id="dropdownButton" data-dropdown-toggle="dropdown" class="btn btn-info btn-m">
+                                Games
+                                <svg class="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7">
+                                    </path>
+                                </svg>
+                            </button>
+                            <!-- Dropdown menu -->
+                            <div id="dropdown" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-20 hidden">
+                                
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-error btn-m">
+                            Leave Game
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="my-10">
+
+                <div class="grid grid-cols-2 gap-x-20">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">Stats</h2>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="col-span-2 p-4 bg-gray-200 rounded-xl text-gray-800">
+                                <div class="font-bold text-2xl leading-none">Account Value</div>
+                                <div class="mt-2 text-4xl font-bold text-gray-900 account-value">$100,000.00</div>
+                            </div>
+                            <div id="daily-change" class="col-span-2 grid grid-cols-2 gap-4">
+                                <div id="daily-change" class="p-4 rounded-xl">
+                                    <div class="font-bold text-xl text-gray-800 leading-none">Daily Change</div>
+                                    <div class="mt-2 text-4xl font-bold text-gray-900">
+                                        <span class="amount">$50,000</span>
+                                    </div>
+                                </div>
+                                <div id="total-change" class="p-4 rounded-xl">
+                                    <div class="font-bold text-xl text-gray-800 leading-none">Total Change</div>
+                                    <div class="mt-2 text-4xl font-bold text-gray-900">
+                                        <span id="total-change-amount" class="amount">$10,000</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-span-2">
+                                <div class="p-4 bg-gray-200 rounded-xl">
+                                    <div class="font-bold text-xl text-gray-800 leading-none">Buying Power</div>
+                                    <div class="mt-2 text-4xl font-bold text-gray-900 buying-power">$30,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">Your Stocks</h2>
+
+                        <div class="space-y-4">
+                            <div class="overflow-x-auto">
+                                <table class="table">
+                                    <!-- head -->
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Price</th>
+                                            <th>Daily Change</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-body">
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    function selectGame(event, gameName) {
+        event.preventDefault();
+        document.getElementById('game-title').innerText = gameName;
+        document.getElementById('dropdown').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchStockTrades();
+        getClasses();
+        fetchClassData('CSA-AI');
+
+        document.getElementById('dropdownButton').addEventListener('click', function (event) {
+            event.stopPropagation();
+            var dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function () {
+            var dropdown = document.getElementById('dropdown');
+            dropdown.classList.add('hidden');
+        });
+
+        document.getElementById('dropdown').addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+    });
+
+    function fetchStockTrades() {
+
+        const token = getCookie("token");
+        const decodedToken = parseJwt(token);
+        const email = decodedToken.sub;
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+
+        fetch("https://csa-ai.stu.nighthawkcodingsociety.com/api/stock/tickers/" + email, requestOptions)
+            .then((response) => response.json())
+            .then((data) => {
+                populateTable(data);
+            })
+            .catch((error) => console.error(error));
+    }
+
+    async function populateTable(data) {
+        const tableBody = document.getElementById('table-body');
+        tableBody.innerHTML = '';
+
+        const apiKey = 'cp7p9p1r01qi8q8994k0cp7p9p1r01qi8q8994kg';
+
+        for (const trade of data) {
+            const apiUrl = `https://finnhub.io/api/v1/quote?symbol=${trade}&token=${apiKey}`;
+
+            try {
+                const response = await axios.get(apiUrl);
+                const quoteData = response.data;
+
+                const changeColor = data.d > 0 ? 'red' : '#2fe30b';
+                const row = document.createElement('tr');
+                row.setAttribute('id', `row-${trade}`);
+                row.innerHTML = `
+                    <td class="font-bold">${trade}</td>
+                    <td>$${quoteData.c}</td>
+                    <td class="font-bold" style="color: ${changeColor}">
+                        <i class="fa-solid fa-arrow-${data.d >= 0 ? 'down' : 'up'}" style="color: ${changeColor}"></i>
+                        ${quoteData.dp} %
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
+    function getClasses() {
+        const token = getCookie("token");
+        const decodedToken = parseJwt(token);
+        const email = decodedToken.sub;
+    
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+    
+        fetch("http://localhost:8017/api/person/classCodes/" + email, requestOptions)
+            .then((response) => response.json()) // Parse response as JSON
+            .then((result) => {
+                const dropdown = document.getElementById("dropdown");
+                dropdown.innerHTML = ""; // Clear existing options
+    
+                result.forEach((item) => {
+                    const className = item.className;
+                    const classCode = item.classCode;
+                    const option = document.createElement("a");
+                    option.href = "#";
+                    option.className = "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900";
+                    option.textContent = className;
+                    option.setAttribute("data-class-code", classCode); // Optionally, set data attribute for class code
+                    option.addEventListener("click", () => {
+                        // Fetch data for the selected class and display
+                        fetchClassData(classCode);
+                    });
+                    dropdown.appendChild(option);
+                });
+            })
+            .catch((error) => console.error(error));
+    }
+
+    function fetchClassData(classCode) {
+        // Fetch data for the selected class using classCode
+        const token = getCookie("token");
+        const decodedToken = parseJwt(token);
+        const email = decodedToken.sub;
+    
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+    
+        fetch(`http://localhost:8017/api/person/class/${classCode}/${email}`, requestOptions)
+            .then((response) => response.json())
+            .then((data) => {
+                updateAccountValue(data.totalAccountValue);
+                updateBuyingPower(data.buyingPower);
+                console.log(data);
+                document.getElementById("game-title").textContent = data.className;
+                const totalChange = data.totalAccountValue - 100000;
+                const totalPercentageChange = ((totalChange / 100000) * 100).toFixed(2);
+                updateChangeElement('total-change', totalChange, totalPercentageChange);
+                const currentDate = new Date();
+                const year = currentDate.getFullYear();
+                const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because January is 0
+                const day = String(currentDate.getDate()).padStart(2, '0'); // Adding padding to ensure two digits for month and day
+        
+                const formattedDate = `${year}-${month}-${day}`;
+
+                fetchDailyChange(classCode, formattedDate, data.totalAccountValue)
+            })
+            .catch((error) => console.error(error));
+    }
+
+    function fetchDailyChange(classCode, date, totalAccountValue) {
+        const token = getCookie("token");
+        const decodedToken = parseJwt(token);
+        const email = decodedToken.sub;
+    
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+    
+        fetch(`http://localhost:8017/api/stock/accountValueChange/${classCode}/${email}?date=${date}`, requestOptions)
+            .then(response => response.json())
+            .then(data => {  
+                const dailyChange = data.totalChange;
+                const dailyPercentageChange = (dailyChange / totalAccountValue) * 100;
+                updateChangeElement("daily-change", data.totalChange);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+    function updateChangeElement(elementId, amount, percentage) {
+        const element = document.getElementById(elementId);
+        const changeAmount = parseFloat(amount);
+
+        if (changeAmount > 0) {
+            element.classList.add('bg-green-100');
+            element.classList.remove('bg-red-100', 'bg-blue-100');
+        } else if (changeAmount < 0) {
+            element.classList.add('bg-red-100');
+            element.classList.remove('bg-green-100', 'bg-blue-100');
+        } else {
+            element.classList.add('bg-blue-100');
+            element.classList.remove('bg-green-100', 'bg-red-100');
+        }
+
+        const formattedAmount = changeAmount < 0 ? `-$${Math.abs(changeAmount).toLocaleString()}` : `$${changeAmount.toLocaleString()}`;
+        const valueElement = element.querySelector('.amount');
+        valueElement.innerHTML = `${formattedAmount}<div class="text-sm text-gray-600 mt-1">${percentage}%</div>`;
+    }
+
+    function updateAccountValue(newValue) {
+        const accountValueElement = document.querySelector('.account-value');
+        const formattedValue = newValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        accountValueElement.textContent = `$${formattedValue}`;
+    }
+    
+    function updateBuyingPower(newValue) {
+        const buyingPowerElement = document.querySelector('.buying-power');
+        const formattedValue = newValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        buyingPowerElement.textContent = `$${formattedValue}`;
+    }
+</script>
