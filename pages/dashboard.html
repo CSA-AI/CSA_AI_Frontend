@@ -146,7 +146,7 @@ layout: loggedin
 
 
 
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     function updateChangeElement(elementId, amount, percentage) {
         const element = document.getElementById(elementId);
@@ -218,35 +218,41 @@ layout: loggedin
             .catch((error) => console.error(error));
     }
 
-    function populateTable(data) {
+    async function populateTable(data) {
         const tableBody = document.getElementById('table-body');
-
         tableBody.innerHTML = '';
+        
+        console.log(data);
+        const apiKey = 'cp7p9p1r01qi8q8994k0cp7p9p1r01qi8q8994kg';
 
-        data.forEach(trade => {
+        for (const trade of data) {
+            const apiUrl = `https://finnhub.io/api/v1/quote?symbol=${trade}&token=${apiKey}`;
+    
+            console.log(apiUrl);
+    
+            try {
+                const response = await axios.get(apiUrl);
+                const quoteData = response.data;
+                console.log(quoteData);
+                
 
-            console.log(trade);
-            const socket = new WebSocket('wss://ws.finnhub.io?token=cogebo9r01qtg2rmbf9gcogebo9r01qtg2rmbfa0');
-
-            socket.addEventListener('open', function (event) {
-                socket.send(JSON.stringify({'type':'subscribe', 'symbol': trade }))
-            });
-
-            socket.addEventListener('message', function (event) {
-                console.log('Message from server ', event.data);
-            });
-
-            const row = document.createElement('tr');
-
-            row.innerHTML = `
-                <tr>
-                    <td>${trade}</td>
-                    <td>${event.data.p}</td>
-                </tr>
-            `;
-
-            tableBody.appendChild(row);
-        });
+                const changeColor = data.d > 0 ? 'red' : '#2fe30b';
+                // Display stock info
+                const row = document.createElement('tr');
+                row.setAttribute('id', `row-${trade}`);
+                row.innerHTML = `
+                    <td class="font-bold">${trade}</td>
+                    <td>$${quoteData.c}</td>
+                    <td class="font-bold" style="color: ${changeColor}">
+                        <i class="fa-solid fa-arrow-${data.d >= 0 ? 'down' : 'up'}" style="color: ${changeColor}"></i>
+                        ${quoteData.dp} %
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            } catch (error) {
+                console.error(error);
+            }
+        }
     }
 
     // Unsubscribe
