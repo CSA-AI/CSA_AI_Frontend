@@ -63,17 +63,8 @@ layout: loggedin
                                 </svg>
                             </button>
                             <!-- Dropdown menu -->
-                            <div id="dropdown"
-                                class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-20 hidden">
-                                <a href="#"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
-                                    1</a>
-                                <a href="#"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
-                                    2</a>
-                                <a href="#"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Game
-                                    3</a>
+                            <div id="dropdown" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-20 hidden">
+                                
                             </div>
                         </div>
                         <button type="button" class="btn btn-error btn-m">
@@ -91,7 +82,7 @@ layout: loggedin
                         <div class="grid grid-cols-2 gap-4">
                             <div class="col-span-2 p-4 bg-gray-200 rounded-xl text-gray-800">
                                 <div class="font-bold text-2xl leading-none">Account Value</div>
-                                <div class="mt-2 text-4xl font-bold text-gray-900">$100,000.00</div>
+                                <div class="mt-2 text-4xl font-bold text-gray-900 account-value">$100,000.00</div>
                             </div>
                             <div class="col-span-2 grid grid-cols-2 gap-4">
                                 <div id="daily-change" class="p-4 rounded-xl">
@@ -103,14 +94,14 @@ layout: loggedin
                                 <div id="total-change" class="p-4 rounded-xl">
                                     <div class="font-bold text-xl text-gray-800 leading-none">Total Change</div>
                                     <div class="mt-2 text-4xl font-bold text-gray-900">
-                                        <span class="amount">$10,000</span>
+                                        <span id="total-change-amount" class="amount">$10,000</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-span-2">
                                 <div class="p-4 bg-gray-200 rounded-xl">
                                     <div class="font-bold text-xl text-gray-800 leading-none">Buying Power</div>
-                                    <div class="mt-2 text-4xl font-bold text-gray-900">$30,000</div>
+                                    <div class="mt-2 text-4xl font-bold text-gray-900 buying-power">$30,000</div>
                                 </div>
                             </div>
                         </div>
@@ -148,33 +139,6 @@ layout: loggedin
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-    function updateChangeElement(elementId, amount, percentage) {
-        const element = document.getElementById(elementId);
-        const changeAmount = parseFloat(amount);
-
-        if (changeAmount > 0) {
-            element.classList.add('bg-green-100');
-            element.classList.remove('bg-red-100', 'bg-blue-100');
-        } else if (changeAmount < 0) {
-            element.classList.add('bg-red-100');
-            element.classList.remove('bg-green-100', 'bg-blue-100');
-        } else {
-            element.classList.add('bg-blue-100');
-            element.classList.remove('bg-green-100', 'bg-red-100');
-        }
-
-        const formattedAmount = changeAmount < 0 ? `-$${Math.abs(changeAmount).toLocaleString()}` : `$${changeAmount.toLocaleString()}`;
-        const valueElement = element.querySelector('.amount');
-        valueElement.innerHTML = `${formattedAmount}<div class="text-sm text-gray-600 mt-1">${percentage}%</div>`;
-    }
-
-    // Example usage
-    // updateChangeElement('daily-change', 50000, '+50');
-    updateChangeElement('total-change', 10000, '+10');
-    // For negative values, you can use:
-    updateChangeElement('daily-change', -5000, '-5');
-    // updateChangeElement('total-change', -2000, '-2');
-
     function selectGame(event, gameName) {
         event.preventDefault();
         document.getElementById('game-title').innerText = gameName;
@@ -183,6 +147,8 @@ layout: loggedin
 
     document.addEventListener('DOMContentLoaded', function () {
         fetchStockTrades();
+        getClasses();
+        fetchClassData('CSA-AI');
 
         document.getElementById('dropdownButton').addEventListener('click', function (event) {
             event.stopPropagation();
@@ -221,20 +187,15 @@ layout: loggedin
     async function populateTable(data) {
         const tableBody = document.getElementById('table-body');
         tableBody.innerHTML = '';
-        
-        console.log(data);
+
         const apiKey = 'cp7p9p1r01qi8q8994k0cp7p9p1r01qi8q8994kg';
 
         for (const trade of data) {
             const apiUrl = `https://finnhub.io/api/v1/quote?symbol=${trade}&token=${apiKey}`;
-    
-            console.log(apiUrl);
-    
+
             try {
                 const response = await axios.get(apiUrl);
                 const quoteData = response.data;
-                console.log(quoteData);
-                
 
                 const changeColor = data.d > 0 ? 'red' : '#2fe30b';
                 // Display stock info
@@ -254,9 +215,96 @@ layout: loggedin
             }
         }
     }
+    function getClasses() {
+        const token = getCookie("token");
+        const decodedToken = parseJwt(token);
+        const email = decodedToken.sub;
+    
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+    
+        fetch("http://localhost:8017/api/person/classCodes/" + email, requestOptions)
+            .then((response) => response.json()) // Parse response as JSON
+            .then((result) => {
+                const dropdown = document.getElementById("dropdown");
+                dropdown.innerHTML = ""; // Clear existing options
+    
+                result.forEach((item) => {
+                    const className = item.className;
+                    const classCode = item.classCode;
+                    const option = document.createElement("a");
+                    option.href = "#";
+                    option.className = "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900";
+                    option.textContent = className;
+                    option.setAttribute("data-class-code", classCode); // Optionally, set data attribute for class code
+                    option.addEventListener("click", () => {
+                        // Fetch data for the selected class and display
+                        fetchClassData(classCode);
+                    });
+                    dropdown.appendChild(option);
+                });
+            })
+            .catch((error) => console.error(error));
+    }
 
-    // Unsubscribe
-    var unsubscribe = function(symbol) {
-        socket.send(JSON.stringify({'type':'unsubscribe','symbol': symbol}))
+    function fetchClassData(classCode) {
+        // Fetch data for the selected class using classCode
+        const token = getCookie("token");
+        const decodedToken = parseJwt(token);
+        const email = decodedToken.sub;
+    
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+    
+        fetch(`http://localhost:8017/api/person/class/${classCode}/${email}`, requestOptions)
+            .then((response) => response.json())
+            .then((data) => {
+                updateAccountValue(data.totalAccountValue);
+                updateBuyingPower(data.buyingPower);
+                console.log(data);
+                document.getElementById("game-title").textContent = data.className;
+                const totalChange = 100000 - data.totalAccountValue;
+                const totalPercentageChange = ((totalChange / 100000) * 100).toFixed(2);
+                updateChangeElement('total-change', totalChange, totalPercentageChange);
+            })
+            .catch((error) => console.error(error));
+    }
+
+    function updateChangeElement(elementId, amount, percentage) {
+        const element = document.getElementById(elementId);
+        const changeAmount = parseFloat(amount);
+
+        if (changeAmount > 0) {
+            element.classList.add('bg-green-100');
+            element.classList.remove('bg-red-100', 'bg-blue-100');
+        } else if (changeAmount < 0) {
+            element.classList.add('bg-red-100');
+            element.classList.remove('bg-green-100', 'bg-blue-100');
+        } else {
+            element.classList.add('bg-blue-100');
+            element.classList.remove('bg-green-100', 'bg-red-100');
+        }
+
+        const formattedAmount = changeAmount < 0 ? `-$${Math.abs(changeAmount).toLocaleString()}` : `$${changeAmount.toLocaleString()}`;
+        const valueElement = element.querySelector('.amount');
+        valueElement.innerHTML = `${formattedAmount}<div class="text-sm text-gray-600 mt-1">${percentage}%</div>`;
+    }
+
+    updateChangeElement('daily-change', -5000, '-5');
+    
+    function updateAccountValue(newValue) {
+        const accountValueElement = document.querySelector('.account-value');
+        const formattedValue = newValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        accountValueElement.textContent = `$${formattedValue}`;
+    }
+    
+    function updateBuyingPower(newValue) {
+        const buyingPowerElement = document.querySelector('.buying-power');
+        const formattedValue = newValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        buyingPowerElement.textContent = `$${formattedValue}`;
     }
 </script>
