@@ -39,16 +39,11 @@ layout: loggedin
                         <div class="text-gray-400 text-xs">Game<br>Admins</div>
                         <div class="h-100 border-l mx-4"></div>
                         <div class="flex flex-nowrap -space-x-3">
-                            <div class="h-9 w-9">
+                            <!-- <div class="h-9 w-9">
                                 <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
                                         class="object-cover w-full h-full rounded-full"
                                         src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
-                            </div>
-                            <div class="h-9 w-9">
-                                <a href="https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img
-                                        class="object-cover w-full h-full rounded-full"
-                                        src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="flex items-center gap-x-2">
@@ -84,7 +79,7 @@ layout: loggedin
                                 <div class="font-bold text-2xl leading-none">Account Value</div>
                                 <div class="mt-2 text-4xl font-bold text-gray-900 account-value">$100,000.00</div>
                             </div>
-                            <div class="col-span-2 grid grid-cols-2 gap-4">
+                            <div id="daily-change" class="col-span-2 grid grid-cols-2 gap-4">
                                 <div id="daily-change" class="p-4 rounded-xl">
                                     <div class="font-bold text-xl text-gray-800 leading-none">Daily Change</div>
                                     <div class="mt-2 text-4xl font-bold text-gray-900">
@@ -198,7 +193,6 @@ layout: loggedin
                 const quoteData = response.data;
 
                 const changeColor = data.d > 0 ? 'red' : '#2fe30b';
-                // Display stock info
                 const row = document.createElement('tr');
                 row.setAttribute('id', `row-${trade}`);
                 row.innerHTML = `
@@ -267,11 +261,39 @@ layout: loggedin
                 updateBuyingPower(data.buyingPower);
                 console.log(data);
                 document.getElementById("game-title").textContent = data.className;
-                const totalChange = 100000 - data.totalAccountValue;
+                const totalChange = data.totalAccountValue - 100000;
                 const totalPercentageChange = ((totalChange / 100000) * 100).toFixed(2);
                 updateChangeElement('total-change', totalChange, totalPercentageChange);
+                const currentDate = new Date();
+                const year = currentDate.getFullYear();
+                const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because January is 0
+                const day = String(currentDate.getDate()).padStart(2, '0'); // Adding padding to ensure two digits for month and day
+        
+                const formattedDate = `${year}-${month}-${day}`;
+
+                fetchDailyChange(classCode, formattedDate, data.totalAccountValue)
             })
             .catch((error) => console.error(error));
+    }
+
+    function fetchDailyChange(classCode, date, totalAccountValue) {
+        const token = getCookie("token");
+        const decodedToken = parseJwt(token);
+        const email = decodedToken.sub;
+    
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
+    
+        fetch(`http://localhost:8017/api/stock/accountValueChange/${classCode}/${email}?date=${date}`, requestOptions)
+            .then(response => response.json())
+            .then(data => {  
+                const dailyChange = data.totalChange;
+                const dailyPercentageChange = (dailyChange / totalAccountValue) * 100;
+                updateChangeElement("daily-change", data.totalChange);
+            })
+            .catch(error => console.error('Error fetching data:', error));
     }
 
     function updateChangeElement(elementId, amount, percentage) {
@@ -294,8 +316,6 @@ layout: loggedin
         valueElement.innerHTML = `${formattedAmount}<div class="text-sm text-gray-600 mt-1">${percentage}%</div>`;
     }
 
-    updateChangeElement('daily-change', -5000, '-5');
-    
     function updateAccountValue(newValue) {
         const accountValueElement = document.querySelector('.account-value');
         const formattedValue = newValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
