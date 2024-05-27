@@ -42,7 +42,7 @@ function convert () {
         # Perform the conversion (replace this with your actual conversion command)
         echo "Converting source $notebook_file to destination $markdown_file"
         # python -c 'import sys; from scripts.convert_notebooks import convert_single_notebook; convert_single_notebook(sys.argv[1])' "$notebook_file"
-        /usr/local/bin/python3.10 /Users/ethan/vscode/APCSA-Pages/scripts/convert_notebooks.py
+        python /home/david/vscode/FE_AI/scripts/convert_notebooks.py
     done
 }
 

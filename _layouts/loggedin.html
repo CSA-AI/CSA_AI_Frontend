@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html data-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{site.baseurl}}/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="{{site.baseurl}}/assets/img/favicon.ico">
+    <title></title>
+    <!-- CSS Files -->
+    <link href="{{site.baseurl}}/assets/css/main.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/7095decebb.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="flex flex-col h-screen">
+    <style>
+        .menu a.btn {
+            justify-content: flex-start;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+        .avatar {
+            position: relative;
+            width: 8rem;
+            /* Adjust size as needed */
+            height: 8rem;
+            /* Adjust size as needed */
+        }
+
+        #profilePic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent black */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .avatar:hover .overlay {
+            opacity: 1;
+        }
+    </style>
+    <div class="navbar-container">
+        {% include header-login.html %}
+    </div>
+
+    <div class="flex flex-1 overflow-hidden">
+        <aside
+            class="flex flex-col items-center h-screen sticky top-0 overflow-y-auto space-y-4 w-72 py-6 px-4 bg-base-200 sidebar">
+            <div class="avatar" onclick="my_modal_1.showModal()">
+                <div id="pic" class="w-32 rounded-full">
+                    <img id="profilePic" class="w-32 rounded-full"
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPjKATmnhrK5tAwwubWT4StUWrCzms3kOx0eYfXtHqLg&s"
+                        onerror="handleImageError()" />
+                    <div class="overlay">
+                        <i class="fa-solid fa-camera"></i> <!-- You can use any icon or text here -->
+                    </div>
+                </div>
+            </div>
+            <dialog id="my_modal_1" class="modal">
+                <div class="modal-box">
+                    <h3 class="font-bold text-lg">Upload Profile Image</h3>
+                    <p class="py-4">Please upload a profile image:</p>
+                    <input type="file" id="file-input" class="file-input w-full max-w-xs" accept=".jpg, .jpeg, .png" />
+                    <div id="errorMessage" class="hidden text-red-500">File size exceeds the limit. Maximum allowed size
+                        is 5MB.</div>
+                    <div class="modal-action">
+                        <form method="dialog">
+                            <button class="btn btn-success" onclick="uploadFile()">Update</button>
+                            <button class="btn">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+            <h2 class="font-bold text-xl"><span id="profileName">UserName</span></h2>
+            <span class="text-lg text-info"><span id="profileEmail">username@email.com</span></span>
+            <div class="flex flex-col border-y px-2 w-full overflow-y-auto">
+                <ul class="menu menu-lg w-full">
+                    <li>
+                        <a href="{{ site.baseurl }}/pages/dashboard.html" class="btn btn-ghost text-left">
+                            <i class="fa-solid fa-house"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ site.baseurl }}/pages/stockkeys.html" class="btn btn-ghost text-left">
+                            <i class="fa-solid fa-database"></i> Stock Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ site.baseurl }}/pages/statslive.html" class="btn btn-ghost">
+                            <i class="fa-solid fa-arrow-trend-up"></i> Market
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ site.baseurl }}/pages/history.html" class="btn btn-ghost">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Purchase History
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ site.baseurl }}/pages/higherorlower.html" class="btn btn-ghost">
+                            <i class="fa-solid fa-arrow-down-up-across-line"></i> Higher or Lower
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ site.baseurl }}/pages/performance.html" class="btn btn-ghost">
+                            <i class="fa-solid fa-chart-simple"></i> Performance
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ site.baseurl }}/pages/games.html" class="btn btn-ghost">
+                            <i class="fa-solid fa-chalkboard-user"></i> Sessions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ site.baseurl }}/pages/support.html" class="btn btn-ghost">
+                            <i class="fa-solid fa-circle-info"></i> Support
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="flex justify-center items-center p-2 w-full">
+                <a class="btn btn-error btn-sm mr-3" title="Logout">
+                    <span class="font-bold" onclick="signout()">Logout</span>
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+            </div>
+        </aside>
+        <main class="flex-1 overflow-y-auto">
+            {{ content }}
+        </main>
+    </div>
+
+    <script>
+        const token1 = getCookie("token");
+        const decodedToken = parseJwt(token1);
+        const userEmail = decodedToken.sub;
+        document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
+        function handleImageError() {
+            imgElement = document.getElementById('profilePic');
+    
+            imgElement.style.display = 'none'; 
+            document.getElementById('pic').innerHTML = `<img id="profilePic" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPjKATmnhrK5tAwwubWT4StUWrCzms3kOx0eYfXtHqLg&s">`; // Display an error message
+        }
+        var setURL = "http://localhost:8017/api/person/updateStocks"
+    
+        const fileInput = document.getElementById('file-input');
+        const errorMessage = document.getElementById('errorMessage');
+    
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    
+            if (file && file.size > maxSize) { // Check if file exists and size exceeds limit
+                // Show error message and clear the file input
+                errorMessage.classList.remove('hidden');
+                this.value = null; // Clear the file input
+            } else {
+                errorMessage.classList.add('hidden');
+                // Proceed with file upload
+            }
+        });
+    
+        function showErrorMessage(message) {
+            const errorAlert = document.getElementById("errorAlert");
+            const errorMessage = document.getElementById("errorMessage");
+      
+            errorMessage.innerText = message;
+            errorAlert.classList.remove("hidden");
+            errorAlert.classList.add("show");
+      
+            setTimeout(() => {
+                hideErrorMessage();
+            }, 5000);
+        }
+      
+        function hideErrorMessage() {
+            const errorAlert = document.getElementById("errorAlert");
+            errorAlert.classList.remove("show");
+            errorAlert.classList.add("hidden");
+        }
+      
+        function showSuccessMessage(message) {
+            const successAlert = document.getElementById("successAlert");
+            const successMessage = document.getElementById("successMessage");
+      
+            successMessage.innerText = message;
+            successAlert.classList.remove("hidden");
+            successAlert.classList.add("show");
+      
+            setTimeout(() => {
+                hideSuccessMessage();
+            }, 5000);
+        }
+      
+        function hideSuccessMessage() {
+            const successAlert = document.getElementById("successAlert");
+            successAlert.classList.remove("show");
+            successAlert.classList.add("hidden");
+        }
+    
+        const token = getCookie("token");
+        if (token) {
+            const decodedToken = parseJwt(token);
+        } else {
+            window.location.replace("{{ site.baseurl }}/index.html");
+        }
+    
+        function signout() {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    
+            window.location.replace("{{ site.baseurl }}/index.html");
+        }
+    
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+    
+        function parseJwt(token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+    
+            return JSON.parse(jsonPayload);
+        }
+    
+        function getName() {
+            const token = getCookie("token");
+        
+            const decodedToken = parseJwt(token);
+            const userId = decodedToken.id;
+            const profileNameSpan = document.getElementById("profileName");
+            const profileEmailSpan = document.getElementById("profileEmail");
+    
+            fetch("http://localhost:8017/api/person/" + userId, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status !== 401) {
+                    const userName = data.name;
+                    const email = data.email;
+                    profileNameSpan.innerText = userName;
+                    profileEmailSpan.innerText = email;
+                } else {
+                    showErrorMessage("Data failed. Please check your information and try again.");
+                }
+            })
+            .catch(error => {
+                console.error('error:', error);
+                showErrorMessage("An error occurred. Please try again later.");
+            });
+        }
+    
+        function uploadFile(){
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+    
+            const decodedToken = parseJwt(token);
+            const userEmail = decodedToken.sub;
+            console.log(userEmail)
+    
+            if (!file) {
+                console.error('No file selected');
+                return;
+            }
+    
+            console.log('Selected file:', file);
+    
+            const formdata = new FormData();
+            formdata.append("image", file);
+            formdata.append("username", userEmail);
+    
+            const requestOptions = {
+            method: "POST",
+            body: formdata,
+            redirect: "follow"
+            };
+    
+            fetch("http://localhost:8017/api/person/image/post", requestOptions)
+            .then((response) => response.text())
+            .then((result) => console.log(result))
+            .then((blob) => {
+                document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
+            }
+            
+            )
+            .catch((error) => console.error(error));
+            
+    
+            
+        }
+    
+        function getProfilePicture() {
+         const decodedToken = parseJwt(token);
+         const userEmail = decodedToken.sub;
+    
+         const requestOptions = {
+             method: "GET",
+             redirect: "follow"
+         };
+    
+         fetch("http://localhost:8017/api/person/image/" + userEmail, requestOptions)
+             .then((response) => response.blob()) // Fetch image as Blob
+             .then((blob) => {
+                 const url = URL.createObjectURL(blob); // Create URL for Blob
+                 document.getElementById("profilePic").src = url; // Set the src attribute of the img element
+             })
+             .catch((error) => console.error(error));
+        }
+    
+        document.addEventListener("DOMContentLoaded", function() {
+            getName();
+            getProfilePicture();
+        });
+
+        function signout() {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.replace("{{ site.baseurl }}/index.html");
+        }
+    </script>
+</body>
+
+</html>

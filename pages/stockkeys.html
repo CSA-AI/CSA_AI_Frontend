@@ -1,0 +1,121 @@
+---
+layout: loggedin
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .btn {
+            background-color: #f7fafc; /* Button background color matching page background */
+            color: #1a202c; /* Button text color */
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #e2e8f0; /* Slightly darker background color on hover */
+            color: #1a202c; /* Button hover text color */
+        }
+        .table-header {
+            background-color: #f7fafc; /* Light gray background matching page */
+            color: #1a202c; /* Dark text color */
+            font-weight: bold; /* Bold font */
+            text-align: center; /* Center text */
+            padding: 10px; /* Padding */
+        }
+        .navbar-item {
+            font-size: 16px; /* Match the font size of other parts */
+            color: #1a202c; /* Match the color of other text */
+            margin: 4px 2px;
+            padding: 10px 20px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .navbar-item:hover {
+            color: #4CAF50; /* Change color on hover to indicate interaction */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <div class="hero bg-white rounded-lg text-blck p-5 text-center">
+        <h1 id="pageTitle" class="text-3xl">Stock Dashboard</h1>
+    </div>
+
+
+
+    <div class="max-w-6xl mx-auto px-4 py-5">
+        <div class="overflow-hidden shadow-md bg-white rounded-lg">
+            <table id="stockTable" class="w-full text-sm text-left">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th class="table-header"><button class="btn" onclick="loadData('ticker')">Ticker</button></th>
+                        <th class="table-header"><button class="btn" onclick="loadData('growth')">Growth %</button></th>
+                        <th class="table-header"><button class="btn" onclick="loadData('open')">Open</button></th>
+                        <th class="table-header"><button class="btn" onclick="loadData('high')">High</button></th>
+                        <th class="table-header"><button class="btn" onclick="loadData('low')">Low</button></th>
+                        <th class="table-header"><button class="btn" onclick="loadData('volume')">Volume</button></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be added here based on server response -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const originalTitle = document.getElementById('pageTitle').textContent; // Store the original title
+
+        function loadData(key) {
+            const tbody = document.getElementById('stockTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = ''; // Clear current rows
+
+            // Change the page title based on the button clicked
+            const keyToTitle = {
+                ticker: "Ticker",
+                growth: "Growth %",
+                open: "Open",
+                high: "High",
+                low: "Low",
+                volume: "Volume"
+            };
+            document.getElementById('pageTitle').textContent = keyToTitle[key];
+
+            fetch(`http://localhost:8017/api/stockObject/${key}`)
+            .then(response => {
+                if (!response.ok) throw new Error(`Failed to fetch data: ${response.statusText}`);
+                return response.json();
+            })
+            .then(data => {
+                data.forEach(stock => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = stock.ticker;
+                    row.insertCell(1).textContent = stock.predictionsPercentGrowth.toFixed(2) + '%';
+                    row.insertCell(2).textContent = stock.open.toFixed(2);
+                    row.insertCell(3).textContent = stock.high.toFixed(2);
+                    row.insertCell(4).textContent = stock.low.toFixed(2);
+                    row.insertCell(5).textContent = stock.volume.toLocaleString();
+                });
+            })
+            .catch(error => {
+                console.error('Failed to fetch data:', error);
+                tbody.innerHTML = '<tr><td colspan="6">Error loading data. Please try again later.</td></tr>';
+            });
+        }
+
+        // Reset title on page reload
+        window.addEventListener('load', () => {
+            document.getElementById('pageTitle').textContent = originalTitle;
+        });
+    </script>
+</body>
+</html>

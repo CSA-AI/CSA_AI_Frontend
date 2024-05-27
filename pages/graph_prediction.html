@@ -1,7 +1,19 @@
 ---
-layout: project
+layout: main
 ---
 
+<head>
+  <!-- ApexCharts CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <style>
+    /* Ensure the chart container has a fixed height */
+    #chart {
+      height: 400px; /* Adjust height as needed */
+    }
+  </style>
+</head>
+
+<div class="hero"></div>
 
 <label for="ticker">Select a stock:</label>
 <select id="ticker">
@@ -17,28 +29,116 @@ layout: project
     <option value="NOC">NOC</option>
     <option value="UNH">UNH</option>
 </select>
-<button onclick="getPrediction()">Get Prediction</button>
-<div id="predictionImage"></div>
+<button onclick="getStockData()" class="btn">Get Monthly Data</button>
+
+<div class="card w-1/2 shadow-xl">
+  <div class="card-body">
+    <div id="chart"></div>
+  </div>
+</div>
 
 <script>
-    function getPrediction() {
-    var ticker = document.getElementById('ticker').value;
+  let apexChart = null; // Declare apexChart variable outside the function
+  const rapidApiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
+  const rapidApiHost = 'alpha-vantage.p.rapidapi.com';
 
-    var requestOptions = {
+  async function getStockData() {
+    try {
+      // Clear existing chart if it exists
+      if (apexChart !== null) {
+        apexChart.destroy();
+      }
+
+      const symbol = document.getElementById("ticker").value;
+      const url = `https://${rapidApiHost}/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${symbol}&datatype=json&output_size=compact`;
+      const options = {
         method: 'GET',
-        redirect: 'follow'
+        headers: {
+          'X-RapidAPI-Key': rapidApiKey,
+          'X-RapidAPI-Host': rapidApiHost
+        }
       };
-      
-    fetch("http://localhost:8017/api/lstm/" + ticker, requestOptions)
-        .then(response => response.text())
-        .then(data => {
-            var img = document.createElement('img');
-            img.src = 'data:image/png;base64,' + data;
-    
-            var predictionImage = document.getElementById('predictionImage');
-            predictionImage.innerHTML = '';
-            predictionImage.appendChild(img);
-            })
-        .catch(error => console.log('error', error));
+
+      // Fetch Alpha Vantage data
+      const response = await fetch(url, options);
+      const alphaData = await response.json();
+
+      let alphaTimes = [];
+      let alphaCloses = [];
+
+      // The API response structure for monthly data is different so adjusting it
+      for (let time in alphaData['Monthly Adjusted Time Series']) {
+        alphaTimes.push(new Date(time).getTime());
+        alphaCloses.push(parseFloat(alphaData['Monthly Adjusted Time Series'][time]['5. adjusted close']));
+      }
+
+      // Reverse the arrays to display data in descending order (from latest to earliest)
+      alphaTimes.reverse();
+      alphaCloses.reverse();
+
+      // Fetch LSTM prediction data
+      const lstmResponse = await fetch(`http://localhost:8017/api/lstm/${symbol}`);
+      const lstmData = await lstmResponse.json();
+
+      let lstmTimes = [];
+      let lstmCloses = [];
+
+      // Extract predicted values from LSTM data
+      lstmData.forEach(entry => {
+        const [index, dateString, prediction] = entry.split(',');
+        const date = new Date(dateString); // Convert date string to JavaScript Date object
+        lstmTimes.push(date.getTime());
+        lstmCloses.push(parseFloat(prediction)); // Use predicted value
+      });
+
+      // ApexCharts options
+      var apexOptions = {
+        series: [{
+          name: 'Alpha Vantage',
+          data: alphaCloses
+        }, {
+          name: 'LSTM Prediction',
+          data: lstmCloses
+        }],
+        chart: {
+          type: 'area',
+          height: 350,
+          zoom: {
+            enabled: true
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        markers: {
+          size: 4
+        },
+        xaxis: {
+          type: 'datetime',
+          categories: alphaTimes.map(time => new Date(time).toISOString()) // Convert timestamps to ISO string format
+        },
+        tooltip: {
+          x: {
+            format: 'dd/MM/yy HH:mm'
+          },
+          formatter: function (value, { seriesIndex, dataPointIndex, w }) {
+            if (seriesIndex === 0) {
+              return `Alpha Vantage: $${w.globals.series[0][dataPointIndex].toFixed(2)}`;
+            } else {
+              return `LSTM Prediction: $${w.globals.series[1][dataPointIndex].toFixed(2)}`;
+            }
+          }
+        },
+      };
+
+      apexChart = new ApexCharts(document.querySelector("#chart"), apexOptions);
+      apexChart.render();
+
+    } catch (error) {
+      console.error(error);
     }
+  }
 </script>
