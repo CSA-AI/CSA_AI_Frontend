@@ -1,0 +1,152 @@
+---
+layout: project
+---
+<style>
+    .hero {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 700px;
+        width: 600px;
+        border: 4px solid #9b9b9b;
+        border-radius: 15px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .camera-container {
+        width: 100%;
+        max-width: 600px;
+        position: relative;
+    }
+
+    .camera {
+        width: 100%;
+        height: auto;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .camera video {
+        width: 100%;
+        height: 100%; 
+    }
+
+    .btn-container {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .alert {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        z-index: 999;
+    }
+  
+    .alert.show {
+        opacity: 1;
+    }
+  
+    .form {
+        display: none;
+    }
+  
+    .form.active {
+        display: block;
+    }
+    .alert-success {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        z-index: 999;
+        background-color: #4CAF50;
+        color: white;
+    }
+  
+    .alert-success.show {
+        opacity: 1;
+    }
+</style>
+
+<div role="alert" id="errorAlert" class="alert alert-warning hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+  <span id="errorMessage">Error Message Here</span>
+</div>
+
+<div role="alert" id="successAlert" class="alert alert-success hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+  <span id="successMessage">Success Message Here</span>
+</div>
+
+<div class="hero">
+    <div class="camera-container">
+        <div class="camera" id="camera"></div>
+    </div>
+</div>
+
+<script>
+    const video = document.createElement('video');
+    const canvas = document.createElement('canvas');
+    const constraints = {
+      video: true
+    };
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then((stream) => {
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          video.play();
+        };
+        document.querySelector('.camera').appendChild(video);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    function captureAndSendImage() {
+        // draw the current frame from the video onto the canvas
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        // get base64 representation of the image data
+        const imageData = canvas.toDataURL('image/png').replace(/^data:image\/\w+;base64,/, '');
+        fetch('http://localhost:8017/image', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ image: imageData }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+        })
+        .catch(error => {
+            console.error('error:', error);
+        });
+        fetch('http://localhost:8017/predictions')
+          .then(response => response.json())
+          .then(data => {
+            const recentPrediction = data[data.length - 1];
+            const email = localStorage.getItem('email') || "User"; 
+            console.log(email);
+
+            // Compare the user's name with the most recent prediction data
+            if (recentPrediction && recentPrediction.predictionData === email) {
+                // Redirect the user to the profile page
+                window.location.replace("{{ site.baseurl }}/pages/profile.html");
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching predictions:', error);
+          });
+    }
+
+    setInterval(captureAndSendImage, 2000);
+</script>
