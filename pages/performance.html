@@ -542,7 +542,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
         } else
             e._aData = ab(a, e, d, d === q ? q : e._aData).data;
         e._aSortData = null;
-        e._aFilterData = null;
         g = a.aoColumns;
         if (d !== q)
             g[d].sType = null;
@@ -570,7 +569,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
                 g && g._bAttrSrc ? (da(g.mData._)(d, l),
                 p(g.mData.sort, x),
                 p(g.mData.type, x),
-                p(g.mData.filter, x)) : m ? (g._setter || (g._setter = da(g.mData)),
                 g._setter(d, l)) : d[h] = l;
             h++
         };
@@ -875,12 +873,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
             });
             b = d
         }
-        var f = a.ajax
-          , g = a.oInstance
-          , h = function(m) {
-            H(a, null, "xhr", [a, m, a.jqXHR]);
-            c(m)
-        };
+        
         if (k.isPlainObject(f) && f.data) {
             var l = f.data;
             var n = "function" === typeof l ? l(b, a) : l;
@@ -923,165 +916,12 @@ table.dataTable, table.dataTable th, table.dataTable td {
             Qb(a, b)
         })
     }
-    function Pb(a) {
-        var b = a.aoColumns
-          , c = b.length
-          , d = a.oFeatures
-          , e = a.oPreviousSearch
-          , f = a.aoPreSearchCols
-          , g = []
-          , h = pa(a);
-        var l = a._iDisplayStart;
-        var n = !1 !== d.bPaginate ? a._iDisplayLength : -1;
-        var m = function(x, r) {
-            g.push({
-                name: x,
-                value: r
-            })
-        };
-        m("sEcho", a.iDraw);
-        m("iColumns", c);
-        m("sColumns", T(b, "sName").join(","));
-        m("iDisplayStart", l);
-        m("iDisplayLength", n);
-        var p = {
-            draw: a.iDraw,
-            columns: [],
-            order: [],
-            start: l,
-            length: n,
-            search: {
-                value: e.sSearch,
-                regex: e.bRegex
-            }
-        };
-        for (l = 0; l < c; l++) {
-            var t = b[l];
-            var v = f[l];
-            n = "function" == typeof t.mData ? "function" : t.mData;
-            p.columns.push({
-                data: n,
-                name: t.sName,
-                searchable: t.bSearchable,
-                orderable: t.bSortable,
-                search: {
-                    value: v.sSearch,
-                    regex: v.bRegex
-                }
-            });
-            m("mDataProp_" + l, n);
-            (m("sSearch_" + l, v.sSearch),
-            m("bRegex_" + l, v.bRegex),
-            m("bSearchable_" + l, t.bSearchable));
-            d.bSort && m("bSortable_" + l, t.bSortable)
-        }
-        (m("sSearch", e.sSearch),
-        m("bRegex", e.bRegex));
-        d.bSort && (k.each(h, function(x, r) {
-            p.order.push({
-                column: r.col,
-                dir: r.dir
-            });
-            m("iSortCol_" + x, r.col);
-            m("sSortDir_" + x, r.dir)
-        }),
-        m("iSortingCols", h.length));
-        b = u.ext.legacy.ajax;
-        return null === b ? a.sAjaxSource ? g : p : b ? g : p
-    }
-    function Qb(a, b) {
-        var c = function(g, h) {
-            return b[g] !== q ? b[g] : b[h]
-        }
-          , d = Na(a, b)
-          , e = c("sEcho", "draw")
-          , f = c("iTotalRecords", "recordsTotal");
-        c = c("iTotalDisplayRecords", "recordsFiltered");
-        if (e !== q) {
-            if (1 * e < a.iDraw)
-                return;
-            a.iDraw = 1 * e
-        }
-        Ia(a);
-        a._iRecordsTotal = parseInt(f, 10);
-        a._iRecordsDisplay = parseInt(c, 10);
-        e = 0;
-        for (f = d.length; e < f; e++)
-            ea(a, d[e]);
-        a.aiDisplay = a.aiDisplayMaster.slice();
-        fa(a, !0);
-        a._bInitComplete || Oa(a, b);
-        U(a, !1)
-    }
+    
     function Na(a, b) {
         a = k.isPlainObject(a.ajax) && a.ajax.dataSrc !== q ? a.ajax.dataSrc : a.sAjaxDataProp;
         return "data" === a ? b.aaData || b[a] : "" !== a ? ia(a)(b) : b
     }
-    function Kb(a) {
-        var b = a.oClasses
-          , c = a.sTableId
-          , d = a.oLanguage
-          , e = a.oPreviousSearch
-          , f = a.aanFeatures
-          , g = '<input type="search" class="' + b.sFilterInput + '"/>'
-          , h = d.sSearch;
-        h = h.match(/_INPUT_/) ? h.replace("_INPUT_", g) : h + g;
-        b = k("<div/>", {
-            id: f.f ? null : c + "_filter",
-            "class": b.sFilter
-        }).append(k("<label/>").append(h));
-        var l = function() {
-            var m = this.value ? this.value : "";
-            m != e.sSearch && (ya(a, {
-                sSearch: m,
-                bRegex: e.bRegex,
-                bSmart: e.bSmart,
-                bCaseInsensitive: e.bCaseInsensitive
-            }),
-            a._iDisplayStart = 0,
-            fa(a))
-        };
-        f = null !== a.searchDelay ? a.searchDelay : "ssp" === P(a) ? 400 : 0;
-        var n = k("input", b).val(e.sSearch).attr("placeholder", d.sSearchPlaceholder).on("keyup.DT search.DT input.DT paste.DT cut.DT", f ? gb(l, f) : l).on("mouseup", function(m) {
-            setTimeout(function() {
-                l.call(n[0])
-            }, 10)
-        }).on("keypress.DT", function(m) {
-            if (13 == m.keyCode)
-                return !1
-        }).attr("aria-controls", c);
-        k(a.nTable).on("search.dt.DT", function(m, p) {
-            if (a === p)
-                try {
-                    n[0] !== z.activeElement && n.val(e.sSearch)
-                } catch (t) {}
-        });
-        return b[0]
-    }
-    function ya(a, b, c) {
-        var d = a.oPreviousSearch
-          , e = a.aoPreSearchCols
-          , f = function(h) {
-            d.sSearch = h.sSearch;
-            d.bRegex = h.bRegex;
-            d.bSmart = h.bSmart;
-            d.bCaseInsensitive = h.bCaseInsensitive
-        }
-          , g = function(h) {
-            return h.bEscapeRegex !== q ? !h.bEscapeRegex : h.bRegex
-        };
-        Za(a);
-        if ("ssp" != P(a)) {
-            Rb(a, b.sSearch, c, g(b), b.bSmart, b.bCaseInsensitive);
-            f(b);
-            for (b = 0; b < e.length; b++)
-                Sb(a, e[b].sSearch, b, g(e[b]), e[b].bSmart, e[b].bCaseInsensitive);
-            Tb(a)
-        } else
-            f(b);
-       
-        H(a, null, "search", [a])
-    }
+    
     function Tb(a) {
         for (var b = u.ext.search, c = a.aiDisplay, d, e, f = 0, g = b.length; f < g; f++) {
             for (var h = [], l = 0, n = c.length; l < n; l++)
@@ -2000,12 +1840,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
             this.api(!0).draw(f)
         }
         ;
-        this.fnFilter = function(f, g, h, l, n, m) {
-            n = this.api(!0);
-            null === g || g === q ? n.search(f, h, l, m) : n.column(g).search(f, h, l, m);
-            n.draw()
-        }
-        ;
         this.fnGetData = function(f, g) {
             var h = this.api(!0);
             if (f !== q) {
@@ -2191,26 +2025,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
                 Db(r, g.aoColumnDefs, t, function(B, E) {
                     Ea(r, B, E)
                 });
-                if (I.length) {
-                    var W = function(B, E) {
-                        return null !== B.getAttribute("data-" + E) ? E : null
-                    };
-                    k(I[0]).children("th, td").each(function(B, E) {
-                        var aa = r.aoColumns[B];
-                        if (aa.mData === B) {
-                            var X = W(E, "sort") || W(E, "order");
-                            E = W(E, "filter") || W(E, "search");
-                            if (null !== X || null !== E)
-                                aa.mData = {
-                                    _: B + ".display",
-                                    sort: null !== X ? B + ".@data-" + X : q,
-                                    type: null !== X ? B + ".@data-" + X : q,
-                                    filter: null !== E ? B + ".@data-" + E : q
-                                },
-                                Ea(r, B)
-                        }
-                    })
-                }
+                
                 var M = r.oFeatures;
                 f = function() {
                     if (g.aaSorting === q) {
@@ -2355,14 +2170,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
             a.push(b);
         return a
     };
-    Array.isArray || (Array.isArray = function(a) {
-        return "[object Array]" === Object.prototype.toString.call(a)
-    }
-    );
-    String.prototype.trim || (String.prototype.trim = function() {
-        return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "")
-    }
-    );
     u.util = {
         throttle: function(a, b) {
             var c = b !== q ? b : 200, d, e;
@@ -2439,45 +2246,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
     };
     u.Api = C;
     k.extend(C.prototype, {
-        any: function() {
-            return 0 !== this.count()
-        },
-        concat: N.concat,
-        context: [],
-        count: function() {
-            return this.flatten().length
-        },
-        each: function(a) {
-            for (var b = 0, c = this.length; b < c; b++)
-                a.call(this, this[b], b, this);
-            return this
-        },
-        eq: function(a) {
-            var b = this.context;
-            return b.length > a ? new C(b[a],this[a]) : null
-        },
-        filter: function(a) {
-            var b = [];
-            if (N.filter)
-                b = N.filter.call(this, a, this);
-            else
-                for (var c = 0, d = this.length; c < d; c++)
-                    a.call(this, this[c], c, this) && b.push(this[c]);
-            return new C(this.context,b)
-        },
-        flatten: function() {
-            var a = [];
-            return new C(this.context,a.concat.apply(a, this.toArray()))
-        },
-        join: N.join,
-        indexOf: N.indexOf || function(a, b) {
-            b = b || 0;
-            for (var c = this.length; b < c; b++)
-                if (this[b] === a)
-                    return b;
-            return -1
-        }
-        ,
         iterator: function(a, b, c, d) {
             var e = [], f, g, h = this.context, l, n = this.selector;
             "string" === typeof a && (d = c,
@@ -2510,56 +2278,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
             b.opts = n.opts,
             a) : this
         },
-        lastIndexOf: N.lastIndexOf || function(a, b) {
-            return this.indexOf.apply(this.toArray.reverse(), arguments)
-        }
-        ,
-        length: 0,
-        map: function(a) {
-            var b = [];
-            if (N.map)
-                b = N.map.call(this, a, this);
-            else
-                for (var c = 0, d = this.length; c < d; c++)
-                    b.push(a.call(this, this[c], c));
-            return new C(this.context,b)
-        },
-        pluck: function(a) {
-            return this.map(function(b) {
-                return b[a]
-            })
-        },
-        pop: N.pop,
-        push: N.push,
-        reduce: N.reduce || function(a, b) {
-            return Cb(this, a, b, 0, this.length, 1)
-        }
-        ,
-        reduceRight: N.reduceRight || function(a, b) {
-            return Cb(this, a, b, this.length - 1, -1, -1)
-        }
-        ,
-        reverse: N.reverse,
-        selector: null,
-        shift: N.shift,
-        slice: function() {
-            return new C(this.context,this)
-        },
-        sort: N.sort,
-        splice: N.splice,
-        toArray: function() {
-            return N.slice.call(this)
-        },
-        to$: function() {
-            return k(this)
-        },
-        toJQuery: function() {
-            return k(this)
-        },
-        unique: function() {
-            return new C(this.context,Ka(this))
-        },
-        unshift: N.unshift
+        
     });
     C.extend = function(a, b, c) {
         if (c.length && b && (b instanceof C || b.__dt_wrapper)) {
@@ -2620,22 +2339,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
             return d === this ? this : d instanceof C ? d.length ? Array.isArray(d[0]) ? new C(d.context,d[0]) : d[0] : q : d
         })
     }
-    ;
-    var nc = function(a, b) {
-        if (Array.isArray(a))
-            return k.map(a, function(d) {
-                return nc(d, b)
-            });
-        if ("number" === typeof a)
-            return [b[a]];
-        var c = k.map(b, function(d, e) {
-            return d.nTable
-        });
-        return k(c).filter(a).map(function(d) {
-            d = k.inArray(this, c);
-            return b[d]
-        }).toArray()
-    };
+    
     w("tables()", function(a) {
         return a !== q && null !== a ? new C(nc(a, this.context)) : this
     });
@@ -2777,15 +2481,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
                 f = a[n](d, e, f);
         return Ka(f)
     }
-      , vb = function(a) {
-        a || (a = {});
-        a.filter && a.search === q && (a.search = a.filter);
-        return k.extend({
-            search: "none",
-            order: "current",
-            page: "all"
-        }, a)
-    }
+     
       , wb = function(a) {
         for (var b = 0, c = a.length; b < c; b++)
             if (0 < a[b].length)
@@ -2833,42 +2529,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
                 (-1 === e && "removed" == f || 0 <= e && "applied" == f) && c.push(g));
         return c
     }
-      , wc = function(a, b, c) {
-        var d;
-        return ub("row", b, function(e) {
-            var f = hc(e)
-              , g = a.aoData;
-            if (null !== f && !c)
-                return [f];
-            d || (d = Va(a, c));
-            if (null !== f && -1 !== k.inArray(f, d))
-                return [f];
-            if (null === e || e === q || "" === e)
-                return d;
-            if ("function" === typeof e)
-                return k.map(d, function(l) {
-                    var n = g[l];
-                    return e(l, n._aData, n.nTr) ? l : null
-                });
-            if (e.nodeName) {
-                f = e._DT_RowIndex;
-                var h = e._DT_CellIndex;
-                if (f !== q)
-                    return g[f] && g[f].nTr === e ? [f] : [];
-                if (h)
-                    return g[h.row] && g[h.row].nTr === e.parentNode ? [h.row] : [];
-                f = k(e).closest("*[data-dt-row]");
-                return f.length ? [f.data("dt-row")] : []
-            }
-            if ("string" === typeof e && "#" === e.charAt(0) && (f = a.aIds[e.replace(/^#/, "")],
-            f !== q))
-                return [f.idx];
-            f = kc(Da(a.aoData, d, "nTr"));
-            return k(f).filter(e).map(function() {
-                return this._DT_RowIndex
-            }).toArray()
-        }, a, c)
-    };
+      
     w("rows()", function(a, b) {
         a === q ? a = "" : k.isPlainObject(a) && (b = a,
         a = "");
@@ -2890,12 +2551,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
             return Da(a.aoData, b, "_aData")
         }, 1)
     });
-    J("rows().cache()", "row().cache()", function(a) {
-        return this.iterator("row", function(b, c) {
-            b = b.aoData[c];
-            return "search" === a ? b._aFilterData : b._aSortData
-        }, 1)
-    });
+   
     J("rows().invalidate()", "row().invalidate()", function(a) {
         return this.iterator("row", function(b, c) {
             va(b, c, a)
@@ -3106,9 +2762,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
                 }
             if (g.nodeName && g._DT_CellIndex)
                 return [g._DT_CellIndex.column];
-            h = k(f).filter(g).map(function() {
-                return k.inArray(this, f)
-            }).toArray();
+            
             if (h.length || !g.nodeName)
                 return h;
             h = k(g).closest("*[data-dt-column]");
@@ -3142,11 +2796,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
     J("columns().dataSrc()", "column().dataSrc()", function() {
         return this.iterator("column", function(a, b) {
             return a.aoColumns[b].mData
-        }, 1)
-    });
-    J("columns().cache()", "column().cache()", function(a) {
-        return this.iterator("column-rows", function(b, c, d, e, f) {
-            return Da(b.aoData, f, "search" === a ? "_aFilterData" : "_aSortData", c)
         }, 1)
     });
     J("columns().nodes()", "column().nodes()", function() {
@@ -3228,12 +2877,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
             }
             if (k.isPlainObject(r))
                 return r.column !== q && r.row !== q && -1 !== k.inArray(r.row, e) ? [r] : [];
-            A = g.filter(r).map(function(D, I) {
-                return {
-                    row: I._DT_CellIndex.row,
-                    column: I._DT_CellIndex.column
-                }
-            }).toArray();
+            
             if (A.length || !r.nodeName)
                 return A;
             x = k(r).closest("*[data-dt-row]");
@@ -3288,12 +2932,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
             return S(a, b, c)
         }, 1)
     });
-    J("cells().cache()", "cell().cache()", function(a) {
-        a = "search" === a ? "_aFilterData" : "_aSortData";
-        return this.iterator("cell", function(b, c, d) {
-            return b.aoData[c][a][d]
-        }, 1)
-    });
+    
     J("cells().render()", "cell().render()", function(a) {
         return this.iterator("cell", function(b, c, d) {
             return S(b, c, d, a)
@@ -3402,31 +3041,8 @@ table.dataTable, table.dataTable th, table.dataTable td {
             Ra(a)
         })
     });
-    u.versionCheck = u.fnVersionCheck = function(a) {
-        var b = u.version.split(".");
-        a = a.split(".");
-        for (var c, d, e = 0, f = a.length; e < f; e++)
-            if (c = parseInt(b[e], 10) || 0,
-            d = parseInt(a[e], 10) || 0,
-            c !== d)
-                return c > d;
-        return !0
-    }
-    ;
-    u.isDataTable = u.fnIsDataTable = function(a) {
-        var b = k(a).get(0)
-          , c = !1;
-        if (a instanceof u.Api)
-            return !0;
-        k.each(u.settings, function(d, e) {
-            d = e.nScrollHead ? k("table", e.nScrollHead)[0] : null;
-            var f = e.nScrollFoot ? k("table", e.nScrollFoot)[0] : null;
-            if (e.nTable === b || d === b || f === b)
-                c = !0
-        });
-        return c
-    }
-    ;
+    
+    
     u.tables = u.fnTables = function(a) {
         var b = !1;
         k.isPlainObject(a) && (b = a.api,
@@ -3439,22 +3055,8 @@ table.dataTable, table.dataTable th, table.dataTable td {
     }
     ;
     u.camelToHungarian = O;
-    w("$()", function(a, b) {
-        b = this.rows(b).nodes();
-        b = k(b);
-        return k([].concat(b.filter(a).toArray(), b.find(a).toArray()))
-    });
-    k.each(["on", "one", "off"], function(a, b) {
-        w(b + "()", function() {
-            var c = Array.prototype.slice.call(arguments);
-            c[0] = k.map(c[0].split(/\s/), function(e) {
-                return e.match(/\.dt\b/) ? e : e + ".dt"
-            }).join(" ");
-            var d = k(this.tables().nodes());
-            d[b].apply(d, c);
-            return this
-        })
-    });
+    
+    
     w("clear()", function() {
         return this.iterator("table", function(a) {
             Ia(a)
@@ -3533,19 +3135,10 @@ table.dataTable, table.dataTable th, table.dataTable td {
     u.version = "1.10.25";
     u.settings = [];
     u.models = {};
-    u.models.oSearch = {
-        bCaseInsensitive: !0,
-        sSearch: "",
-        bRegex: !1,
-        bSmart: !0
-    };
     u.models.oRow = {
         nTr: null,
         anCells: null,
         _aData: [],
-        _aSortData: null,
-        _aFilterData: null,
-        _sFilterRow: null,
         _sRowStripe: "",
         src: null,
         idx: -1
@@ -3638,40 +3231,14 @@ table.dataTable, table.dataTable th, table.dataTable td {
             oAria: {
                 sSortAscending: ": activate to sort column ascending",
                 sSortDescending: ": activate to sort column descending"
-            },
-            oPaginate: {
-                sFirst: "First",
-                sLast: "Last",
-                sNext: "Next",
-                sPrevious: "Previous"
-            },
-            sEmptyTable: "No data available in table",
-            sInfo: "Showing _START_ to _END_ of _TOTAL_ entries",
-            sInfoEmpty: "Showing 0 to 0 of 0 entries",
-            sInfoFiltered: "(filtered from _MAX_ total entries)",
-            sInfoPostFix: "",
-            sDecimal: "",
-            sThousands: ",",
-            sLengthMenu: "Show _MENU_ entries",
-            sLoadingRecords: "Loading...",
-            sProcessing: "Processing...",
-            sSearch: "Search:",
-            sSearchPlaceholder: "",
-            sUrl: "",
-            sZeroRecords: "No matching records found"
+            }
         },
-        oSearch: k.extend({}, u.models.oSearch),
         sAjaxDataProp: "data",
         sAjaxSource: null,
         sDom: "lfrtip",
-        searchDelay: null,
-        sPaginationType: "simple_numbers",
         sScrollX: "",
         sScrollXInner: "",
         sScrollY: "",
-        sServerMethod: "GET",
-        renderer: null,
-        rowId: "DT_RowId"
     };
     G(u.defaults);
     u.defaults.column = {
@@ -3730,9 +3297,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
         aoPreSearchCols: [],
         aaSorting: null,
         aaSortingFixed: [],
-        asStripeClasses: null,
-        asDestroyStripes: [],
-        sDestroyWidth: 0,
         aoRowCallback: [],
         aoHeaderCallback: [],
         aoFooterCallback: [],
@@ -3740,43 +3304,14 @@ table.dataTable, table.dataTable th, table.dataTable td {
         aoRowCreatedCallback: [],
         aoPreDrawCallback: [],
         aoInitComplete: [],
-        aoStateSaveParams: [],
-        aoStateLoadParams: [],
-        aoStateLoaded: [],
         sTableId: "",
         nTable: null,
         nTHead: null,
         nTFoot: null,
         nTBody: null,
         nTableWrapper: null,
-        bDeferLoading: !1,
-        bInitialised: !1,
-        aoOpenRows: [],
-        sDom: null,
-        searchDelay: null,
-        sPaginationType: "two_button",
-        iStateDuration: 0,
-        aoStateSave: [],
-        aoStateLoad: [],
-        oSavedState: null,
-        oLoadedState: null,
-        sAjaxSource: null,
-        sAjaxDataProp: null,
-        jqXHR: null,
-        json: q,
-        oAjaxData: q,
-        fnServerData: null,
-        aoServerParams: [],
-        sServerMethod: null,
-        fnFormatNumber: null,
-        aLengthMenu: null,
-        iDraw: 0,
-        bDrawing: !1,
-        iDrawError: -1,
-        _iDisplayLength: 10,
-        _iDisplayStart: 0,
-        _iRecordsTotal: 0,
-        _iRecordsDisplay: 0,
+        
+    
         oClasses: {},
         bSorted: !1,
         bSortCellsTop: null,
@@ -3807,23 +3342,9 @@ table.dataTable, table.dataTable th, table.dataTable td {
     u.ext = L = {
         buttons: {},
         classes: {},
-        builder: "-source-",
-        errMode: "alert",
         feature: [],
-        search: [],
-        selector: {
-            cell: [],
-            column: [],
-            row: []
-        },
-        internal: {},
-        legacy: {
-            ajax: null
-        },
-        pager: {},
+        
         renderer: {
-            pageButton: {},
-            header: {}
         },
         order: {},
         type: {
@@ -3831,11 +3352,8 @@ table.dataTable, table.dataTable th, table.dataTable td {
             search: {},
             order: {}
         },
-        _unique: 0,
-        fnVersionCheck: u.fnVersionCheck,
-        iApiIndex: 0,
-        oJUIClasses: {},
-        sVersion: u.version
+        
+        
     };
     
     k.extend(u.ext.classes, {
@@ -3846,130 +3364,24 @@ table.dataTable, table.dataTable th, table.dataTable td {
         sPageButtonDisabled: "disabled",
         sStripeOdd: "odd",
         sStripeEven: "even",
-        sRowEmpty: "dataTables_empty",
         sWrapper: "dataTables_wrapper",
         sInfo: "dataTables_info",
         sPaging: "dataTables_paginate paging_",
         sLength: "dataTables_length",
-        sProcessing: "dataTables_processing",
         sSortAsc: "sorting_asc",
         sSortDesc: "sorting_desc",
         sSortable: "sorting",
         sSortableAsc: "sorting_desc_disabled",
         sSortableDesc: "sorting_asc_disabled",
         sSortableNone: "sorting_disabled",
-        sSortColumn: "sorting_",
-        sScrollWrapper: "dataTables_scroll",
-        sScrollHead: "dataTables_scrollHead",
-        sScrollHeadInner: "dataTables_scrollHeadInner",
-        sScrollBody: "dataTables_scrollBody",
-        sScrollFoot: "dataTables_scrollFoot",
-        sScrollFootInner: "dataTables_scrollFootInner",
+        sSortColumn: "sorting_"
         
     });
     var ec = u.ext.pager;
-    k.extend(ec, {
-        simple: function(a, b) {
-            return ["previous", "next"]
-        },
-        full: function(a, b) {
-            return ["first", "previous", "next", "last"]
-        },
-        numbers: function(a, b) {
-            return [Ca(a, b)]
-        },
-        simple_numbers: function(a, b) {
-            return ["previous", Ca(a, b), "next"]
-        },
-        full_numbers: function(a, b) {
-            return ["first", "previous", Ca(a, b), "next", "last"]
-        },
-        first_last_numbers: function(a, b) {
-            return ["first", Ca(a, b), "last"]
-        },
-        _numbers: Ca,
-        numbers_length: 7
-    });
-    k.extend(!0, u.ext.renderer, {
-        pageButton: {
-            _: function(a, b, c, d, e, f) {
-                var g = a.oClasses, h = a.oLanguage.oPaginate, l = a.oLanguage.oAria.paginate || {}, n, m, p = 0, t = function(x, r) {
-                    var A, D = g.sPageButtonDisabled, I = function(E) {
-                        lb(a, E.data.action, !0)
-                    };
-                    var W = 0;
-                    for (A = r.length; W < A; W++) {
-                        var M = r[W];
-                        if (Array.isArray(M)) {
-                            var B = k("<" + (M.DT_el || "div") + "/>").appendTo(x);
-                            t(B, M)
-                        } else {
-                            n = null;
-                            m = M;
-                            B = a.iTabIndex;
-                            switch (M) {
-                            case "ellipsis":
-                                x.append('<span class="ellipsis">&#x2026;</span>');
-                                break;
-                            case "first":
-                                n = h.sFirst;
-                                0 === e && (B = -1,
-                                m += " " + D);
-                                break;
-                            case "previous":
-                                n = h.sPrevious;
-                                0 === e && (B = -1,
-                                m += " " + D);
-                                break;
-                            case "next":
-                                n = h.sNext;
-                                if (0 === f || e === f - 1)
-                                    B = -1,
-                                    m += " " + D;
-                                break;
-                            case "last":
-                                n = h.sLast;
-                                if (0 === f || e === f - 1)
-                                    B = -1,
-                                    m += " " + D;
-                                break;
-                            default:
-                                n = a.fnFormatNumber(M + 1),
-                                m = e === M ? g.sPageButtonActive : ""
-                            }
-                            null !== n && (B = k("<a>", {
-                                "class": g.sPageButton + " " + m,
-                                "aria-controls": a.sTableId,
-                                "aria-label": l[M],
-                                "data-dt-idx": p,
-                                tabindex: B,
-                                id: 0 === c && "string" === typeof M ? a.sTableId + "_" + M : null
-                            }).html(n).appendTo(x),
-                            pb(B, {
-                                action: M
-                            }, I),
-                            p++)
-                        }
-                    }
-                };
-                try {
-                    var v = k(b).find(z.activeElement).data("dt-idx")
-                } catch (x) {}
-                t(k(b).empty(), d);
-                v !== q && k(b).find("[data-dt-idx=" + v + "]").trigger("focus")
-            }
-        }
-    });
     
     
-    var Ta = function(a, b, c, d) {
-        if (0 !== a && (!a || "-" === a))
-            return -Infinity;
-        b && (a = ic(a, b));
-        a.replace && (c && (a = a.replace(c, "")),
-        d && (a = a.replace(d, "")));
-        return 1 * a
-    };
+    
+   
     
     Wa("");
     k.extend(!0, u.ext.renderer, {
@@ -3990,131 +3402,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
             }
         }
     });
-    var yb = function(a) {
-        return "string" === typeof a ? a.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") : a
-    };
-    u.render = {
-        number: function(a, b, c, d, e) {
-            return {
-                display: function(f) {
-                    if ("number" !== typeof f && "string" !== typeof f)
-                        return f;
-                    var g = 0 > f ? "-" : ""
-                      , h = parseFloat(f);
-                    if (isNaN(h))
-                        return yb(f);
-                    h = h.toFixed(c);
-                    f = Math.abs(h);
-                    h = parseInt(f, 10);
-                    f = c ? b + (f - h).toFixed(c).substring(2) : "";
-                    0 === h && 0 === parseFloat(f) && (g = "");
-                    return g + (d || "") + h.toString().replace(/\B(?=(\d{3})+(?!\d))/g, a) + f + (e || "")
-                }
-            }
-        },
-        text: function() {
-            return {
-                display: yb,
-                filter: yb
-            }
-        }
-    };
-    k.extend(u.ext.internal, {
-        _fnExternApiFunc: fc,
-        _fnBuildAjax: Ma,
-        _fnAjaxUpdate: Gb,
-        _fnAjaxParameters: Pb,
-        _fnAjaxUpdateDraw: Qb,
-        _fnAjaxDataSrc: Na,
-        _fnAddColumn: Xa,
-        _fnColumnOptions: Ea,
-        _fnAdjustColumnSizing: ra,
-        _fnVisibleToColumnIndex: sa,
-        _fnColumnIndexToVisible: ta,
-        _fnVisbleColumns: na,
-        _fnGetColumns: Ga,
-        _fnColumnTypes: Za,
-        _fnApplyColumnDefs: Db,
-        _fnHungarianMap: G,
-        _fnCamelToHungarian: O,
-        _fnLanguageCompat: ma,
-        _fnBrowserDetect: Bb,
-        _fnAddData: ea,
-        _fnAddTr: Ha,
-        _fnNodeToDataIndex: function(a, b) {
-            return b._DT_RowIndex !== q ? b._DT_RowIndex : null
-        },
-        _fnNodeToColumnIndex: function(a, b, c) {
-            return k.inArray(c, a.aoData[b].anCells)
-        },
-        _fnGetCellData: S,
-        _fnSetCellData: Eb,
-        _fnSplitObjNotation: bb,
-        _fnGetObjectDataFn: ia,
-        _fnSetObjectDataFn: da,
-        _fnGetDataMaster: cb,
-        _fnClearTable: Ia,
-        _fnDeleteIndex: Ja,
-        _fnInvalidate: va,
-        _fnGetRowElements: ab,
-        _fnCreateTr: $a,
-        _fnBuildHead: Fb,
-        _fnDrawHead: xa,
-        _fnDraw: fa,
-        _fnReDraw: ja,
-        _fnAddOptionsHtml: Ib,
-        _fnDetectHeader: wa,
-        _fnGetUniqueThs: La,
-        _fnFeatureHtmlFilter: Kb,
-        _fnFilterComplete: ya,
-        _fnFilterCustom: Tb,
-        _fnFilterColumn: Sb,
-        _fnFilter: Rb,
-        _fnFilterCreateSearch: hb,
-        _fnEscapeRegex: ib,
-        _fnFilterData: Ub,
-        _fnFeatureHtmlInfo: Nb,
-        _fnUpdateInfo: Xb,
-        _fnInfoMacros: Yb,
-        _fnInitialise: za,
-        _fnInitComplete: Oa,
-        _fnLengthChange: jb,
-        _fnFeatureHtmlLength: Jb,
-        _fnFeatureHtmlPaginate: Ob,
-        _fnPageChange: lb,
-        _fnFeatureHtmlProcessing: Lb,
-        _fnProcessingDisplay: U,
-        _fnFeatureHtmlTable: Mb,
-        _fnScrollDraw: Fa,
-        _fnApplyToChildren: ba,
-        _fnCalculateColumnWidths: Ya,
-        _fnThrottle: gb,
-        _fnConvertToWidth: Zb,
-        _fnGetWidestNode: $b,
-        _fnGetMaxLenString: ac,
-        _fnStringToCss: K,
-        _fnSortFlatten: pa,
-        _fnSort: Hb,
-        _fnSortAria: cc,
-        _fnSortListener: ob,
-        _fnSortAttachListener: eb,
-        _fnSortingClasses: Qa,
-        _fnSortData: bc,
-        _fnSaveState: Ra,
-        _fnLoadState: dc,
-        _fnSettingsFromNode: Sa,
-        _fnLog: ca,
-        _fnMap: V,
-        _fnBindAction: pb,
-        _fnCallbackReg: Q,
-        _fnCallbackFire: H,
-        _fnLengthOverflow: kb,
-        _fnRenderer: fb,
-        _fnDataSource: P,
-        _fnRowAttributes: db,
-        _fnExtend: qb,
-        _fnCalculateEnd: function() {}
-    });
+    
     k.fn.dataTable = u;
     u.$ = k;
     k.fn.dataTableSettings = u.settings;
@@ -4123,9 +3411,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
         return k(this).dataTable(a).api()
     }
     ;
-    k.each(u, function(a, b) {
-        k.fn.DataTable[a] = b
-    });
+    
     return k.fn.dataTable
 });
 
