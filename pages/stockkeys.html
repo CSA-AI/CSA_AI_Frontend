@@ -74,65 +74,61 @@ layout: loggedin
         const originalTitle = document.getElementById('pageTitle').textContent; // Store the original title
 
         function parseJwt(token) {
-        if (!token) {
-            console.error("Invalid token");
-            return null;
-        }
-        try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        } catch (error) {
-            console.error("Failed to parse token:", error);
-            return null;
-        }
+    if (!token) {
+        console.error("Invalid token");
+        return null;
+    }
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error("Failed to parse token:", error);
+        return null;
+    }
 }
 
 
-        function loadData(key) {
-            const tbody = document.getElementById('stockTable').getElementsByTagName('tbody')[0];
-            tbody.innerHTML = ''; // Clear current rows
 
-            // Change the page title based on the button clickedj
-            const keyToTitle = {
-                ticker: "Ticker",
-                growth: "Growth %",
-                open: "Open",
-                high: "High",
-                low: "Low",
-                volume: "Volume"
-            };
-            document.getElementById('pageTitle').textContent = keyToTitle[key];
+function loadData(key) {
+    const tbody = document.getElementById('stockTable').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = ''; // Clear current rows
 
-            fetch(`https://csa-ai.stu.nighthawkcodingsociety.com/api/stockObject/${key}`)
-            .then(response => {
-                if (!response.ok) throw new Error(`Failed to fetch data: ${response.statusText}`);
-                return response.json();
-            })
-            .then(data => {
-                data.forEach(stock => {
-                    const row = tbody.insertRow();
-                    row.insertCell(0).textContent = stock.ticker;
-                    row.insertCell(1).textContent = stock.predictionsPercentGrowth.toFixed(2) + '%';
-                    row.insertCell(2).textContent = stock.open.toFixed(2);
-                    row.insertCell(3).textContent = stock.high.toFixed(2);
-                    row.insertCell(4).textContent = stock.low.toFixed(2);
-                    row.insertCell(5).textContent = stock.volume.toLocaleString();
-                });
-            })
-            .catch(error => {
-                console.error('Failed to fetch data:', error);
-                tbody.innerHTML = '<tr><td colspan="6">Error loading data. Please try again later.</td></tr>';
-            });
-        }
+    const keyToTitle = {
+        ticker: "Ticker",
+        growth: "Growth %",
+        open: "Open",
+        high: "High",
+        low: "Low",
+        volume: "Volume"
+    };
+    document.getElementById('pageTitle').textContent = keyToTitle[key];
 
-        // Reset title on page reload
-        window.addEventListener('load', () => {
-            document.getElementById('pageTitle').textContent = originalTitle;
+    fetch(`https://csa-ai.stu.nighthawkcodingsociety.com/api/stockObject/${key}`)
+    .then(response => {
+        if (!response.ok) throw new Error(`Failed to fetch data: ${response.statusText}`);
+        return response.json();
+    })
+    .then(data => {
+        data.forEach(stock => {
+            const row = tbody.insertRow();
+            row.insertCell(0).textContent = stock.ticker;
+            row.insertCell(1).textContent = stock.predictionsPercentGrowth.toFixed(2) + '%';
+            row.insertCell(2).textContent = stock.open.toFixed(2);
+            row.insertCell(3).textContent = stock.high.toFixed(2);
+            row.insertCell(4).textContent = stock.low.toFixed(2);
+            row.insertCell(5).textContent = stock.volume.toLocaleString();
         });
+    })
+    .catch(error => {
+        console.error('Failed to fetch data:', error);
+        tbody.innerHTML = '<tr><td colspan="6">Error loading data. Please try again later.</td></tr>';
+    });
+}
+
     </script>
 </body>
 </html>
