@@ -113,18 +113,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
             O(a[d], b[d], c)) : b[d] = b[e])
         })
     }
-    function ma(a) {
-        var b = u.defaults.oLanguage
-          , c = b.sDecimal;
-        c && Wa(c);
-        if (a) {
-            var d = a.sZeroRecords;
-            !a.sEmptyTable && d && "No data available in table" === b.sEmptyTable && V(a, a, "sZeroRecords", "sEmptyTable");
-            !a.sLoadingRecords && d && "Loading..." === b.sLoadingRecords && V(a, a, "sZeroRecords", "sLoadingRecords");
-            a.sInfoThousands && (a.sThousands = a.sInfoThousands);
-            (a = a.sDecimal) && c !== a && Wa(a)
-        }
-    }
     function zb(a) {
         R(a, "ordering", "bSort");
         R(a, "orderMulti", "bSortMulti");
@@ -1955,7 +1943,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
                 t.push(r);
                 r.oInstance = 1 === b.length ? b : p.dataTable();
                 zb(g);
-                ma(g.oLanguage);
                 g.aLengthMenu && !g.iDisplayLength && (g.iDisplayLength = Array.isArray(g.aLengthMenu[0]) ? g.aLengthMenu[0][0] : g.aLengthMenu[0]);
                 g = qb(k.extend(!0, {}, m), g);
                 V(r.oFeatures, g, "bPaginate bSort bSortMulti bAutoWidth bSortClasses bServerSide bDeferRender".split(" "));
@@ -1990,7 +1977,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
                     dataType: "json",
                     url: D.sUrl,
                     success: function(B) {
-                        ma(B);
                         O(m.oLanguage, B);
                         k.extend(!0, D, B);
                         H(r, null, "i18n", [r]);
