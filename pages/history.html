@@ -141,7 +141,7 @@ layout: loggedin
             redirect: "follow"
         };
 
-        fetch("http://localhost:8017/api/stock/trades/" + email, requestOptions)
+        fetch("https://csa-ai.stu.nighthawkcodingsociety.com/api/stock/trades/" + email, requestOptions)
             .then((response) => response.json())
             .then((data) => {
                 populateTable(data);
