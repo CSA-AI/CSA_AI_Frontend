@@ -73,7 +73,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
         const content = document.getElementById("tableContent");
 
         // Fetch data from the API
-        fetch('https://csa-ai.stu.nighthawkcodingsociety.com/api/performance/accountValue')
+        fetch('http://localhost:8017/api/performance/accountValue')
             .then(response => response.json())
             .then(data => {
                 data.forEach((user, index) => {

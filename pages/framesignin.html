@@ -125,7 +125,7 @@ layout: project
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         // Get base64 representation of the image data
         const imageData = canvas.toDataURL('image/png').replace(/^data:image\/\w+;base64,/, '');
-        fetch('https://csa-ai.stu.nighthawkcodingsociety.com/image', {
+        fetch('http://localhost:8017/image', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ layout: project
         .catch(error => {
             console.error('error:', error);
         });
-        fetch('https://csa-ai.stu.nighthawkcodingsociety.com/predictions')
+        fetch('http://localhost:8017/predictions')
           .then(response => response.json())
           .then(data => {
             const recentPrediction = data[data.length - 1];

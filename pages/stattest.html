@@ -289,7 +289,7 @@ layout: loggedin
 
     function fetchLSTMData() {
         const symbol = document.getElementById("symbol").value || 'AAPL';
-        const url = `http://csa-ai.stu.nighthawkcodingsociety.com/api/lstm/${symbol}`;
+        const url = `http://localhost:8017/api/lstm/${symbol}`;
 
         axios.get(url)
             .then(function (response) {

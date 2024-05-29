@@ -227,7 +227,7 @@ layout: main
         // Convert the cropped canvas to a data URL and send it
         const imageData = cropCanvas.toDataURL('image/png').replace(/^data:image\/\w+;base64,/, '');
 
-        fetch('https://csa-ai.stu.nighthawkcodingsociety.com/image', {
+        fetch('http://localhost:8017/image', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ image: imageData }),
