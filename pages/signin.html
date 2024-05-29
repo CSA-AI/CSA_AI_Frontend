@@ -1,6 +1,95 @@
----
-layout: main
----
+<!DOCTYPE html>
+<html data-theme="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="/assets/img/favicon.ico">
+    <title></title>
+    <!-- CSS Files -->
+    <link href="/assets/css/main.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/7095decebb.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <!-- Navbar -->
+<nav class="navbar sticky top-0 bg-base-200">
+    <!-- Menu for desktop -->
+    <div class="w-full hidden md:grid grid-cols-5 gap-2">
+        <!-- Left menu -->
+        <ul class="col-span-2 menu menu-horizontal justify-end text-xl">
+            <li><a href="/blogs">Blogs</a></li>
+        </ul>
+
+        <!-- Centered logo -->
+        <div class="flex justify-center">
+            <a href="/" class="btn btn-ghost text-2xl">
+                <img alt="Logo" src="/assets/images/logo.svg" class="w-8" />
+                Stock AI
+            </a>
+        </div>
+        <!-- Logo -->
+
+
+        <!-- Right menu -->
+        <ul class="col-span-2 menu menu-horizontal justify-start gap-4 text-xl">
+            <li><a href="/pages/signin.html"><i class="fa-solid fa-right-to-bracket"></i>Login</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- <div class="navbar bg-base-100 sticky top-0">
+    <a href="/" class="flex items-center ml-5">
+      <img src="/assets/images/image2.jpg" class="h-16" alt="Flowbite Logo" />
+    </a>
+  
+    <div class="md:flex space-x-10 mr-20">
+      <a href="/blogs" class="btn btn-ghost ml-16">BLOGS</a>
+    </div>
+    
+    <div class="navbar-end md:ml-auto md:mr-10">
+      <a href="/pages/statslive.html" class="btn btn-ghost mr-10">LIVE STATS</a>
+      <a href="/pages/graph_prediction.html" class="btn btn-ghost mr-10">STATS PREDICTIONS</a>
+      <a href="/pages/dash.html" class="btn btn-ghost mr-10">DASHBOARD</a>
+      <a href="/pages/profile.html" id="profileBtn" class="btn btn-ghost">PROFILE</a>
+      <a href="/pages/stockkeys.html" id="profileBtn" class="btn btn-ghost">Stock Dashboard</a>
+      <a class="btn btn-ghost" id="signoutBtn" onclick="signout()">SIGNOUT</a>
+      <a href="/pages/signin.html" id="signinBtn" class="btn btn-ghost">SIGN IN</a>
+    </div>
+</div> -->
+<script>
+    function signout() {
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        window.location.replace("/index.html");
+    }
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        console.log(value)
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    getCookie("token");
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const token = getCookie("token");
+        if (token) {
+            document.getElementById('profileBtn').classList.remove('hidden');
+            document.getElementById('signoutBtn').classList.remove('hidden');
+            document.getElementById('signinBtn').classList.add('hidden');
+        } else {
+            document.getElementById('profileBtn').classList.add('hidden');
+            document.getElementById('signoutBtn').classList.add('hidden');
+            document.getElementById('signinBtn').classList.remove('hidden');
+        }
+    });
+</script>
+    
+    <main>
+
+      <div>
 <style>
   .alert {
       position: absolute;
@@ -50,74 +139,70 @@ layout: main
   <span id="successMessage">Success Message Here</span>
 </div>
 
-<div class="hero">
-  <div class="hero-content flex-col lg:flex-row-reverse">
-      <div class="hero-form card shrink-0 w-full max-w-sm shadow-2xl bg-base-100 active">
-        <div class="flex justify-center m-5">
-            <button class="btn mr-5" onclick="toggleForm('signin')">Sign In</button>
-            <button class="btn" onclick="toggleForm('signup')">Sign Up</button>
-        </div>
-      </div>
-  </div>
-</div>
 
-<div class="hero">
+<div style="margin-top: 125px;" class="hero">
   <div class="hero-content flex-col lg:flex-row-reverse">
       <div class="hero-form form card shrink-0 w-full max-w-sm shadow-2xl bg-base-100 active" id="signinForm">
           <form class="card-body">
             <label>
-              <span class="text-3xl justify-center">Sign-In</span>
+              <span class="text-3xl justify-center"><b>Login</b></span>
             </label>
               <div class="form-control">
                   <label class="label">
                       <span class="label-text">Email</span>
                   </label>
-                  <input id="signinEmail" type="email" placeholder="email" class="input input-bordered" required />
+                  <input id="signinEmail" type="email" placeholder="john@example.com" class="input input-bordered" required />
               </div>
               <div class="form-control">
                   <label class="label">
                       <span class="label-text">Password</span>
                   </label>
-                  <input id="signinPassword" type="password" placeholder="password" class="input input-bordered" required />
+                  <input id="signinPassword" type="password" placeholder="*********" class="input input-bordered" required />
+              </div>
+              <div class="form-control">
+                  <a href="#" onclick="toggleForm('signup')">Don't have an account?</a>
               </div>
           </form>
           <div class="form-control">
-              <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="login()">Verify</button>
+              <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="login()">Sign In</button>
           </div>
       </div>
 
       <div class="hero-form form card shrink-0 w-full max-w-sm shadow-2xl bg-base-100" id="signupForm">
           <form class="card-body">
             <label>
-              <span class="text-3xl justify-center">Sign-Up</span>
+              <span class="text-3xl justify-center"><b>Register</b></span>
             </label>
               <div class="form-control">
                   <label class="label">
                       <span class="label-text">Email</span>
                   </label>
-                  <input id="signupEmail" type="email" placeholder="email" class="input input-bordered" required />
+                  <input id="signupEmail" type="email" placeholder="james@example.com" class="input input-bordered" required />
               </div>
               <div class="form-control">
                   <label class="label">
                       <span class="label-text">Password</span>
                   </label>
-                  <input id="signupPassword" type="password" placeholder="password" class="input input-bordered" required />
+                  <input id="signupPassword" type="password" placeholder="*********" class="input input-bordered" required />
               </div>
               <div class="form-control">
                   <label class="label">
-                      <span class="label-text">Name</span>
+                      <span class="label-text">Username</span>
                   </label>
-                  <input id="signupName" type="text" placeholder="name" class="input input-bordered" required />
+                  <input id="signupName" type="text" placeholder="James" class="input input-bordered" required />
               </div>
               <div class="form-control">
                   <label class="label">
                       <span class="label-text">Date of Birth</span>
                   </label>
-                  <input id="signupDob" type="text" placeholder="dob (mm-dd-yyyy)" class="input input-bordered" required />
+                  <input id="signupDob" type="text" placeholder="01/01/2024" class="input input-bordered" required />
+              </div>
+              <div class="form-control">
+                  <a href="#" onclick="toggleForm('signin')">I already have an account</a>
               </div>
           </form>
           <div class="form-control">
-              <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="signup()">Next Step</button>
+              <button class="btn btn-primary ml-10 mr-10 mb-10" onclick="signup()">Next</button>
           </div>
       </div>
   </div>
