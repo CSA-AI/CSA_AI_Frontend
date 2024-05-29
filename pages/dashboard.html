@@ -62,9 +62,6 @@ layout: loggedin
                                 
                             </div>
                         </div>
-                        <button type="button" class="btn btn-error btn-m">
-                            Leave Game
-                        </button>
                     </div>
                 </div>
 
@@ -141,7 +138,7 @@ layout: loggedin
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        fetchStockTrades();
+        fetchStockTrades('CSA-AI');
         getClasses();
         fetchClassData('CSA-AI');
 
@@ -161,7 +158,7 @@ layout: loggedin
         });
     });
 
-    function fetchStockTrades() {
+    function fetchStockTrades(classCode) {
 
         const token = getCookie("token");
         const decodedToken = parseJwt(token);
@@ -171,7 +168,7 @@ layout: loggedin
             redirect: "follow"
         };
 
-        fetch("http://localhost:8017/api/stock/tickers/" + email, requestOptions)
+        fetch("http://localhost:8017/api/stock/tickers/" + email + "/" + classCode, requestOptions)
             .then((response) => response.json())
             .then((data) => {
                 populateTable(data);
@@ -257,21 +254,26 @@ layout: loggedin
         fetch(`http://localhost:8017/api/person/class/${classCode}/${email}`, requestOptions)
             .then((response) => response.json())
             .then((data) => {
-                updateAccountValue(data.totalAccountValue);
-                updateBuyingPower(data.buyingPower);
-                console.log(data);
+                // Update game title
                 document.getElementById("game-title").textContent = data.className;
+    
+                // Update account value
+                updateAccountValue(data.totalAccountValue);
+    
+                // Update buying power
+                updateBuyingPower(data.buyingPower);
+
+                fetchStockTrades(classCode);
+    
+                // Calculate total change
                 const totalChange = data.totalAccountValue - 100000;
                 const totalPercentageChange = ((totalChange / 100000) * 100).toFixed(2);
                 updateChangeElement('total-change', totalChange, totalPercentageChange);
+    
+                // Fetch and update daily change
                 const currentDate = new Date();
-                const year = currentDate.getFullYear();
-                const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 to month because January is 0
-                const day = String(currentDate.getDate()).padStart(2, '0'); // Adding padding to ensure two digits for month and day
-        
-                const formattedDate = `${year}-${month}-${day}`;
-
-                fetchDailyChange(classCode, formattedDate, data.totalAccountValue)
+                const formattedDate = currentDate.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+                fetchDailyChange(classCode, formattedDate, data.totalAccountValue);
             })
             .catch((error) => console.error(error));
     }

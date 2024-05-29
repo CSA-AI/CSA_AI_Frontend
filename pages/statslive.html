@@ -484,7 +484,7 @@ function changeOutputSize(size) {
                 };
     
                 // Submit trade data
-                const response = await fetch('hhttp://localhost:8017/api/stock/trade', {
+                const response = await fetch('http://localhost:8017/api/stock/trade', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

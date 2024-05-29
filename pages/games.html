@@ -1,7 +1,7 @@
 ---
 layout: loggedin
 ---
-<!-- make dynamically allocating games based on backend data -->
+
 <style>
     .box {
         margin-top: auto;
@@ -18,7 +18,7 @@ layout: loggedin
                     <div class="flex items-center gap-x-2">
                         <div class="relative">
                             <button id="dropdownButton" data-dropdown-toggle="dropdown" class="btn btn-info btn-m"
-                                onclick="addClass.showModal()">
+                                onclick="document.getElementById('addClass').showModal()">
                                 <i class="fa-solid fa-plus"></i>
                                 Add Class
                             </button>
@@ -29,309 +29,141 @@ layout: loggedin
                     <div class="modal-box">
                         <h3 class="font-bold text-lg">Enter Game Code</h3>
                         <p class="py-4">Please enter your game code below:</p>
-                        <input type="text" placeholder="Game Code" class="input input-bordered w-full max-w-xs" />
+                        <input type="text" id="gameCodeInput" placeholder="Game Code" class="input input-bordered w-full max-w-xs" />
                         <div class="modal-action">
-                            <form method="dialog">
-                                <button class="btn btn-success" onclick="addClass()">Add</button>
-                                <button class="btn">Cancel</button>
-                            </form>
+                            <button class="btn btn-success" onclick="joinGame()">Add</button>
+                            <button class="btn" onclick="document.getElementById('addClass').close()">Cancel</button>
                         </div>
                     </div>
                 </dialog>
             </div>
-            <div class="grid grid-cols-3 gap-6 m-3">
-
-
-
-                <!-- Card 1 -->
-                <div class="card w-96 shadow-lg bg-white">
-                    <div class="card-body">
-                        <h2 class="card-title text-xl font-semibold">Game 1</h2>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-stretch">
-                                <div class="text-gray-400 text-xs">Game<br>Admins</div>
-                                <div class="h-100 border-l mx-4"></div>
-                                <div class="flex flex-nowrap -space-x-3">
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
-                                    </div>
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-x-2">
-                                <div class="relative">
-                                    <button id="dropdownButton" data-dropdown-toggle="dropdown"
-                                        class="btn btn-info btn-m">
-                                        Info
-                                    </button>
-                                </div>
-                                <button type="button" class="btn btn-error btn-m">
-                                    Leave
-                                </button>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-gray-600">Account Value</p>
-                                <p class="text-2xl font-semibold">$100,000.00</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600">Daily Growth</p>
-                                <p class="text-2xl font-semibold text-green-600">+10%</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 1 -->
-                <div class="card w-96 shadow-lg bg-white">
-                    <div class="card-body">
-                        <h2 class="card-title text-xl font-semibold">Game 1</h2>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-stretch">
-                                <div class="text-gray-400 text-xs">Game<br>Admins</div>
-                                <div class="h-100 border-l mx-4"></div>
-                                <div class="flex flex-nowrap -space-x-3">
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
-                                    </div>
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-x-2">
-                                <div class="relative">
-                                    <button id="dropdownButton" data-dropdown-toggle="dropdown"
-                                        class="btn btn-info btn-m">
-                                        Info
-                                    </button>
-                                </div>
-                                <button type="button" class="btn btn-error btn-m">
-                                    Leave
-                                </button>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-gray-600">Account Value</p>
-                                <p class="text-2xl font-semibold">$100,000.00</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600">Daily Growth</p>
-                                <p class="text-2xl font-semibold text-green-600">+10%</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 1 -->
-                <div class="card w-96 shadow-lg bg-white">
-                    <div class="card-body">
-                        <h2 class="card-title text-xl font-semibold">Game 1</h2>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-stretch">
-                                <div class="text-gray-400 text-xs">Game<br>Admins</div>
-                                <div class="h-100 border-l mx-4"></div>
-                                <div class="flex flex-nowrap -space-x-3">
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
-                                    </div>
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-x-2">
-                                <div class="relative">
-                                    <button id="dropdownButton" data-dropdown-toggle="dropdown"
-                                        class="btn btn-info btn-m">
-                                        Info
-                                    </button>
-                                </div>
-                                <button type="button" class="btn btn-error btn-m">
-                                    Leave
-                                </button>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-gray-600">Account Value</p>
-                                <p class="text-2xl font-semibold">$100,000.00</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600">Daily Growth</p>
-                                <p class="text-2xl font-semibold text-green-600">+10%</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 1 -->
-                <div class="card w-96 shadow-lg bg-white">
-                    <div class="card-body">
-                        <h2 class="card-title text-xl font-semibold">Game 1</h2>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-stretch">
-                                <div class="text-gray-400 text-xs">Game<br>Admins</div>
-                                <div class="h-100 border-l mx-4"></div>
-                                <div class="flex flex-nowrap -space-x-3">
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
-                                    </div>
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-x-2">
-                                <div class="relative">
-                                    <button id="dropdownButton" data-dropdown-toggle="dropdown"
-                                        class="btn btn-info btn-m">
-                                        Info
-                                    </button>
-                                </div>
-                                <button type="button" class="btn btn-error btn-m">
-                                    Leave
-                                </button>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-gray-600">Account Value</p>
-                                <p class="text-2xl font-semibold">$100,000.00</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600">Daily Growth</p>
-                                <p class="text-2xl font-semibold text-green-600">+10%</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 1 -->
-                <div class="card w-96 shadow-lg bg-white">
-                    <div class="card-body">
-                        <h2 class="card-title text-xl font-semibold">Game 1</h2>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-stretch">
-                                <div class="text-gray-400 text-xs">Game<br>Admins</div>
-                                <div class="h-100 border-l mx-4"></div>
-                                <div class="flex flex-nowrap -space-x-3">
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
-                                    </div>
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-x-2">
-                                <div class="relative">
-                                    <button id="dropdownButton" data-dropdown-toggle="dropdown"
-                                        class="btn btn-info btn-m">
-                                        Info
-                                    </button>
-                                </div>
-                                <button type="button" class="btn btn-error btn-m">
-                                    Leave
-                                </button>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-gray-600">Account Value</p>
-                                <p class="text-2xl font-semibold">$100,000.00</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600">Daily Growth</p>
-                                <p class="text-2xl font-semibold text-green-600">+10%</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 1 -->
-                <div class="card w-96 shadow-lg bg-white">
-                    <div class="card-body">
-                        <h2 class="card-title text-xl font-semibold">Game 1</h2>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-stretch">
-                                <div class="text-gray-400 text-xs">Game<br>Admins</div>
-                                <div class="h-100 border-l mx-4"></div>
-                                <div class="flex flex-nowrap -space-x-3">
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
-                                    </div>
-                                    <div class="h-9 w-9">
-                                        <a href="https://www.linkedin.com/in/aditya-nawandhar-2480a7288"><img
-                                                class="object-cover w-full h-full rounded-full"
-                                                src="https://media.licdn.com/dms/image/D5603AQGra6CRbjvZBQ/profile-displayphoto-shrink_200_200/0/1691732438488?e=2147483647&v=beta&t=54BeSlLNAheuD7azye14L29K7HBBNwKEbvvzEtvSTHc"></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-x-2">
-                                <div class="relative">
-                                    <button id="dropdownButton" data-dropdown-toggle="dropdown"
-                                        class="btn btn-info btn-m">
-                                        Info
-                                    </button>
-                                </div>
-                                <button type="button" class="btn btn-error btn-m">
-                                    Leave
-                                </button>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-gray-600">Account Value</p>
-                                <p class="text-2xl font-semibold">$100,000.00</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600">Daily Growth</p>
-                                <p class="text-2xl font-semibold text-green-600">+10%</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div id="gamesContainer" class="grid grid-cols-3 gap-6 m-3">
+                <!-- Cards will be generated here -->
             </div>
         </div>
     </div>
-
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const token = getCookie("token");
+        const decodedToken = parseJwt(token);
+        const email = decodedToken.sub;
+        const endpoint = `http://localhost:8017/api/person/classCodes/${email}`;
+
+        fetch(endpoint)
+            .then(response => response.json())
+            .then(data => {
+                const gamesContainer = document.getElementById("gamesContainer");
+                data.forEach(game => {
+                    const gameCard = createGameCard(game);
+                    gamesContainer.appendChild(gameCard);
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    });
+
+    function createGameCard(game) {
+        const card = document.createElement("div");
+        card.className = "card w-96 shadow-lg bg-white";
+
+        card.innerHTML = `
+            <div class="card-body">
+                <h2 class="card-title text-xl font-semibold">${game.className}</h2>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-stretch">
+                        <div class="text-gray-400 text-xs">Game<br>Admins</div>
+                        <div class="h-100 border-l mx-4"></div>
+                        <div class="flex flex-nowrap -space-x-3">
+                            ${game.persons.length > 0 ? game.persons.map(admin => `
+                                <div class="h-9 w-9">
+                                    <a href="${admin.linkedin}">
+                                        <img class="object-cover w-full h-full rounded-full" src="${admin.image}">
+                                    </a>
+                                </div>
+                            `).join('') : '<div class="text-gray-500">No Admins</div>'}
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-x-2">
+                        <div class="relative">
+                            <button id="dropdownButton" data-dropdown-toggle="dropdown"
+                                class="btn btn-info btn-m">Info</button>
+                        </div>
+                        <button type="button" class="btn btn-error btn-m" onclick="leaveGame('${game.classCode}')">Leave</button>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-gray-600">Account Value</p>
+                        <p class="text-2xl font-semibold">$${game.totalAccountValue.toFixed(2)}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Daily Growth</p>
+                        <p class="text-2xl font-semibold text-green-600">+10%</p>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return card;
+    }
+
+    function joinGame() {
+        const gameCodeInput = document.getElementById("gameCodeInput").value;
+        const token = getCookie("token");
+        const decodedToken = parseJwt(token);
+        const email = decodedToken.sub;
+
+        const payload = {
+            email: email,
+            classCode: gameCodeInput,
+            totalAccountValue: 100000.00,
+            buyingPower: 100000.00
+        };
+
+        fetch('http://localhost:8017/api/person/joinGame', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.error) {
+                    alert(`Error: ${result.error}`);
+                } else {
+                    alert('Successfully joined the class');
+                    // Optionally refresh the games list
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            });
+    }
+
+    function leaveGame(classCode) {
+        // Implement the functionality to leave a game
+        console.log(`Leave game with class code: ${classCode}`);
+    }
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    function parseJwt(token) {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    }
+</script>
