@@ -50,9 +50,30 @@ layout: project
 
 
     .btn-container {
-        margin-top: 10px;
-        text-align: center;
+    position: absolute;
+    top: 95%;  /* Adjust the position to move it below the video/canvas */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20; /* Ensure it's above the video and canvas layers */
+    text-align: center;
+    width: 100%;
     }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #007BFF;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
 
     .alert {
         position: absolute;
@@ -106,11 +127,12 @@ layout: project
 <div class="hero">
     <div class="camera-container">
         <div class="camera" id="camera"></div>
-        <div class="btn-container">
-            <button id="captureButton">Capture Image</button>
-        </div>
+    </div>
+    <div class="btn-container">
+        <button id="captureButton">Capture Image</button>
     </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
@@ -122,13 +144,13 @@ layout: project
     const cameraContainer = document.querySelector('.camera');
     cameraContainer.appendChild(video); // Append video to the camera container
     document.body.appendChild(canvas); // Ensure the canvas is visible
-    
+
     const constraints = { video: true };
     let model;
-    let lastSendTime = Date.now(); // Initialize the lastSendTime variable
+    let bboxCoordinates = []; // Store bounding box coordinates
 
     console.log('Script started');
-    
+
     navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
             console.log('Camera access granted');
@@ -144,7 +166,7 @@ layout: project
         .catch((err) => {
             console.error('Error accessing media devices.', err);
         });
-    
+
     async function loadModel() {
         try {
             model = await cocoSsd.load(); // Load the COCO-SSD model
@@ -154,7 +176,7 @@ layout: project
             console.error('Failed to load the model', err);
         }
     }
-    
+
     function updateCanvas() {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         if (model) {
@@ -171,24 +193,29 @@ layout: project
         }
         requestAnimationFrame(updateCanvas);
     }
-    
+
+    let lastBoundingBox = null;
+
     function drawBoundingBox(predictions) {
         predictions.forEach(prediction => {
             const [x, y, width, height] = prediction.bbox;
             ctx.strokeStyle = '#00FF00';
             ctx.lineWidth = 2;
             ctx.strokeRect(x, y, width, height);
-            ctx.fillText(prediction.class, x + 5, y + 15); // Optionally draw the label
-
-            if (Date.now() - lastSendTime >= 2000) { // Check if 1 second has passed
-                lastSendTime = Date.now(); // Update the last send time
-                sendCroppedImage(x, y, width, height);
-            }
+            ctx.fillText(prediction.class, x + 5, y + 15);
+            
+            // Store the last bounding box
+            lastBoundingBox = { x, y, width, height };
         });
     }
 
+    document.getElementById('captureButton').addEventListener('click', function() {
+        if (lastBoundingBox) {
+            sendCroppedImage(lastBoundingBox.x, lastBoundingBox.y, lastBoundingBox.width, lastBoundingBox.height);
+        }
+    });
+
     function sendCroppedImage(x, y, width, height) {
-        // Create a new canvas element to draw the cropped image
         const cropCanvas = document.createElement('canvas');
         cropCanvas.width = width;
         cropCanvas.height = height;
@@ -218,11 +245,7 @@ layout: project
     function comparePrediction(predictionData) {
         const email = localStorage.getItem('email') || "User";
         if (predictionData === email) {
-            // Redirect the user to the profile page
             window.location.replace("{{ site.baseurl }}/pages/profile.html");
         }
     }
-
-    // Add event listener to the button
-    document.getElementById('captureButton').addEventListener('click', sendCroppedImage(x, y, width, height));
 </script>
