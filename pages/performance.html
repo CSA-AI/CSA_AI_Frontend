@@ -52,10 +52,10 @@ table.dataTable, table.dataTable th, table.dataTable td {
     <table id="example" class="table-auto w-full">
         <thead>
             <tr>
-                <th class="px-4 py-2 sorting">Rank</th>
-                <th class="px-4 py-2 sorting" >Name</th>
-                <th class="px-4 py-2 sorting" id="accountValue">Account value</th>
-                <th class="px-4 py-2 sorting" id="accountGrowth">Account growth</th>
+                <th class="px-4 py-2 sorting" onclick="">Rank</th>
+                <th class="px-4 py-2 sorting">Name</th>
+                <th class="px-4 py-2 sorting">Account value</th>
+                <th class="px-4 py-2 sorting">Account growth</th>
                 <th class="px-4 py-2 sorting">rating (higher or lower)</th>
             </tr>
         </thead>
@@ -73,7 +73,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
         const content = document.getElementById("tableContent");
 
         // Fetch data from the API
-        fetch('http://csa-ai.stu.nighthawkcodingsociety.com/api/performance/accountValue')
+        fetch('https://csa-ai.stu.nighthawkcodingsociety.com/api/performance/accountValue')
             .then(response => response.json())
             .then(data => {
                 data.forEach((user, index) => {
@@ -93,5 +93,4 @@ table.dataTable, table.dataTable th, table.dataTable td {
             })
             .catch(error => console.error('Error fetching data:', error));
     });
-
 </script>
