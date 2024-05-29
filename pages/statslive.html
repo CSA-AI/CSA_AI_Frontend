@@ -458,7 +458,6 @@ function changeOutputSize(size) {
         try {
             // Call getClasses() to fetch class codes
             const classCodesResponse = await getClasses();
-            // console.log(classCodesResponse);
     
             // Get the selected class name from the dropdown
             const selectedClassName = document.getElementById("dropdownButton").textContent.trim();
@@ -468,6 +467,8 @@ function changeOutputSize(size) {
     
             if (selectedClass) {
                 classCode = selectedClass.classCode;
+                buyingPower = selectedClass.buyingPower;
+                currentAccountValue = selectedClass.totalAccountValue;
     
                 // Get stock price
                 const cost = await getStockPrice(stockName);
@@ -492,14 +493,62 @@ function changeOutputSize(size) {
                     body: JSON.stringify(tradingData)
                 });
     
-                const result = await response;
-                
-                window.location.reload();
+                if (response.ok) {
+                    const accountValueChange = shares * cost;
+    
+                    if (operation === 'buy' && accountValueChange <= buyingPower) {
+                        // Adjust buying power
+                        await adjustBuyingPower(email, classCode, currentAccountValue - accountValueChange);
+                    } else if (operation === 'sell') {
+                        // Adjust account value
+                        await adjustAccountValue(email, classCode, currentAccountValue + accountValueChange);
+                        // Adjust buying power
+                        await adjustBuyingPower(email, classCode, currentAccountValue + accountValueChange);
+                    } else {
+                        console.error("Cannot Trade.");
+                    }
+    
+                    window.location.reload();
+                } else {
+                    console.error("Trade failed.");
+                }
             } else {
                 console.error("Selected class not found.");
             }
         } catch (error) {
             console.error(error);
+        }
+    }
+    
+    async function adjustAccountValue(email, classCode, newValue) {
+        const url = 'http://localhost:8017/api/person/adjustAccountValue';
+        const data = {
+            email: email,
+            classCode: classCode,
+            newAccountValue: newValue
+        };
+    
+        try {
+            const response = await axios.put(url, data);
+            console.log("Account value adjusted:", response.data);
+        } catch (error) {
+            console.error("Error adjusting account value:", error);
+        }
+    }
+    
+    async function adjustBuyingPower(email, classCode, newValue) {
+        const url = 'http://localhost:8017/api/person/adjustBuyingPower';
+        const data = {
+            email: email,
+            classCode: classCode,
+            newBuyingPower: newValue
+        };
+    
+        try {
+            const response = await axios.put(url, data);
+            console.log("Buying power adjusted:", response.data);
+        } catch (error) {
+            console.error("Error adjusting buying power:", error);
         }
     }
 

@@ -27,6 +27,21 @@ layout: loggedin
         margin-top: auto;
         margin-bottom: auto;
     }
+
+    .dynamic-font-size {
+        font-size: 1.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+    }
+
+    .price-container, .amount-container {
+        width: 100%;
+        text-align: center;
+    }
 </style>
 <div class="flex justify-center items-center h-full">
     <div class="max-w-6xl mx-auto">
@@ -74,18 +89,18 @@ layout: loggedin
                         <div class="grid grid-cols-2 gap-4">
                             <div class="col-span-2 p-4 bg-gray-200 rounded-xl text-gray-800">
                                 <div class="font-bold text-2xl leading-none">Account Value</div>
-                                <div class="mt-2 text-4xl font-bold text-gray-900 account-value">$100,000.00</div>
+                                <div class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size account-value">$100,000.00</div>
                             </div>
-                            <div id="daily-change" class="col-span-2 grid grid-cols-2 gap-4">
+                            <div id="daily-change-container" class="col-span-2 grid grid-cols-2 gap-4">
                                 <div id="daily-change" class="p-4 rounded-xl">
                                     <div class="font-bold text-xl text-gray-800 leading-none">Daily Change</div>
-                                    <div class="mt-2 text-4xl font-bold text-gray-900">
+                                    <div class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size amount-container">
                                         <span class="amount">$50,000</span>
                                     </div>
                                 </div>
                                 <div id="total-change" class="p-4 rounded-xl">
                                     <div class="font-bold text-xl text-gray-800 leading-none">Total Change</div>
-                                    <div class="mt-2 text-4xl font-bold text-gray-900">
+                                    <div class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size amount-container">
                                         <span id="total-change-amount" class="amount">$10,000</span>
                                     </div>
                                 </div>
@@ -93,7 +108,7 @@ layout: loggedin
                             <div class="col-span-2">
                                 <div class="p-4 bg-gray-200 rounded-xl">
                                     <div class="font-bold text-xl text-gray-800 leading-none">Buying Power</div>
-                                    <div class="mt-2 text-4xl font-bold text-gray-900 buying-power">$30,000</div>
+                                    <div class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size buying-power">$30,000</div>
                                 </div>
                             </div>
                         </div>
@@ -138,7 +153,6 @@ layout: loggedin
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        fetchStockTrades('CSA-AI');
         getClasses();
         fetchClassData('CSA-AI');
 
@@ -171,6 +185,7 @@ layout: loggedin
         fetch("http://localhost:8017/api/stock/tickers/" + email + "/" + classCode, requestOptions)
             .then((response) => response.json())
             .then((data) => {
+                console.log(data)
                 populateTable(data);
             })
             .catch((error) => console.error(error));
