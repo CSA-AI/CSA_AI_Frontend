@@ -223,7 +223,7 @@
   }
 
   const signup_url = 'https://csa-ai.stu.nighthawkcodingsociety.com/api/person/createPerson';
-  const login_url = 'https://csa-ai.stu.nighthawkcodingsociety.com/authenticate';
+  const login_url = 'https://csa-ai.stu.nighthawkcodingsociety.com/api/person/authenticate';
 
   function showErrorMessage(message) {
       const errorAlert = document.getElementById("errorAlert");
@@ -288,7 +288,7 @@
               document.cookie = "token=" + data.token + "; path=/";
               console.log(data)
               if (data.status !== 401) {
-                  window.location.replace("{{ site.baseurl }}/pages/aslsignin.html");
+                  window.location.replace("{{ site.baseurl }}/aslsignin.html");
               } else {
                   console.log("bad email and password");
                   showErrorMessage("Invalid email or password");
