@@ -125,7 +125,7 @@ layout: project
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         // Get base64 representation of the image data
         const imageData = canvas.toDataURL('image/png').replace(/^data:image\/\w+;base64,/, '');
-        fetch('http://localhost:8017/image', {
+        fetch('https://csa-ai.stu.nighthawkcodingsociety.com/image', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
