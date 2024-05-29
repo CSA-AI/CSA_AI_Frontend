@@ -373,7 +373,7 @@ function changeOutputSize(size) {
         };
     
         // Return the fetch promise chain
-        return fetch("https://csa-ai.stu.nighthawkcodingsociety.com/api/person/classCodes/" + email, requestOptions)
+        return fetch("http://localhost:8017/api/person/classCodes/" + email, requestOptions)
             .then((response) => response.json()) // Parse response as JSON
             .then((result) => {
                 const dropdown = document.getElementById("dropdown");
@@ -420,7 +420,7 @@ function changeOutputSize(size) {
             redirect: "follow"
         };
     
-        fetch(`https://csa-ai.stu.nighthawkcodingsociety.com/api/person/class/${classCode}/${email}`, requestOptions)
+        fetch(`http://localhost:8017/api/person/class/${classCode}/${email}`, requestOptions)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
@@ -484,7 +484,7 @@ function changeOutputSize(size) {
                 };
     
                 // Submit trade data
-                const response = await fetch('https://csa-ai.stu.nighthawkcodingsociety.com/api/stock/trade', {
+                const response = await fetch('hhttp://localhost:8017/api/stock/trade', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
