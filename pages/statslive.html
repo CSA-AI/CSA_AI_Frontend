@@ -373,7 +373,7 @@ function changeOutputSize(size) {
         };
     
         // Return the fetch promise chain
-        return fetch("http://csa-ai.stu.nighthawkcodingsociety.com/api/person/classCodes/" + email, requestOptions)
+        return fetch("http://localhost:8017/api/person/classCodes/" + email, requestOptions)
             .then((response) => response.json()) // Parse response as JSON
             .then((result) => {
                 const dropdown = document.getElementById("dropdown");
@@ -420,7 +420,7 @@ function changeOutputSize(size) {
             redirect: "follow"
         };
     
-        fetch(`http://csa-ai.stu.nighthawkcodingsociety.com/api/person/class/${classCode}/${email}`, requestOptions)
+        fetch(`http://localhost:8017/api/person/class/${classCode}/${email}`, requestOptions)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
@@ -485,7 +485,7 @@ function changeOutputSize(size) {
                 };
     
                 // Submit trade data
-                const response = await fetch('http://csa-ai.stu.nighthawkcodingsociety.com/api/stock/trade', {
+                const response = await fetch('http://localhost:8017/api/stock/trade', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -521,7 +521,7 @@ function changeOutputSize(size) {
     }
     
     async function adjustAccountValue(email, classCode, newValue) {
-        const url = 'http://csa-ai.stu.nighthawkcodingsociety.com/api/person/adjustAccountValue';
+        const url = 'http://localhost:8017/api/person/adjustAccountValue';
         const data = {
             email: email,
             classCode: classCode,
@@ -537,7 +537,7 @@ function changeOutputSize(size) {
     }
     
     async function adjustBuyingPower(email, classCode, newValue) {
-        const url = 'http://csa-ai.stu.nighthawkcodingsociety.com/api/person/adjustBuyingPower';
+        const url = 'http://localhost:8017/api/person/adjustBuyingPower';
         const data = {
             email: email,
             classCode: classCode,

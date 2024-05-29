@@ -176,7 +176,7 @@
             document.getElementById('pic').innerHTML = `<img id="profilePic" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPjKATmnhrK5tAwwubWT4StUWrCzms3kOx0eYfXtHqLg&s">`;
         }
 
-        const setURL = "http://csa-ai.stu.nighthawkcodingsociety.com/api/person/updateStocks";
+        const setURL = "http://localhost:8017/api/person/updateStocks";
 
         const fileInput = document.getElementById('file-input');
         const errorMessage = document.getElementById('errorMessage');
@@ -270,7 +270,7 @@
             const profileNameSpan = document.getElementById("profileName");
             const profileEmailSpan = document.getElementById("profileEmail");
 
-            fetch("http://csa-ai.stu.nighthawkcodingsociety.com/api/person/" + userId, {
+            fetch("http://localhost:8017/api/person/" + userId, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -318,11 +318,11 @@
                 redirect: "follow"
             };
 
-            fetch("http://csa-ai.stu.nighthawkcodingsociety.com/api/person/image/post", requestOptions)
+            fetch("http://localhost:8017/api/person/image/post", requestOptions)
                 .then((response) => response.text())
                 .then((result) => console.log(result))
                 .then((blob) => {
-                    document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://csa-ai.stu.nighthawkcodingsociety.com/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
+                    document.getElementById('pic').innerHTML = `<img id="profilePic" src="http://localhost:8017/api/person/image/${userEmail}" onerror="handleImageError()"/>`;
                 }
 
                 )
@@ -347,7 +347,7 @@
             const userEmail = decodedToken.sub;
             const profilePicElement = document.getElementById('profilePic');
             const defaultPicUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPjKATmnhrK5tAwwubWT4StUWrCzms3kOx0eYfXtHqLg&s";
-            const profilePicUrl = `http://csa-ai.stu.nighthawkcodingsociety.com/api/person/image/${userEmail}`;
+            const profilePicUrl = `http://localhost:8017/api/person/image/${userEmail}`;
 
             isValidImageURL(profilePicUrl).then(isValid => {
                 if (isValid) {
