@@ -107,7 +107,7 @@ function loadData(key) {
     };
     document.getElementById('pageTitle').textContent = keyToTitle[key];
 
-    fetch(`https://csa-ai-flask.stu.nighthawkcodingsociety.com/api/stockObject/${key}`)
+    fetch(`https://csa-ai.stu.nighthawkcodingsociety.com/api/stockObject/${key}`)
     .then(response => {
         if (!response.ok) throw new Error(`Failed to fetch data: ${response.statusText}`);
         return response.json();
