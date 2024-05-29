@@ -57,17 +57,4 @@
     }
 
     getCookie("token");
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const token = getCookie("token");
-        if (token) {
-            document.getElementById('profileBtn').classList.remove('hidden');
-            document.getElementById('signoutBtn').classList.remove('hidden');
-            document.getElementById('signinBtn').classList.add('hidden');
-        } else {
-            document.getElementById('profileBtn').classList.add('hidden');
-            document.getElementById('signoutBtn').classList.add('hidden');
-            document.getElementById('signinBtn').classList.remove('hidden');
-        }
-    });
 </script>
