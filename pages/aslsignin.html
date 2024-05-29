@@ -2,40 +2,52 @@
 layout: project
 ---
 <style>
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+    }
+
     .hero {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 700px;
-        width: 600px;
-        border: 4px solid #9b9b9b;
-        border-radius: 15px;
-        margin: auto;
-        padding: 20px;
-        flex-direction: column; /* Change direction to column */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 700px;
+    width: 600px;
+    border: 4px solid #9b9b9b;
+    border-radius: 15px;
+    margin: auto;
+    padding: 20px;
+    position: relative; /* Ensures that absolute positioning is relative to this container */
+    overflow: hidden; /* Keeps everything neat */
+    flex-direction: column;
     }
 
     .camera-container {
-        width: 100%;
-        max-width: 600px;
-        position: relative;
+        position: relative; /* Container for video and canvas */
+        width: 100%; /* Match the width of the hero */
+        height: 100%; /* Match the height of the hero */
         display: flex;
-        flex-direction: column;
+        justify-content: center;
         align-items: center;
+        flex-direction: column;
     }
 
-    .camera {
-        width: 100%;
-        height: auto;
-        border: 2px solid #ccc;
-        border-radius: 10px;
-        overflow: hidden;
+    .camera, canvas {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Centering the canvas and video exactly */
+        max-width: 100%; /* Optional: Constraint the size to not exceed container */
+        max-height: 100%; /* Optional: Constraint the size to not exceed container */
     }
 
     .camera video {
-        width: 100%;
-        height: 100%; 
+        width: auto; /* Maintain aspect ratio */
+        height: 100%; /* Fill the height of its container */
     }
+
 
     .btn-container {
         margin-top: 10px;
@@ -100,63 +112,117 @@ layout: project
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+
 <script>
     const video = document.createElement('video');
     const canvas = document.createElement('canvas');
-    const constraints = {
-      video: true
-    };
-    navigator.mediaDevices.getUserMedia(constraints)
-      .then((stream) => {
-        video.srcObject = stream;
-        video.onloadedmetadata = () => {
-          video.play();
-        };
-        document.querySelector('.camera').appendChild(video);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const ctx = canvas.getContext('2d');
+    const cameraContainer = document.querySelector('.camera');
+    cameraContainer.appendChild(video); // Append video to the camera container
+    document.body.appendChild(canvas); // Ensure the canvas is visible
+    
+    const constraints = { video: true };
+    let model;
+    let lastSendTime = Date.now(); // Initialize the lastSendTime variable
 
-    function captureAndSendImage() {
-        // Draw the current frame from the video onto the canvas
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-        // Get base64 representation of the image data
-        const imageData = canvas.toDataURL('image/png').replace(/^data:image\/\w+;base64,/, '');
+    console.log('Script started');
+    
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream) => {
+            console.log('Camera access granted');
+            video.srcObject = stream;
+            video.onloadedmetadata = () => {
+                console.log('Video metadata loaded');
+                video.play();
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                loadModel();
+            };
+        })
+        .catch((err) => {
+            console.error('Error accessing media devices.', err);
+        });
+    
+    async function loadModel() {
+        try {
+            model = await cocoSsd.load(); // Load the COCO-SSD model
+            console.log('Model loaded');
+            requestAnimationFrame(updateCanvas);
+        } catch (err) {
+            console.error('Failed to load the model', err);
+        }
+    }
+    
+    function updateCanvas() {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        if (model) {
+            model.detect(video).then(predictions => {
+                console.log('Predictions:', predictions);
+                if (predictions.length > 0) {
+                    drawBoundingBox(predictions); // Use predictions to draw boxes
+                } else {
+                    console.log('No detections');
+                }
+            }).catch(err => {
+                console.error('Detection failed', err);
+            });
+        }
+        requestAnimationFrame(updateCanvas);
+    }
+    
+    function drawBoundingBox(predictions) {
+        predictions.forEach(prediction => {
+            const [x, y, width, height] = prediction.bbox;
+            ctx.strokeStyle = '#00FF00';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, width, height);
+            ctx.fillText(prediction.class, x + 5, y + 15); // Optionally draw the label
+
+            if (Date.now() - lastSendTime >= 2000) { // Check if 1 second has passed
+                lastSendTime = Date.now(); // Update the last send time
+                sendCroppedImage(x, y, width, height);
+            }
+        });
+    }
+
+    function sendCroppedImage(x, y, width, height) {
+        // Create a new canvas element to draw the cropped image
+        const cropCanvas = document.createElement('canvas');
+        cropCanvas.width = width;
+        cropCanvas.height = height;
+        const cropCtx = cropCanvas.getContext('2d');
+
+        // Draw the cropped area from the original canvas to the new canvas
+        cropCtx.drawImage(video, x, y, width, height, 0, 0, width, height);
+
+        // Convert the cropped canvas to a data URL and send it
+        const imageData = cropCanvas.toDataURL('image/png').replace(/^data:image\/\w+;base64,/, '');
+
         fetch('https://csa-ai.stu.nighthawkcodingsociety.com/image', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ image: imageData }),
         })
         .then(response => response.json())
         .then(data => {
             console.log(data.message);
+            comparePrediction(data.message);
         })
         .catch(error => {
-            console.error('error:', error);
+            console.error('Error sending cropped image:', error);
         });
-        fetch('https://csa-ai.stu.nighthawkcodingsociety.com/predictions')
-          .then(response => response.json())
-          .then(data => {
-            const recentPrediction = data[data.length - 1];
-            const email = localStorage.getItem('email') || "User"; 
-            console.log(email);
+    }
 
-            // Compare the user's name with the most recent prediction data
-            if (recentPrediction && recentPrediction.predictionData === email) {
-                // Redirect the user to the profile page
-                window.location.replace("{{ site.baseurl }}/pages/profile.html");
-            }
-          })
-          .catch(error => {
-            console.error('Error fetching predictions:', error);
-          });
+    function comparePrediction(predictionData) {
+        const email = localStorage.getItem('email') || "User";
+        if (predictionData === email) {
+            // Redirect the user to the profile page
+            window.location.replace("{{ site.baseurl }}/pages/profile.html");
+        }
     }
 
     // Add event listener to the button
-    document.getElementById('captureButton').addEventListener('click', captureAndSendImage);
+    document.getElementById('captureButton').addEventListener('click', sendCroppedImage(x, y, width, height));
 </script>
