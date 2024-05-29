@@ -21,6 +21,7 @@ layout: project
     padding: 20px;
     position: relative; /* Ensures that absolute positioning is relative to this container */
     overflow: hidden; /* Keeps everything neat */
+    flex-direction: column;
     }
 
     .camera-container {
@@ -30,6 +31,7 @@ layout: project
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
     }
 
     .camera, canvas {
@@ -73,6 +75,7 @@ layout: project
     .form.active {
         display: block;
     }
+  
     .alert-success {
         position: absolute;
         top: 0;
@@ -103,6 +106,9 @@ layout: project
 <div class="hero">
     <div class="camera-container">
         <div class="camera" id="camera"></div>
+        <div class="btn-container">
+            <button id="captureButton">Capture Image</button>
+        </div>
     </div>
 </div>
 
@@ -194,7 +200,7 @@ layout: project
         // Convert the cropped canvas to a data URL and send it
         const imageData = cropCanvas.toDataURL('image/png').replace(/^data:image\/\w+;base64,/, '');
 
-        fetch('http://localhost:8017/image', {
+        fetch('https://csa-ai.stu.nighthawkcodingsociety.com/image', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ image: imageData }),
@@ -216,4 +222,7 @@ layout: project
             window.location.replace("{{ site.baseurl }}/pages/profile.html");
         }
     }
+
+    // Add event listener to the button
+    document.getElementById('captureButton').addEventListener('click', sendCroppedImage(x, y, width, height));
 </script>

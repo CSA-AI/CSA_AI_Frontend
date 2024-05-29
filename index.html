@@ -3,7 +3,489 @@ layout: main
 title: Home
 ---
 
-<button class="btn">test</button>
-<p>test</p>
-<p>hello world</p>
-<p>jkalshdfkadsjhf</p>
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    html {
+        font-size: 10px;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans,
+            Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+        font-size: 1.6rem;
+        line-height: 1.6;
+        background: #000;
+    }
+    
+    $h1-font-size: 1rem * 4.5 !default;
+    $h2-font-size: 1rem * 4 !default;
+    $h3-font-size: 1rem * 3.75 !default;
+    $h4-font-size: 1rem * 3 !default;
+    $h5-font-size: 1rem * 2.5 !default;
+    $h6-font-size: 1rem * 2 !default;
+    
+    h1 {
+        font-size: $h1-font-size;
+    }
+    h2 {
+        font-size: $h2-font-size;
+    }
+    h3 {
+        font-size: $h3-font-size;
+    }
+    h4 {
+        font-size: $h4-font-size;
+    }
+    h5 {
+        font-size: $h5-font-size;
+    }
+    h6 {
+        font-size: $h6-font-size;
+    }
+    
+    main {
+        display: grid;
+        height: 100vh;
+        overflow: auto;
+        scroll-snap-type: y mandatory;
+    
+        > section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+    
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+        }
+    }
+    
+    section {
+        color: white;
+        padding-block: 30px;
+        padding-inline: 30px;
+    
+        > div {
+            max-width: 960px;
+            margin-inline: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+    
+        &:nth-child(1) {
+            background: #ffffff;
+        }
+        &:nth-child(2) {
+            background: #ffffff;
+        }
+        &:nth-child(3) {
+            background: #ffffff;
+        }
+        &:nth-child(4) {
+            background: #ffffff;
+        }
+        &:nth-child(5) {
+            background: #ffffff;
+        }
+        &:nth-child(6) {
+            background: #ffffff;
+        }
+        &:nth-child(7) {
+            background: #ffffff;
+        }
+        &:nth-child(8) {
+            background: #ffffff;
+        }
+        &:nth-child(9) {
+            background: #ffffff;
+        }
+        &:nth-child(10) {
+            background: #ffffff;
+        }
+    }
+    
+    @media (prefers-reduced-motion) {
+        [data-animation] {
+            animation: none;
+        }
+    }
+    
+    .animation-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 30px;
+    
+        @media screen and (max-width: 420px) {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(2, auto);
+        }
+    
+        [data-animation] {
+            background: #1e1c1e;
+            box-shadow: inset 2px 2px 2px #232323;
+            border-radius: 14px;
+            padding: 20px 30px;
+            max-width: 100%;
+            min-width: 150px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            cursor: pointer;
+            color: #fff;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 20px;
+    
+            opacity: 0;
+            &.animate {
+                opacity: 1;
+            }
+    
+            .icon {
+                font-size: 5em;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100px;
+                height: 100px;
+                transition: transform 0.3s ease;
+            }
+    
+            &:hover {
+                background: radial-gradient(
+                    circle at 50% 45%,
+                    rgba(189, 50, 255, 0.2) 0%,
+                    #232323 60%
+                );
+                box-shadow: 0 4px 25px rgb(189 50 255 / 25%), inset 2px 2px 2px #393939;
+    
+                .icon {
+                    transform: scale(1.1);
+                }
+            }
+    
+            // animation-duration: 1000ms;
+    
+            &:nth-child(1) {
+                animation-delay: 100ms;
+            }
+            &:nth-child(2) {
+                animation-delay: 500ms;
+            }
+            &:nth-child(3) {
+                animation-delay: 900ms;
+            }
+            &:nth-child(4) {
+                animation-delay: 1300ms;
+            }
+        }
+    }
+    
+    /* Animations */
+    :root {
+        --animate-duration: 1.5s;
+        --animate-delay: 1s;
+        --animate-repeat: 1;
+    }
+    
+    .animated {
+        animation-duration: 1s;
+        animation-duration: var(--animate-duration);
+        animation-fill-mode: both;
+    }
+    
+    @keyframes swing {
+        20% {
+            -webkit-transform: rotate(15deg);
+            transform: rotate(15deg);
+        }
+    
+        40% {
+            -webkit-transform: rotate(-10deg);
+            transform: rotate(-10deg);
+        }
+    
+        60% {
+            -webkit-transform: rotate(5deg);
+            transform: rotate(5deg);
+        }
+    
+        80% {
+            -webkit-transform: rotate(-5deg);
+            transform: rotate(-5deg);
+        }
+    
+        to {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+    }
+    
+    .swing {
+        -webkit-animation-name: swing;
+        animation-name: swing;
+        -webkit-transform-origin: top center;
+        transform-origin: top center;
+    }
+    
+    @keyframes tada {
+        0% {
+            -webkit-transform: scaleX(1);
+            transform: scaleX(1);
+        }
+    
+        10%,
+        20% {
+            -webkit-transform: scale3d(0.9, 0.9, 0.9) rotate(-3deg);
+            transform: scale3d(0.9, 0.9, 0.9) rotate(-3deg);
+        }
+    
+        30%,
+        50%,
+        70%,
+        90% {
+            -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate(3deg);
+            transform: scale3d(1.1, 1.1, 1.1) rotate(3deg);
+        }
+    
+        40%,
+        60%,
+        80% {
+            -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate(-3deg);
+            transform: scale3d(1.1, 1.1, 1.1) rotate(-3deg);
+        }
+    
+        to {
+            -webkit-transform: scaleX(1);
+            transform: scaleX(1);
+        }
+    }
+    
+    .tada {
+        -webkit-animation-name: tada;
+        animation-name: tada;
+    }
+    
+    @keyframes pulse {
+        0% {
+            -webkit-transform: scaleX(1);
+            transform: scaleX(1);
+        }
+    
+        50% {
+            -webkit-transform: scale3d(1.05, 1.05, 1.05);
+            transform: scale3d(1.05, 1.05, 1.05);
+        }
+    
+        to {
+            -webkit-transform: scaleX(1);
+            transform: scaleX(1);
+        }
+    }
+    
+    .pulse {
+        -webkit-animation-name: pulse;
+        animation-name: pulse;
+        -webkit-animation-timing-function: ease-in-out;
+        animation-timing-function: ease-in-out;
+    }
+    
+    @keyframes bounce {
+        0%,
+        20%,
+        53%,
+        to {
+            -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+    
+        40%,
+        43% {
+            -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+            animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+            -webkit-transform: translate3d(0, -30px, 0) scaleY(1.1);
+            transform: translate3d(0, -30px, 0) scaleY(1.1);
+        }
+    
+        70% {
+            -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+            animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+            -webkit-transform: translate3d(0, -15px, 0) scaleY(1.05);
+            transform: translate3d(0, -15px, 0) scaleY(1.05);
+        }
+    
+        80% {
+            -webkit-transform: translateZ(0) scaleY(0.95);
+            transform: translateZ(0) scaleY(0.95);
+            -webkit-transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+            transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+    
+        90% {
+            -webkit-transform: translate3d(0, -4px, 0) scaleY(1.02);
+            transform: translate3d(0, -4px, 0) scaleY(1.02);
+        }
+    }
+    
+    .bounce {
+        -webkit-animation-name: bounce;
+        animation-name: bounce;
+        -webkit-transform-origin: center bottom;
+        transform-origin: center bottom;
+    }
+    
+    @keyframes heartBeat {
+        0% {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+    
+        14% {
+            -webkit-transform: scale(1.3);
+            transform: scale(1.3);
+        }
+    
+        28% {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+    
+        42% {
+            -webkit-transform: scale(1.3);
+            transform: scale(1.3);
+        }
+    
+        70% {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+    }
+    
+    .heartBeat {
+        -webkit-animation-duration: 1.3s;
+        animation-duration: 1.3s;
+        -webkit-animation-duration: calc(var(--animate-duration) * 1.3);
+        animation-duration: calc(var(--animate-duration) * 1.3);
+        -webkit-animation-name: heartBeat;
+        animation-name: heartBeat;
+        -webkit-animation-timing-function: ease-in-out;
+        animation-timing-function: ease-in-out;
+    }
+    
+    @keyframes fadeInLeft {
+        0% {
+            opacity: 0;
+            -webkit-transform: translate3d(-20%, 0, 0);
+            transform: translate3d(-20%, 0, 0);
+        }
+    
+        to {
+            opacity: 1;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+    }
+    
+    .fadeInLeft {
+        -webkit-animation-name: fadeInLeft;
+        animation-name: fadeInLeft;
+    }
+    
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            -webkit-transform: translate3d(0, 100%, 0);
+            transform: translate3d(0, 100%, 0);
+        }
+    
+        to {
+            opacity: 1;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+    }
+    
+    .fadeInUp {
+        -webkit-animation-name: fadeInUp;
+        animation-name: fadeInUp;
+    }
+    div {
+        color: #000000;
+    }
+
+    </style>
+
+<main>
+    <section>
+        <div>
+            <h1 style="font-size: 75px ; margin-bottom: 200px;"><b>Introducing Stock AI 📊 </b></h1>
+            <h2 style="font-size: 30px"><b>Our Features 📔</b></h2>
+            <br />
+            <div class="animation-group">
+                <div data-animation="fadeInUp"><span class="icon">🙈</span><span class="text">Feature 1</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🙉</span><span class="text">Feature 2</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🙊</span><span class="text">Feature 3</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🐵</span><span class="text">Feature 4</span></div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div>
+            <h2 style="font-size: 45px"><b>What we provide 🔍</b></h2>
+            <br />
+            <h3 style="font-size: 20px">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h3>
+        </div>
+    </section>
+    <section>
+        <div>
+            <h2 style="font-size: 45px"><b>Contributors 👤</b></h2>
+            <br />
+            <div class="animation-group">
+                <div data-animation="fadeInUp"><span class="icon">🐶</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🦁</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🐱</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🐼</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🐶</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🦁</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🐱</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🐼</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🐶</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🦁</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🐱</span><span class="text">Animation</span></div>
+                <div data-animation="fadeInUp"><span class="icon">🐼</span><span class="text">Animation</span></div>
+            </div>
+        </div>
+    </section>
+</main>
+<script>
+    const animatedEls = document.querySelectorAll("[data-animation]");
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            const animation = entry.target.getAttribute("data-animation");
+    
+            if (entry.isIntersecting) {
+                entry.target.classList.add("animated", `${animation}`);
+            } else {
+                entry.target.classList.remove("animated", `${animation}`);
+            }
+        });
+    });
+    
+    animatedEls.forEach((el) => observer.observe(el));
+    </script>

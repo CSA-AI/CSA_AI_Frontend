@@ -89,10 +89,6 @@ layout: loggedin
                         <div id="stockChart" class="mt-4"></div>
                         <div id="stockVolume" class="font-bold mt-4"></div>
                         <div id="lastRefreshed" class="mt-4"></div>
-                        <div class="flex justify-center">
-                            <button onclick="changeOutputSize('full')" class="btn mx-2">All Time</button>
-                            <button onclick="changeOutputSize('compact')" class="btn  mx-2">Compact (100 days)</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -105,12 +101,8 @@ layout: loggedin
 
                     </div>
                 </div>
-                <h2 class="text-2xl font-bold mb-4">Stock Recommendations</h2>
-                <div class="grid grid-cols-1 gap-1">
-                    <div id="recommendationChart" class="gap-4 text-sm">
-                    </div>
-                </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -292,7 +284,6 @@ layout: loggedin
             await fetchStockNews(symbol);
             await fetchDailyStockData(symbol);
             await fetchSimilarCompanies(symbol);
-            await getRecommendationTrends(symbol);
         } catch (error) {
             console.error(error);
         }
@@ -329,38 +320,27 @@ layout: loggedin
         }
     }
 
-let outputSize = 'compact'; // Default output size
+    async function fetchDailyStockData(symbol) {
+        const apiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
+        const apiUrl = `https://alpha-vantage.p.rapidapi.com/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&datatype=json&outputsize=full&apikey=${apiKey}`;
 
-async function fetchDailyStockData(symbol) {
-    const apiKey = '48e23c6bf3msh9a6baf3e68d9a4ep14546ajsn1a39e98c4ad5';
-
-    const apiUrl = `https://alpha-vantage.p.rapidapi.com/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&datatype=json&outputsize=${outputSize}&apikey=${apiKey}`;
-
-    try {
-        // Fetch data using the modified apiUrl
-        const response = await axios.get(apiUrl, {
-            headers: {
-                'X-RapidAPI-Key': apiKey,
-                'X-RapidAPI-Host': 'alpha-vantage.p.rapidapi.com'
-            }
-        });
-        const data = response.data['Time Series (Daily)'];
-        let seriesData = Object.keys(data).map(key => ({
-            x: new Date(key),
-            y: parseFloat(data[key]['5. adjusted close'])
-        }));
-        renderStockChart(seriesData);
-    } catch (error) {
-        console.error(error);
+        try {
+            const response = await axios.get(apiUrl, {
+                headers: {
+                    'X-RapidAPI-Key': apiKey,
+                    'X-RapidAPI-Host': 'alpha-vantage.p.rapidapi.com'
+                }
+            });
+            const data = response.data['Time Series (Daily)'];
+            let seriesData = Object.keys(data).map(key => ({
+                x: new Date(key),
+                y: parseFloat(data[key]['5. adjusted close'])
+            }));
+            renderStockChart(seriesData);
+        } catch (error) {
+            console.error(error);
+        }
     }
-}
-
-// Function to change the output size
-function changeOutputSize(size) {
-    outputSize = size;
-    // Reload the stock data with the new output size
-    getStockData();
-}
 
     function getClasses() {
         const token = getCookie("token");
@@ -484,7 +464,7 @@ function changeOutputSize(size) {
                 };
     
                 // Submit trade data
-                const response = await fetch('hhttp://localhost:8017/api/stock/trade', {
+                const response = await fetch('http://localhost:8017/api/stock/trade', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -621,92 +601,4 @@ function changeOutputSize(size) {
     window.onload = () => {
         fetchSimilarCompanies();
     };
-    async function fetchRecommendationTrends(symbol) {
-    const apiKey = 'cogebo9r01qtg2rmbf9gcogebo9r01qtg2rmbfa0';
-    const apiUrl = `https://finnhub.io/api/v1/stock/recommendation?symbol=${symbol}&token=${apiKey}`;
-
-    try {
-        const response = await axios.get(apiUrl);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching recommendation trends:', error);
-    }
-}
-
-    // Render the recommendation trends chart
-    function renderRecommendationChart(data) {
-        const categories = data.map(entry => entry.period);
-        const buyData = data.map(entry => entry.buy);
-        const holdData = data.map(entry => entry.hold);
-        const sellData = data.map(entry => entry.sell);
-        const strongBuyData = data.map(entry => entry.strongBuy);
-        const strongSellData = data.map(entry => entry.strongSell);
-
-        var options = {
-            series: [{
-                name: 'Strong Buy',
-                data: strongBuyData
-            }, {
-                name: 'Buy',
-                data: buyData
-            }, {
-                name: 'Hold',
-                data: holdData
-            }, {
-                name: 'Sell',
-                data: sellData
-            }, {
-                name: 'Strong Sell',
-                data: strongSellData
-            }],
-            chart: {
-                type: 'bar',
-                height: 350,
-                stacked: true,
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: true,
-                    dataLabels: {
-                        total: {
-                            enabled: true,
-                            offsetX: 0,
-                            style: {
-                                fontSize: '13px',
-                                fontWeight: 900
-                            }
-                        }
-                    }
-                },
-            },
-            stroke: {
-                width: 1,
-                colors: ['#fff']
-            },
-            title: {
-                text: 'Stock Recommendation Trends'
-            },
-            xaxis: {
-                categories: categories,
-            },
-            fill: {
-                opacity: 1
-            },
-            legend: {
-                position: 'top',
-                horizontalAlign: 'left',
-                offsetX: 40
-            }
-        };
-
-        var chart = new ApexCharts(document.querySelector("#recommendationChart"), options);
-        chart.render();
-    }
-
-    // Fetch and render the recommendation trends for a specific stock symbol
-    async function getRecommendationTrends(symbol) {
-        const recommendationData = await fetchRecommendationTrends(symbol);
-        renderRecommendationChart(recommendationData);
-    }
-
 </script>
