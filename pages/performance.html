@@ -1,40 +1,36 @@
 ---
 layout: loggedin
 ---
-
 <style>
-    table.dataTable thead .sorting,
-    table.dataTable thead .sorting_desc,
-    table.dataTable thead .sorting_asc,
-    table.dataTable thead .sorting_asc_disabled,
-    table.dataTable thead .sorting_desc_disabled {
-        background-image: url('https://cdn.datatables.net/1.10.25/images/sort_both.png');
-        cursor: pointer;
-        background-repeat: no-repeat;
-        background-position: center right;
-    }
-    table.dataTable, table.dataTable th, table.dataTable td {
-        box-sizing: content-box;
-    }
-    .dataTables_wrapper {
-        position: relative;
-        clear: both;
-        zoom: 1;
-    }
-    .dataTables_wrapper .dataTables_length {
-        float: left;
-    }
-    .dataTables_wrapper .dataTables_length select {
-        border: 1px solid #aaa;
-        border-radius: 3px;
-        padding: 5px;
-        background-color: transparent;
-    }
+    
+table.dataTable thead .sorting {
+    background-image: url('https://cdn.datatables.net/1.10.25/images/sort_both.png');
+}
+table.dataTable thead .sorting_desc {
+    background-image: url('https://cdn.datatables.net/1.10.25/images/sort_desc.png');
+}
+table.dataTable thead .sorting_asc {
+	background-image: url('https://cdn.datatables.net/1.10.25/images/sort_asc.png');
+}
+table.dataTable thead .sorting_asc_disabled {
+    background-image:url("https://cdn.datatables.net/1.10.25/images/sort_asc_disabled.png")
+}
+table.dataTable thead .sorting_desc_disabled {
+    background-image:url("https://cdn.datatables.net/1.10.25/images/sort_desc_disabled.png")
+}
+table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+table.dataTable, table.dataTable th, table.dataTable td {
+    box-sizing: content-box;
+}
+.dataTables_wrapper{position:relative;clear:both;zoom:1;zoom:1}.dataTables_wrapper .dataTables_length{float:left}.dataTables_wrapper .dataTables_length select{border:1px solid #aaa;border-radius:3px;padding:5px;background-color:transparent;padding:4px}
 </style>
-
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <h2 class="text-2xl font-bold mb-4">User Performance</h2>
-    <div id="example_wrapper" class="dataTables_wrapper no-footer">
+    <div id="example_wrapper" class="dataTables_wrapper no-footer ">
         <div class="dataTables_length" id="example_length">
             <label>
                 Show 
@@ -44,37 +40,40 @@ layout: loggedin
                     <option value="50">50</option>
                     <option value="100">100</option>
                 </select>
-                entries 
+                 entries 
             </label>
         </div>
         <div id="example_filter" class="dataTables_filter float-right">
             <label>
                 Search:
-                <input class="border border-gray-400 rounded-md p-1.5 bg-transparent ml-1" type="search" aria-controls="example">
+                <input class="border border-gray-400 rounded-md p-1.5 bg-transparent ml-1" type="search" class="" placeholder="" aria-controls="example">
             </label>
         </div>
-        <table id="example" class="table-auto w-full">
-            <thead>
-                <tr>
-                    <th class="px-4 py-2 sorting descending" aria-controls="example" aria-sort="descending" aria-label="Rank: activate to sort column ascending">Rank</th>
-                    <th class="px-4 py-2 sorting">Name</th>
-                    <th class="px-4 py-2 sorting">Account value</th>
-                    <th class="px-4 py-2 sorting">Account growth</th>
-                    <th class="px-4 py-2 sorting">Rating</th>
-                </tr>
-            </thead>
-            <tbody id="tableContent"></tbody>
-        </table>
+    <table id="example" class="table-auto w-full">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 sorting">Rank</th>
+                <th class="px-4 py-2 sorting" >Name</th>
+                <th class="px-4 py-2 sorting" id="accountValue">Account value</th>
+                <th class="px-4 py-2 sorting" id="accountGrowth">Account growth</th>
+                <th class="px-4 py-2 sorting">rating (higher or lower)</th>
+            </tr>
+        </thead>
+        <tbody id="tableContent">
+            
+        </tbody>
+    </table>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const content = document.getElementById("tableContent");
 
         // Fetch data from the API
-        fetch('http://localhost:8017/api/performance/accountValue')
+        fetch('http://csa-ai.stu.nighthawkcodingsociety.com/api/performance/accountValue')
             .then(response => response.json())
             .then(data => {
                 data.forEach((user, index) => {
@@ -94,4 +93,5 @@ layout: loggedin
             })
             .catch(error => console.error('Error fetching data:', error));
     });
+
 </script>

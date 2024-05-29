@@ -1,5 +1,5 @@
 ---
-layout: project
+layout: main
 ---
 <style>
     .hero {
@@ -167,7 +167,13 @@ layout: project
         const video = document.createElement('video');
         video.style.width = '100%';
         video.style.height = 'auto';
-        const constraints = { video: true };
+        const constraints = {
+            video: {
+                width: { ideal: 480 },
+                height: { ideal: 360 },
+                frameRate: { ideal: 13 }
+            }
+        };
         navigator.mediaDevices.getUserMedia(constraints)
           .then((stream) => {
             video.srcObject = stream;
@@ -176,7 +182,7 @@ layout: project
               document.querySelector('.camera').innerHTML = '';
               document.querySelector('.camera').appendChild(video);
 
-              mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+              mediaRecorder = new MediaRecorder(stream);
               mediaRecorder.ondataavailable = handleDataAvailable;
               mediaRecorder.onstop = saveRecording;
             };
@@ -202,7 +208,7 @@ layout: project
         mediaRecorder.start();
         console.log('Recording started, mediaRecorder state:', mediaRecorder.state);
 
-        let seconds = 10;
+        let seconds = 5;
         timerInterval = setInterval(() => {
             document.getElementById('timer').innerText = seconds;
             seconds--;

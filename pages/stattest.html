@@ -1,0 +1,313 @@
+---
+layout: loggedin
+---
+
+    <title>Stock Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        .width {
+            width: 100rem;
+        }
+    </style>
+</head>
+<body>
+<div class="flex justify-center items-center w-full bg-white p-4">
+    <div id="companyBarContainer" class="relative overflow-hidden w-full max-w-screen-xl">
+        <div id="companyBar" class="flex whitespace-nowrap space-x-4"></div>
+    </div>
+</div>
+<div class="flex justify-center h-full">
+    <div class="width">
+        <div class="box shadow-2xl bg-base-100 max-w-4xl mx-auto rounded-xl">
+            <div class="bg-white rounded-xl p-8 mb-5">
+                <div class="flex flex-row gap-4 mt-4 justify-center">
+                    <div class="basis-2/5">
+                        <h1 id="stock-ticker" class="text-3xl font-bold mb-10">Stock</h1>
+                        <div>
+                            <div class="grid grid-cols-2 gap-1">
+                                <div id="daily-change" class="col-span-2 grid grid-cols-2 gap-4">
+                                    <div id="last-price" class="p-4 rounded-xl bg-blue-300">
+                                        <div class="font-bold text-m text-gray-800 leading-none">Last Price</div>
+                                        <div class="mt-2 text-xl font-bold text-gray-900">
+                                            <span id="last-price-span" class="amount">-</span>
+                                        </div>
+                                    </div>
+                                    <div id="change-today" class="p-4 rounded-xl">
+                                        <div class="font-bold text-m text-gray-800 leading-none">Change Today</div>
+                                        <div class="mt-2 text-xl font-bold text-gray-900">
+                                            <span id="change-today-span" class="amount">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="high-low" class="col-span-2 grid grid-cols-2 gap-4">
+                                    <div id="high" class="p-4 rounded-xl bg-green-100">
+                                        <div class="font-bold text-m text-gray-800 leading-none">High</div>
+                                        <div class="mt-2 text-xl font-bold text-gray-900">
+                                            <span id="high-span" class="amount">-</span>
+                                        </div>
+                                    </div>
+                                    <div id="low" class="p-4 rounded-xl bg-red-100">
+                                        <div class="font-bold text-m text-gray-800 leading-none">Low</div>
+                                        <div class="mt-2 text-xl font-bold text-gray-900">
+                                            <span id="low-span" class="amount">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="open-close" class="col-span-2 grid grid-cols-2 gap-4">
+                                    <div id="open" class="p-4 bg-gray-200 rounded-xl">
+                                        <div class="font-bold text-m text-gray-800 leading-none">Open</div>
+                                        <div class="mt-2 text-xl font-bold text-gray-900">
+                                            <span id="open-span" class="amount">-</span>
+                                        </div>
+                                    </div>
+                                    <div id="close" class="p-4 bg-gray-200 rounded-xl">
+                                        <div class="font-bold text-m text-gray-800 leading-none">Previous Close</div>
+                                        <div class="mt-2 text-xl font-bold text-gray-900">
+                                            <span id="close-span" class="amount">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="basis-3/5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex">
+                                <input id="symbol" type="text" placeholder="ex. AAPL"
+                                    class="input input-bordered w-24 mr-1" />
+                                <button onclick="getStockData()" class="btn">Get Stock Data</button>
+                            </div>
+                            <div class="flex">
+                                <button type="button" class="btn btn-info btn-m" onclick="trade.showModal()">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Trade
+                                </button>
+                            </div>
+                        </div>
+                        <div id="stockPrice" class="text-3xl font-bold mt-4"></div>
+                        <div id="stockChart" class="mt-4"></div>
+                        <div id="stockVolume" class="font-bold mt-4"></div>
+                        <div id="lastRefreshed" class="mt-4"></div>
+                        <div class="flex justify-center">
+                            <button onclick="changeOutputSize('full')" class="btn mx-2">All Time</button>
+                            <button onclick="changeOutputSize('compact')" class="btn mx-2">Compact (100 days)</button>
+                            <button onclick="fetchLSTMData()" class="btn mx-2">LSTM Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box shadow-2xl bg-base-100 max-w-4xl mx-auto mb-60 rounded-xl">
+            <div class="bg-white rounded-xl p-8 mb-5">
+                <h2 class="text-2xl font-bold mb-4">Stock News</h2>
+                <div class="grid grid-cols-1 gap-1">
+                    <div id="stockNews" class="gap-4 text-sm"></div>
+                </div>
+                <h2 class="text-2xl font-bold mb-4">Stock Recommendations</h2>
+                <div class="grid grid-cols-1 gap-1">
+                    <div id="recommendationChart" class="gap-4 text-sm"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<dialog id="trade" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg">Enter Trade Info</h3>
+        <input type="text" id="stockName" placeholder="Stock Name" class="input input-bordered w-full max-w-xs" />
+        <select id="operation" class="input input-bordered w-full max-w-xs">
+            <option value="buy">Buy</option>
+            <option value="sell">Sell</option>
+        </select>
+        <input type="text" id="shares" placeholder="Shares" class="input input-bordered w-full max-w-xs" />
+        <button id="dropdownButton" data-dropdown-toggle="dropdown" class="btn btn-info btn-m">
+            Games
+            <svg class="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 9l-7 7-7-7">
+                </path>
+            </svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div id="dropdown" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-20 hidden">
+            
+        </div>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn btn-success" onclick="tradeStock()">Purchase</button>
+                <button class="btn">Cancel</button>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<script>
+    const socket = new WebSocket('wss://ws.finnhub.io?token=cogebo9r01qtg2rmbf9gcogebo9r01qtg2rmbfa0');
+    let prevPrice = null;
+    let chart; // Declare the chart variable outside of functions to access it globally
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Function to render an empty chart
+        function renderEmptyChart() {
+            const emptyData = [{ x: new Date(), y: 0 }];
+            renderStockChart(emptyData);
+        }
+
+        // Initial render of an empty chart
+        renderEmptyChart();
+
+        const data = {
+            lastPrice: "-",
+            changeToday: "-",
+            high: "-",
+            low: "-",
+            open: "-",
+            close: "-"
+        };
+
+        updateStockData(data);
+
+        // Function to get stock data when the page loads
+        const defaultSymbol = 'AAPL';
+        getStockData(defaultSymbol);
+    });
+
+    function getStockData(symbol) {
+        const stockSymbol = symbol || document.getElementById("symbol").value;
+        const apiKey = 'LISWTZQTPNRXGRGR';
+        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${stockSymbol}&apikey=${apiKey}`;
+
+        axios.get(url)
+            .then(function (response) {
+                const timeSeries = response.data['Time Series (Daily)'];
+                const stockData = Object.keys(timeSeries).map(date => ({
+                    x: new Date(date),
+                    y: parseFloat(timeSeries[date]['4. close'])
+                })).filter(dataPoint => !isNaN(dataPoint.y));
+
+                const metadata = response.data['Meta Data'];
+                const lastRefreshed = metadata['3. Last Refreshed'];
+                const dailyData = timeSeries[lastRefreshed];
+                const data = {
+                    lastPrice: parseFloat(dailyData['4. close']),
+                    changeToday: parseFloat(dailyData['4. close']) - parseFloat(dailyData['1. open']),
+                    high: parseFloat(dailyData['2. high']),
+                    low: parseFloat(dailyData['3. low']),
+                    open: parseFloat(dailyData['1. open']),
+                    close: parseFloat(dailyData['4. close'])
+                };
+
+                updateStockData(data);
+                renderStockChart(stockData);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    function updateStockData(data) {
+        document.getElementById("last-price-span").textContent = data.lastPrice.toFixed(2);
+        document.getElementById("change-today-span").textContent = data.changeToday.toFixed(2);
+        document.getElementById("high-span").textContent = data.high.toFixed(2);
+        document.getElementById("low-span").textContent = data.low.toFixed(2);
+        document.getElementById("open-span").textContent = data.open.toFixed(2);
+        document.getElementById("close-span").textContent = data.close.toFixed(2);
+    }
+
+    function renderStockChart(data) {
+        const options = {
+            series: [{
+                name: 'Stock Price',
+                data: data
+            }],
+            chart: {
+                type: 'line',
+                height: 350,
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800,
+                    animateGradually: {
+                        enabled: true,
+                        delay: 150
+                    },
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 350
+                    }
+                }
+            },
+            xaxis: {
+                type: 'datetime'
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (val) {
+                        return val.toFixed(2);
+                    }
+                }
+            },
+            tooltip: {
+                x: {
+                    format: 'dd MMM yyyy'
+                }
+            }
+        };
+
+        if (chart) {
+            chart.updateSeries([{
+                data: data
+            }]);
+        } else {
+            chart = new ApexCharts(document.querySelector("#stockChart"), options);
+            chart.render();
+        }
+    }
+
+    function changeOutputSize(size) {
+        const symbol = document.getElementById("symbol").value || 'AAPL';
+        const apiKey = 'LISWTZQTPNRXGRGR';
+        const functionType = size === 'compact' ? 'TIME_SERIES_DAILY' : 'TIME_SERIES_DAILY_ADJUSTED';
+        const url = `https://www.alphavantage.co/query?function=${functionType}&symbol=${symbol}&apikey=${apiKey}`;
+
+        axios.get(url)
+            .then(function (response) {
+                const timeSeries = response.data['Time Series (Daily)'];
+                const stockData = Object.keys(timeSeries).map(date => ({
+                    x: new Date(date),
+                    y: parseFloat(timeSeries[date]['4. close'])
+                })).filter(dataPoint => !isNaN(dataPoint.y));
+                renderStockChart(stockData);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    function fetchLSTMData() {
+        const symbol = document.getElementById("symbol").value || 'AAPL';
+        const url = `http://csa-ai.stu.nighthawkcodingsociety.com/api/lstm/${symbol}`;
+
+        axios.get(url)
+            .then(function (response) {
+                const lstmData = response.data.map(item => ({
+                    x: new Date(item.date),
+                    y: parseFloat(item.prediction)
+                })).filter(dataPoint => !isNaN(dataPoint.y));
+
+                // Add the LSTM data to the existing chart
+                chart.appendSeries({
+                    name: 'LSTM Prediction',
+                    data: lstmData
+                });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+</script>
+</body>
+</html>
