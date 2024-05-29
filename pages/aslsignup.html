@@ -169,9 +169,9 @@ layout: main
         video.style.height = 'auto';
         const constraints = {
             video: {
-                width: { ideal: 640 },
-                height: { ideal: 480 },
-                frameRate: { ideal: 15 }
+                width: { ideal: 480 },
+                height: { ideal: 360 },
+                frameRate: { ideal: 13 }
             }
         };
         navigator.mediaDevices.getUserMedia(constraints)
@@ -182,7 +182,7 @@ layout: main
               document.querySelector('.camera').innerHTML = '';
               document.querySelector('.camera').appendChild(video);
 
-              mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+              mediaRecorder = new MediaRecorder(stream);
               mediaRecorder.ondataavailable = handleDataAvailable;
               mediaRecorder.onstop = saveRecording;
             };
@@ -208,7 +208,7 @@ layout: main
         mediaRecorder.start();
         console.log('Recording started, mediaRecorder state:', mediaRecorder.state);
 
-        let seconds = 8;
+        let seconds = 5;
         timerInterval = setInterval(() => {
             document.getElementById('timer').innerText = seconds;
             seconds--;
