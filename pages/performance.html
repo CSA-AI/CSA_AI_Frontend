@@ -74,7 +74,7 @@ layout: loggedin
         const content = document.getElementById("tableContent");
 
         // Fetch data from the API
-        fetch('http://localhost:8017/api/performance/accountValue')
+        fetch('http://csa-ai.stu.nighthawkcodingsociety.com/api/performance/accountValue')
             .then(response => response.json())
             .then(data => {
                 data.forEach((user, index) => {

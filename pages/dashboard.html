@@ -182,7 +182,7 @@ layout: loggedin
             redirect: "follow"
         };
 
-        fetch("http://localhost:8017/api/stock/tickers/" + email + "/" + classCode, requestOptions)
+        fetch("http://csa-ai.stu.nighthawkcodingsociety.com/api/stock/tickers/" + email + "/" + classCode, requestOptions)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data)
@@ -231,7 +231,7 @@ layout: loggedin
             redirect: "follow"
         };
     
-        fetch("http://localhost:8017/api/person/classCodes/" + email, requestOptions)
+        fetch("http://csa-ai.stu.nighthawkcodingsociety.com/api/person/classCodes/" + email, requestOptions)
             .then((response) => response.json()) // Parse response as JSON
             .then((result) => {
                 const dropdown = document.getElementById("dropdown");
@@ -266,7 +266,7 @@ layout: loggedin
             redirect: "follow"
         };
     
-        fetch(`http://localhost:8017/api/person/class/${classCode}/${email}`, requestOptions)
+        fetch(`http://csa-ai.stu.nighthawkcodingsociety.com/api/person/class/${classCode}/${email}`, requestOptions)
             .then((response) => response.json())
             .then((data) => {
                 // Update game title
@@ -303,7 +303,7 @@ layout: loggedin
             redirect: "follow"
         };
     
-        fetch(`http://localhost:8017/api/stock/accountValueChange/${classCode}/${email}?date=${date}`, requestOptions)
+        fetch(`http://csa-ai.stu.nighthawkcodingsociety.com/api/stock/accountValueChange/${classCode}/${email}?date=${date}`, requestOptions)
             .then(response => response.json())
             .then(data => {  
                 const dailyChange = data.totalChange;
