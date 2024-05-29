@@ -167,7 +167,13 @@ layout: project
         const video = document.createElement('video');
         video.style.width = '100%';
         video.style.height = 'auto';
-        const constraints = { video: true };
+        const constraints = {
+            video: {
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+                frameRate: { ideal: 15 }
+            }
+        };
         navigator.mediaDevices.getUserMedia(constraints)
           .then((stream) => {
             video.srcObject = stream;
@@ -202,7 +208,7 @@ layout: project
         mediaRecorder.start();
         console.log('Recording started, mediaRecorder state:', mediaRecorder.state);
 
-        let seconds = 10;
+        let seconds = 8;
         timerInterval = setInterval(() => {
             document.getElementById('timer').innerText = seconds;
             seconds--;
