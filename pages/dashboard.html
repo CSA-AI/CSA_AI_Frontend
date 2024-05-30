@@ -3,6 +3,7 @@ layout: loggedin
 ---
 <!-- add dynamic data -->
 <style>
+    /* Background colors for changes */
     .bg-green-100 {
         background-color: #d1fae5;
     }
@@ -15,6 +16,7 @@ layout: loggedin
         background-color: #dbeafe;
     }
 
+    /* Text colors for positive and negative values */
     .positive {
         color: rgb(21, 168, 21);
     }
@@ -23,11 +25,7 @@ layout: loggedin
         color: red;
     }
 
-    .box {
-        margin-top: auto;
-        margin-bottom: auto;
-    }
-
+    /* Font size adjustments and text overflow handling */
     .dynamic-font-size {
         font-size: 1.5rem;
         white-space: nowrap;
@@ -38,28 +36,68 @@ layout: loggedin
         text-align: center;
     }
 
-    .price-container, .amount-container {
+    /* Centering price and amount text */
+    .price-container,
+    .amount-container {
         width: 100%;
         text-align: center;
     }
+
+    /* Flexbox for overall box layout */
+    .box {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    /* Container for content with flexbox layout */
+    .content-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    /* Grid container for the main sections */
+    .grid-container {
+        flex-grow: 1;
+    }
+
+    /* Table container with horizontal overflow */
+    .table-container {
+        overflow-x: auto;
+        flex-grow: 1;
+    }
+
+    /* Centered pagination controls with padding */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 0;
+    }
+
+    /* Ensuring the card takes full height */
+    .full-height {
+        height: 100%;
+    }
+
+    /* Centering content vertically and horizontally */
+    .center-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+    }
 </style>
-<div class="flex justify-center items-center h-full">
+<div class="center-content">
     <div class="max-w-6xl mx-auto">
-        <div class="box shadow-2xl bg-base-100 max-w-4xl mx-auto mb-60 rounded-xl">
-            <div class="bg-white rounded-xl p-8 mb-5">
+        <div class="box shadow-2xl bg-base-100 max-w-4xl mx-auto rounded-xl full-height mb-custom">
+            <div class="bg-white rounded-xl p-8 content-container">
                 <h1 id="game-title" class="text-3xl font-bold mb-10">Trading game</h1>
                 <div class="flex items-center justify-between">
-
                     <div class="flex items-stretch">
-                        <div class="text-gray-400 text-xs">Game<br>Admins</div>
-                        <div class="h-100 border-l mx-4"></div>
-                        <div class="flex flex-nowrap -space-x-3">
-                            <!-- <div class="h-9 w-9">
-                                <a href="https://www.linkedin.com/in/david-vasilev-415519264"><img
-                                        class="object-cover w-full h-full rounded-full"
-                                        src="https://media.licdn.com/dms/image/D5603AQFNvqUefSaYbg/profile-displayphoto-shrink_200_200/0/1679550408919?e=2147483647&v=beta&t=MXM3RGJUBemLT7BeJ6ey2wqySvF-n9PAsFCceCl1kdA"></a>
-                            </div> -->
-                        </div>
                     </div>
                     <div class="flex items-center gap-x-2">
                         <div class="relative">
@@ -73,8 +111,9 @@ layout: loggedin
                                 </svg>
                             </button>
                             <!-- Dropdown menu -->
-                            <div id="dropdown" class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-20 hidden">
-                                
+                            <div id="dropdown"
+                                class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-20 hidden">
+                                <!-- Dropdown items will be dynamically added here -->
                             </div>
                         </div>
                     </div>
@@ -82,25 +121,27 @@ layout: loggedin
 
                 <hr class="my-10">
 
-                <div class="grid grid-cols-2 gap-x-20">
+                <div class="grid grid-cols-2 gap-x-20 grid-container">
                     <div>
                         <h2 class="text-2xl font-bold mb-4">Stats</h2>
-
                         <div class="grid grid-cols-2 gap-4">
                             <div class="col-span-2 p-4 bg-gray-200 rounded-xl text-gray-800">
                                 <div class="font-bold text-2xl leading-none">Account Value</div>
-                                <div class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size account-value">$100,000.00</div>
+                                <div class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size account-value">
+                                    $100,000.00</div>
                             </div>
                             <div id="daily-change-container" class="col-span-2 grid grid-cols-2 gap-4">
                                 <div id="daily-change" class="p-4 rounded-xl">
                                     <div class="font-bold text-xl text-gray-800 leading-none">Daily Change</div>
-                                    <div class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size amount-container">
+                                    <div
+                                        class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size amount-container">
                                         <span class="amount">$50,000</span>
                                     </div>
                                 </div>
                                 <div id="total-change" class="p-4 rounded-xl">
                                     <div class="font-bold text-xl text-gray-800 leading-none">Total Change</div>
-                                    <div class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size amount-container">
+                                    <div
+                                        class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size amount-container">
                                         <span id="total-change-amount" class="amount">$10,000</span>
                                     </div>
                                 </div>
@@ -108,16 +149,16 @@ layout: loggedin
                             <div class="col-span-2">
                                 <div class="p-4 bg-gray-200 rounded-xl">
                                     <div class="font-bold text-xl text-gray-800 leading-none">Buying Power</div>
-                                    <div class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size buying-power">$30,000</div>
+                                    <div class="mt-2 text-4xl font-bold text-gray-900 dynamic-font-size buying-power">
+                                        $30,000</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div>
+                    <div class="flex flex-col">
                         <h2 class="text-2xl font-bold mb-4">Your Stocks</h2>
-
-                        <div class="space-y-4">
-                            <div class="overflow-x-auto">
+                        <div class="flex flex-col h-full">
+                            <div class="table-container">
                                 <table class="table">
                                     <!-- head -->
                                     <thead>
@@ -128,17 +169,20 @@ layout: loggedin
                                         </tr>
                                     </thead>
                                     <tbody id="table-body">
-
+                                        <!-- Table content will be dynamically generated here -->
                                     </tbody>
                                 </table>
                             </div>
-
+                            <div class="pagination-container">
+                                <div class="join" id="pagination-controls">
+                                    <!-- Pagination controls will be dynamically added here -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -146,6 +190,10 @@ layout: loggedin
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+    const rowsPerPage = 6;
+    let currentPage = 1;
+    let stockData = [];
+
     function selectGame(event, gameName) {
         event.preventDefault();
         document.getElementById('game-title').innerText = gameName;
@@ -173,7 +221,6 @@ layout: loggedin
     });
 
     function fetchStockTrades(classCode) {
-
         const token = getCookie("token");
         const decodedToken = parseJwt(token);
         const email = decodedToken.sub;
@@ -185,33 +232,40 @@ layout: loggedin
         fetch("http://localhost:8017/api/stock/tickers/" + email + "/" + classCode, requestOptions)
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
-                populateTable(data);
+                stockData = data;
+                renderTable();
             })
             .catch((error) => console.error(error));
     }
 
-    async function populateTable(data) {
+    // Render table with pagination
+    async function renderTable() {
         const tableBody = document.getElementById('table-body');
         tableBody.innerHTML = '';
 
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const currentData = stockData.slice(startIndex, endIndex);
+
         const apiKey = 'cp7p9p1r01qi8q8994k0cp7p9p1r01qi8q8994kg';
 
-        for (const trade of data) {
+        for (const trade of currentData) {
             const apiUrl = `https://finnhub.io/api/v1/quote?symbol=${trade}&token=${apiKey}`;
 
             try {
                 const response = await axios.get(apiUrl);
                 const quoteData = response.data;
 
-                const changeColor = data.d > 0 ? 'red' : '#2fe30b';
+                const changeColor = quoteData.d >= 0 ? '#2fe30b' : 'red';
+                const direction = quoteData.d >= 0 ? 'up' : 'down';
+
                 const row = document.createElement('tr');
                 row.setAttribute('id', `row-${trade}`);
                 row.innerHTML = `
                     <td class="font-bold">${trade}</td>
                     <td>$${quoteData.c}</td>
                     <td class="font-bold" style="color: ${changeColor}">
-                        <i class="fa-solid fa-arrow-${data.d >= 0 ? 'down' : 'up'}" style="color: ${changeColor}"></i>
+                        <i class="fa-solid fa-arrow-${direction}" style="color: ${changeColor}"></i>
                         ${quoteData.dp} %
                     </td>
                 `;
@@ -220,23 +274,50 @@ layout: loggedin
                 console.error(error);
             }
         }
+
+        renderPaginationControls();
     }
+
+    // Render pagination controls
+    function renderPaginationControls() {
+        const paginationControls = document.getElementById('pagination-controls');
+        paginationControls.innerHTML = '';
+
+        const totalPages = Math.ceil(stockData.length / rowsPerPage);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const input = document.createElement('input');
+            input.className = 'join-item btn btn-square';
+            input.type = 'radio';
+            input.name = 'options';
+            input.ariaLabel = i;
+            if (i === currentPage) {
+                input.checked = true;
+            }
+            input.addEventListener('click', () => {
+                currentPage = i;
+                renderTable();
+            });
+            paginationControls.appendChild(input);
+        }
+    }
+
     function getClasses() {
         const token = getCookie("token");
         const decodedToken = parseJwt(token);
         const email = decodedToken.sub;
-    
+
         const requestOptions = {
             method: "GET",
             redirect: "follow"
         };
-    
+
         fetch("http://localhost:8017/api/person/classCodes/" + email, requestOptions)
             .then((response) => response.json()) // Parse response as JSON
             .then((result) => {
                 const dropdown = document.getElementById("dropdown");
                 dropdown.innerHTML = ""; // Clear existing options
-    
+
                 result.forEach((item) => {
                     const className = item.className;
                     const classCode = item.classCode;
@@ -260,31 +341,31 @@ layout: loggedin
         const token = getCookie("token");
         const decodedToken = parseJwt(token);
         const email = decodedToken.sub;
-    
+
         const requestOptions = {
             method: "GET",
             redirect: "follow"
         };
-    
+
         fetch(`http://localhost:8017/api/person/class/${classCode}/${email}`, requestOptions)
             .then((response) => response.json())
             .then((data) => {
                 // Update game title
                 document.getElementById("game-title").textContent = data.className;
-    
+
                 // Update account value
                 updateAccountValue(data.totalAccountValue);
-    
+
                 // Update buying power
                 updateBuyingPower(data.buyingPower);
 
                 fetchStockTrades(classCode);
-    
+
                 // Calculate total change
                 const totalChange = data.totalAccountValue - 100000;
                 const totalPercentageChange = ((totalChange / 100000) * 100).toFixed(2);
                 updateChangeElement('total-change', totalChange, totalPercentageChange);
-    
+
                 // Fetch and update daily change
                 const currentDate = new Date();
                 const formattedDate = currentDate.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
@@ -297,15 +378,15 @@ layout: loggedin
         const token = getCookie("token");
         const decodedToken = parseJwt(token);
         const email = decodedToken.sub;
-    
+
         const requestOptions = {
             method: "GET",
             redirect: "follow"
         };
-    
+
         fetch(`http://localhost:8017/api/stock/accountValueChange/${classCode}/${email}?date=${date}`, requestOptions)
             .then(response => response.json())
-            .then(data => {  
+            .then(data => {
                 const dailyChange = data.totalChange;
                 const dailyPercentageChange = (dailyChange / totalAccountValue) * 100;
                 updateChangeElement("daily-change", data.totalChange);
@@ -338,7 +419,7 @@ layout: loggedin
         const formattedValue = newValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         accountValueElement.textContent = `$${formattedValue}`;
     }
-    
+
     function updateBuyingPower(newValue) {
         const buyingPowerElement = document.querySelector('.buying-power');
         const formattedValue = newValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
