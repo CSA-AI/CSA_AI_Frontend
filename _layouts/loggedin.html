@@ -349,18 +349,12 @@
             const defaultPicUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPjKATmnhrK5tAwwubWT4StUWrCzms3kOx0eYfXtHqLg&s";
             const profilePicUrl = `http://localhost:8017/api/person/image/${userEmail}`;
 
-            isValidImageURL(profilePicUrl).then(isValid => {
-                if (isValid) {
-                    profilePicElement.src = profilePicUrl;
-                } else {
-                    profilePicElement.src = defaultPicUrl;
-                }
-            });
+            profilePicElement.src = profilePicUrl;
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", async function () {
             getName();
-            getProfilePicture();
+            await getProfilePicture();
         });
 
         function signout() {
